@@ -197,13 +197,11 @@ RestrictOnClientSpawn(client)
         
         if (ZRIsClientOnTeam(client, CS_TEAM_T))
         {
-            if (g_Game == Game_CSGO) GivePlayerItem(client, WEAPONS_SPAWN_T_WEAPON_CSGO);
-            else GivePlayerItem(client, WEAPONS_SPAWN_T_WEAPON);
+            if (g_Game != Game_CSGO) GivePlayerItem(client, WEAPONS_SPAWN_T_WEAPON);
         }
         else if (ZRIsClientOnTeam(client, CS_TEAM_CT))
         {
-            if (g_Game == Game_CSGO) GivePlayerItem(client, WEAPONS_SPAWN_CT_WEAPON_CSGO);
-            else GivePlayerItem(client, WEAPONS_SPAWN_CT_WEAPON);
+            if (g_Game != Game_CSGO) GivePlayerItem(client, WEAPONS_SPAWN_CT_WEAPON);
         }
     }
 }
