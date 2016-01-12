@@ -207,6 +207,8 @@ public OnMapStart()
     SEffectsOnMapStart();
     ZSpawnOnMapStart();
     VolInit();
+	
+    CountDown();
 }
 
 /**
