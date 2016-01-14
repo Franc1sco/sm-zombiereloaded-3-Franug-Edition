@@ -243,7 +243,7 @@ ClassOnClientSpawn(client)
         
         // Get random class setting and steam id.
         new bool:randomclass = GetConVarBool(g_hCvarsList[CVAR_CLASSES_RANDOM]);
-        GetClientAuthString(client, steamid, sizeof(steamid));
+        GetClientAuthId(client, AuthId_Engine, steamid, sizeof(steamid));
         
         // Assign random classes if enabled. Always do it for bots.
         if (randomclass || StrEqual(steamid, "BOT"))
