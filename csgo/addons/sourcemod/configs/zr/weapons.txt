@@ -194,6 +194,34 @@
 
 	}
 
+	"R8 Revolver"
+	{
+		// General
+
+		"weaponentity"		"weapon_revolver"
+		"weapontype"		"All, Pistol"
+		"weaponslot"		"1"
+
+		// Restrict (core)
+
+		"restrictdefault"	"no"
+		"toggleable"		"yes"
+
+		// Weapon Ammo (core)
+
+		"ammotype"		"ammo_50ae"
+		"ammoprice"		"100"
+
+		// Knockback (module)
+
+		"knockback"		"1.3"
+
+		// ZMarket (module)
+
+		"zmarketprice"		"800"
+
+	}
+
 	"Nova"
 	{
 		// General
