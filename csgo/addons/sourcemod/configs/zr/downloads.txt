@@ -48,3 +48,6 @@ sound/zr/zombie_voice_idle14.mp3
 sound/zr/zombie_die1.mp3
 sound/zr/zombie_die2.mp3
 sound/zr/zombie_die3.mp3
+
+ambient/zr/zr_ambience.mp3
+zr/fz_scream1.mp3
