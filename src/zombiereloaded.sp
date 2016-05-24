@@ -49,7 +49,7 @@
     #define ACTION_HANDLED      ZRTools_Handled
 #endif
 
-#define VERSION "3.1 Franug edition"
+#define VERSION "3.2 Franug edition"
 
 // Comment this line to exclude version info command. Enable this if you have
 // the repository and HG installed (Mercurial or TortoiseHG).
