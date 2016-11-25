@@ -116,7 +116,7 @@ public APIHumanClient(Handle:plugin, numParams)
 {
     new client = GetNativeCell(1);
     new bool:respawn = bool:GetNativeCell(2);
-    new bool:protect = bool:GetNativeCell(2);
+    new bool:protect = bool:GetNativeCell(3);
     
     // Validate the client index.
     APIValidateClientIndex(client, Condition_True);

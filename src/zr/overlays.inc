@@ -148,6 +148,7 @@ OverlaysOnRoundStart()
     if (tOverlays != INVALID_HANDLE)
     {
         KillTimer(tOverlays);
+        tOverlays = INVALID_HANDLE;
     }
     
     // If antistick is disabled, then stop.

@@ -83,26 +83,7 @@ NapalmOnTakeDamage(client, damagetype)
             if (NapalmGetClientWaterLevel(client) >= douse)
             {
                 // Put the fire out.
-                
-                //ExtinguishEntity(client);  <-- Don't use this.  Takes off the FL_ONFIRE flag, but flame doesn't get extinguished.
-                
-                // This works.
-                new fire = GetEntPropEnt(client, Prop_Data, "m_hEffectEntity");
-                if (IsValidEntity(fire))
-                {
-                    // Make sure the entity is a flame, so we can extinguish it.
-                    decl String:classname[64];
-                    GetEdictClassname(fire, classname, sizeof(classname));
-                    if (StrEqual(classname, "entityflame", false))
-                    {
-                        SetEntPropFloat(fire, Prop_Data, "m_flLifetime", 0.0);
-                    }
-                    // Log what entity was in that property, for future reference.
-                    else
-                    {
-                        LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Napalm, "Napalm Douse", "Found unexpected entity in prop \"m_flLifetime\": \"%s\"", classname);
-                    }
-                }
+                NapalmExtinguishEntity(client);
                 
                 return _:ACTION_CONTINUE;
             }
@@ -155,9 +136,6 @@ NapalmOnClientHurt(client, attacker, const String:weapon[])
         
         if (reset || !(flags & FL_ONFIRE))
         {
-            // This stops the fire before re-ignition.
-            ExtinguishEntity(client);
-            
             // Ignite client.
             IgniteEntity(client, napalm_time);
         }
@@ -172,7 +150,7 @@ NapalmOnClientHurt(client, attacker, const String:weapon[])
 NapalmOnClientDeath(client)
 {
     // Extinguish any flames to stop burning sounds.
-    ExtinguishEntity(client);
+    NapalmExtinguishEntity(client);
 }
 
 /**
@@ -245,4 +223,32 @@ stock NapalmGetClientWaterLevel(client)
 {
     // Return client's water-level.
     return GetEntData(client, g_iToolsWaterLevel);
+}
+
+/**
+ * Actually extinguishes an entity.
+ *
+ * @param client    The client index.
+ */
+stock NapalmExtinguishEntity(client)
+{
+    //ExtinguishEntity(client);  <-- Don't use this.  Takes off the FL_ONFIRE flag, but flame doesn't get extinguished.
+
+    // This works.
+    new fire = GetEntPropEnt(client, Prop_Data, "m_hEffectEntity");
+    if (IsValidEntity(fire))
+    {
+        // Make sure the entity is a flame, so we can extinguish it.
+        decl String:classname[64];
+        GetEdictClassname(fire, classname, sizeof(classname));
+        if (StrEqual(classname, "entityflame", false))
+        {
+            SetEntPropFloat(fire, Prop_Data, "m_flLifetime", 0.0);
+        }
+        // Log what entity was in that property, for future reference.
+        else
+        {
+            LogEvent(false, LogType_Normal, LOG_GAME_EVENTS, LogModule_Napalm, "Napalm Douse", "Found unexpected entity in prop \"m_hEffectEntity\": \"%s\"", classname);
+        }
+    }
 }
