@@ -120,6 +120,10 @@ AmbientSoundsOnMapStart()
 {
     // Reset timer handle.
     tAmbientSounds = INVALID_HANDLE;
+
+    decl String:sound[SOUND_MAX_PATH];
+    GetConVarString(g_hCvarsList[CVAR_AMBIENTSOUNDS_FILE], sound, sizeof(sound));
+    PrecacheSound(sound, true);
 }
 
 /**
@@ -185,6 +189,7 @@ AmbientSoundsRestart()
     if (tAmbientSounds != INVALID_HANDLE)
     {
         KillTimer(tAmbientSounds);
+        tAmbientSounds = INVALID_HANDLE;
     }
     
     // If ambience is disabled, then stop.
