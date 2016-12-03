@@ -275,14 +275,14 @@ public Action:ClassModifyCommand(client, argc)
 {
     decl String:syntax[1024];
     syntax[0] = 0;
-
+    
     // Check if privileged.
     if (!ZRIsClientPrivileged(client, OperationType_Configuration))
     {
         TranslationReplyToCommand(client, "No access to command");
         return Plugin_Handled;
     }
-
+    
     if (argc < 3)
     {
         // Write syntax info.
@@ -293,30 +293,30 @@ public Action:ClassModifyCommand(client, argc)
         StrCat(syntax, sizeof(syntax), "is_multiplier:   Optional. specifies wether the original value should be multiplied by the specified value. Not all attributes support multipliers. Defaults to false.\n\n");
         StrCat(syntax, sizeof(syntax), "Note: Original values are retrieved from the original class cache, not the modified class cache.");
         ReplyToCommand(client, syntax);
-
+        
         return Plugin_Handled;
     }
-
+    
     decl String:classname[64];
     decl String:attributename[128];
     decl String:value[256];
     decl String:ismultiplier[4];
-
+    
     new attributeflag;
     new ClassDataTypes:attributetype;
     new bool:isgroup;
     new bool:hasmultiplier;
     new Handle:classlist;
-
+    
     new classindex;
     new bool:listresult;
     classlist = CreateArray();
-
+    
     // Get command arguments.
     GetCmdArg(1, classname, sizeof(classname));
     GetCmdArg(2, attributename, sizeof(attributename));
     GetCmdArg(3, value, sizeof(value));
-
+    
     // Get last command argument if specified.
     if (argc == 4)
     {
@@ -326,22 +326,20 @@ public Action:ClassModifyCommand(client, argc)
             hasmultiplier = true;
         }
     }
-
+    
     // Get attribute flag.
     attributeflag = ClassAttributeNameToFlag(attributename);
-
+    
     // Validate attribute flag.
     if (attributeflag < 0)
     {
         ReplyToCommand(client, "Invalid class attribute specified.");
-        CloseHandle(classlist);
-
         return Plugin_Handled;
     }
-
+    
     // Get attribute data type.
     attributetype = ClassGetAttributeType(attributeflag);
-
+    
     // Check if classname is a group. Add classes to the class list
     // and use the specified team filter.
     if (StrEqual(classname, "all", false))
@@ -364,7 +362,7 @@ public Action:ClassModifyCommand(client, argc)
         listresult = ClassAddToArray(classlist, ZR_CLASS_TEAM_ADMINS);
         isgroup = true;
     }
-
+    
     // Check if classname is a group.
     if (isgroup)
     {
@@ -372,18 +370,16 @@ public Action:ClassModifyCommand(client, argc)
         if (!listresult)
         {
             ReplyToCommand(client, "Failed to get classes in the specified team: \"%s\".", classname);
-            CloseHandle(classlist);
-
             return Plugin_Handled;
         }
-
+        
         // Loop through all classes in the list.
         new listsize = GetArraySize(classlist);
-
+        
         for (new i = 0; i < listsize; i++)
         {
             classindex = GetArrayCell(classlist, i);
-
+            
             switch (attributetype)
             {
                 case ClassDataType_Boolean:
@@ -431,16 +427,14 @@ public Action:ClassModifyCommand(client, argc)
     {
         // It's a single class.
         classindex = ClassGetIndex(classname);
-
+        
         // Validate classindex.
         if (!ClassValidateIndex(classindex))
         {
             ReplyToCommand(client, "Invalid class name specified.");
-            CloseHandle(classlist);
-
             return Plugin_Handled;
         }
-
+        
         switch (attributetype)
         {
             case ClassDataType_Boolean:
@@ -483,9 +477,7 @@ public Action:ClassModifyCommand(client, argc)
             }
         }
     }
-
-    CloseHandle(classlist);
-
+    
     return Plugin_Handled;
 }
 

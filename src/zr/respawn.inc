@@ -93,7 +93,6 @@ RespawnOnClientDeath(client, attacker, const String:weapon[])
     if (tRespawn[client] != INVALID_HANDLE)
     {
         KillTimer(tRespawn[client]);
-        tRespawn[client] = INVALID_HANDLE;
     }
     
     // If player was infected, then stop.
