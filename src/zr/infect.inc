@@ -432,6 +432,12 @@ InfectOnRoundEnd()
     // x = client index.
     for (new x = 1; x <=  MaxClients; x++)
     {
+        // If client isn't in-game, then stop.
+        if (!IsClientInGame(x))
+        {
+            continue;
+        }
+        
         // Disable zombie flag on client.
         bZombie[x] = false;
     }
@@ -667,7 +673,8 @@ public Action:InfectCountdown(Handle:timer)
     {
 		ReplaceString(sounddir, 128, "sound/", "");
 		
-		EmitSoundToAll(sounddir);
+		if(g_Game == Game_CSGO) EmitSoundToAllAny(sounddir);
+		else EmitSoundToAll(sounddir);
     }
 	
     // Print the countdown text to the clients.
@@ -694,7 +701,8 @@ CountDown()
 		AddFileToDownloadsTable(sounddir);
 		ReplaceString(sounddir, 128, "sound/", "");
 		
-		PrecacheSound(sounddir);
+		if(g_Game != Game_CSGO) PrecacheSound(sounddir);
+		else PrecacheSoundAny(sounddir);
 		
 		count++;
 		Format(sounddir, 128, "sound/zr/countdown/%i.mp3", count);
@@ -823,10 +831,6 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
         }
     }
     
-	// Remove kevlar and helmet
-    SetEntProp(client, Prop_Send, "m_ArmorValue", 0, 1);
-    SetEntProp(client, Prop_Send, "m_bHasHelmet", 0);
-	
     // Print message to client.
     TranslationPrintToChat(client, "Infect infected");
     

@@ -199,39 +199,40 @@ ClassOnClientDisconnect(client)
 ClassOnClientSpawn(client)
 {
     decl String:originalmodel[PLATFORM_MAX_PATH];
+    decl String:steamid[16];
     decl String:classname[64];
     new filter[ClassFilter];
-
+    
     // Check if the player is dead. Spawning into the game is also a event in
     // the connection process.
     if (!IsPlayerAlive(client))
     {
         return;
     }
-
+    
     // Check if there are no valid classes. Block this event if classes aren't
     // done loading.
     if (!ClassValidated)
     {
         return;
     }
-
+    
     // Reset attributes by triggering death event.
     ClassOnClientDeath(client);
-
+    
     // Restore class indexes to be selected on spawn, if available.
     ClassRestoreNextIndexes(client);
-
+    
     // Cache original player model.
     GetClientModel(client, originalmodel, sizeof(originalmodel));
     strcopy(ClassOriginalPlayerModel[client], PLATFORM_MAX_PATH, originalmodel);
-
+    
     // Check if the player should spawn in admin mode.
     if (ClassPlayerInAdminMode[client])
     {
         // Mark player as in admin mode.
         ClassPlayerInAdminMode[client] = true;
-
+        
         // TODO: This is the place to initialize admin mode stuff like no-block
         //       and other stuff.
     }
@@ -239,43 +240,44 @@ ClassOnClientSpawn(client)
     {
         // Mark player as not in admin mode.
         ClassPlayerInAdminMode[client] = false;
-
-        // Get random class setting.
+        
+        // Get random class setting and steam id.
         new bool:randomclass = GetConVarBool(g_hCvarsList[CVAR_CLASSES_RANDOM]);
-
+        GetClientAuthId(client, AuthId_Engine, steamid, sizeof(steamid));
+        
         // Assign random classes if enabled. Always do it for bots.
-        if (randomclass || IsFakeClient(client))
+        if (randomclass || StrEqual(steamid, "BOT"))
         {
             // Setup filtering
             // ---------------
-
+            
             // Exclude special class flags like mother zombies and admin classes.
             filter[ClassFilter_DenyFlags] = ZR_CLASS_SPECIALFLAGS;
-
+                        
             // Allow admin classes if admin.
             filter[ClassFilter_DenyFlags] -= ZRIsClientAdmin(client) ? ZR_CLASS_FLAG_ADMIN_ONLY : 0;
-
+            
             // Specify client for checking group permissions.
             filter[ClassFilter_Client] = client;
-
+            
             // Get classes
             // -----------
-
+            
             // Get random classes for each type.
             new randomzombie = ClassGetRandomClass(ZR_CLASS_TEAM_ZOMBIES, filter);
             new randomhuman = ClassGetRandomClass(ZR_CLASS_TEAM_HUMANS, filter);
-
+            
             // Set selected zombie class index.
             ClassSelected[client][ZR_CLASS_TEAM_ZOMBIES] = randomzombie;
             ClassGetName(randomzombie, classname, sizeof(classname), ZR_CLASS_TEAM_ZOMBIES);
             TranslationPrintToChat(client, "Classes random assignment", classname);
-
+            
             // Set selected human class index.
             ClassSelected[client][ZR_CLASS_TEAM_HUMANS] = randomhuman;
             ClassGetName(randomhuman, classname, sizeof(classname), ZR_CLASS_TEAM_HUMANS);
             TranslationPrintToChat(client, "Classes random assignment", classname);
         }
-
+        
         // Display class menu if either menu cvar is set.
         new bool:menuspawn = GetConVarBool(g_hCvarsList[CVAR_CLASSES_MENU_SPAWN]);
         new bool:menujoin = GetConVarBool(g_hCvarsList[CVAR_CLASSES_MENU_JOIN]);
@@ -285,19 +287,19 @@ ClassOnClientSpawn(client)
             ClassMenuMain(client);
         }
     }
-
+    
     // Load class attributes for the active class.
     ClassReloadPlayerCache(client, ClassGetActiveIndex(client));
-
+    
     // Note: Class attributes are applied in ClassOnClientSpawnPost.
-
+    
     // Check if instant class change cvar is set.
     new Float:instantspawn = GetConVarFloat(g_hCvarsList[CVAR_CLASSES_CHANGE_TIMELIMIT]);
     if (instantspawn > 0)
     {
         // Allow instant class change.
         ClassAllowInstantChange[client] = true;
-
+        
         // Create timer to disable instant change.
         CreateTimer(instantspawn, Event_ClassDisableInstantSpawn, client, TIMER_FLAG_NO_MAPCHANGE);
     }

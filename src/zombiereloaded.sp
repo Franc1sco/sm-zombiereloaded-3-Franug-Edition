@@ -33,6 +33,7 @@
 #include <sdktools>
 #include <clientprefs>
 #include <cstrike>
+#include <emitsoundany>
 
 #if defined USE_SDKHOOKS
     #include <sdkhooks>
