@@ -185,6 +185,7 @@ enum CvarsList
     Handle:CVAR_ZTELE_AUTOCANCEL_DISTANCE,
     Handle:CVAR_ZHP,
     Handle:CVAR_ZHP_DEFAULT,
+    Handle:CVAR_ZMENU_ENABLED
 }
 
 /**
@@ -221,10 +222,10 @@ CvarsInit()
     // Create public cvar for tracking.
     decl String:description[64];
     Format(description, sizeof(description), "%s Current version of this plugin", TRANSLATION_PHRASE_PREFIX);
-    CreateConVar("gs_zombiereloaded_version", VERSION, description, FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_UNLOGGED|FCVAR_DONTRECORD|FCVAR_REPLICATED|FCVAR_NOTIFY);
+    CreateConVar("gs_zombiereloaded_version", VERSION, description, FCVAR_SPONLY|FCVAR_UNLOGGED|FCVAR_DONTRECORD|FCVAR_REPLICATED|FCVAR_NOTIFY);
     
     #if defined ADD_VERSION_INFO
-        CreateConVar("zombiereloaded_revision", ZR_VER_REVISION, "Revision number for this plugin in source code repository.", FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_UNLOGGED|FCVAR_DONTRECORD|FCVAR_REPLICATED|FCVAR_NOTIFY);
+        CreateConVar("zombiereloaded_revision", ZR_VER_REVISION, "Revision number for this plugin in source code repository.", FCVAR_SPONLY|FCVAR_UNLOGGED|FCVAR_DONTRECORD|FCVAR_REPLICATED|FCVAR_NOTIFY);
     #endif
     
     // Forward event to modules.
@@ -523,6 +524,8 @@ CvarsCreate()
     // ===========================
     g_hCvarsList[CVAR_ZHP]                              =    CreateConVar("zr_zhp",             "1",    "Allow player to toggle real HP display as a zombie.");
     g_hCvarsList[CVAR_ZHP_DEFAULT]                      =    CreateConVar("zr_zhp_default",     "1",    "Default ZHP toggle state set on connecting player. [Dependency: zr_zhp]");
+    
+    g_hCvarsList[CVAR_ZMENU_ENABLED]                      =    CreateConVar("zr_zmenu_enable",     "1",    "Enable/disable main menu command.");
     
     
     // Auto-generate config file if it doesn't exist, then execute.

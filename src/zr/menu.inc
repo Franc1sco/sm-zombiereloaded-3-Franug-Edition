@@ -56,6 +56,10 @@ MenuOnCommandsCreate()
  */
 public Action:ZMenuCommand(client, argc)
 {
+    if (!GetConVarBool(g_hCvarsList[CVAR_ZMENU_ENABLED]))
+    {
+        return Plugin_Continue;
+    }
     // If client is console, then stop and tell them this feature is for players only.
     if (ZRIsConsole(client))
     {
