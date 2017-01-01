@@ -3,8 +3,8 @@
  *
  *  Zombie:Reloaded
  *
- *  File:          visualeffects.inc
- *  Type:          Module
+ *  File:		  visualeffects.inc
+ *  Type:		  Module
  *  Description:   Visual effects API.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
@@ -33,8 +33,8 @@
  */
 VEffectsOnMapEnd()
 {
-    // Forward event to sub-modules.
-    VAmbienceOnMapEnd();
+	// Forward event to sub-modules.
+	VAmbienceOnMapEnd();
 }
 
 /**
@@ -42,8 +42,8 @@ VEffectsOnMapEnd()
  */
 VEffectsLoad()
 {
-    // Forward event to sub-modules.
-    VAmbienceLoad();
+	// Forward event to sub-modules.
+	VAmbienceLoad();
 }
 
 /**
@@ -51,8 +51,8 @@ VEffectsLoad()
  */
 VEffectsOnCvarInit()
 {
-    // Hook zr_veffects_* cvars.
-    VAmbienceCvarsHook();
+	// Hook zr_veffects_* cvars.
+	VAmbienceCvarsHook();
 }
 
 /**
@@ -60,106 +60,106 @@ VEffectsOnCvarInit()
  */
 VEffectsOnOffsetsFound()
 {
-    // Forward event to sub-modules
-    RagdollOnOffsetsFound();
+	// Forward event to sub-modules
+	RagdollOnOffsetsFound();
 }
 
 /**
  * Client has been killed.
  * 
- * @param client    The client index.
+ * @param client	The client index.
  */
 VEffectsOnClientDeath(client)
 {
-    // Forward event to sub-modules.
-    RagdollOnClientDeath(client);
+	// Forward event to sub-modules.
+	RagdollOnClientDeath(client);
 }
 
 /**
  * Create an energy splash effect.
  * 
- * @param client        The client index.
- * @param origin        The origin of the effect.
- * @param direction     The direction of the effect.
+ * @param client		The client index.
+ * @param origin		The origin of the effect.
+ * @param direction	 The direction of the effect.
  */
 VEffectsCreateEnergySplash(const Float:origin[3], const Float:direction[3], bool:explosive)
 {
-    TE_SetupEnergySplash(origin, direction, explosive);
-    TE_SendToAll();
+	TE_SetupEnergySplash(origin, direction, explosive);
+	TE_SendToAll();
 }
 
 /**
  * Create an explosion effect with strict flags.
  * 
- * @param origin    The (x, y, z) coordinate of the explosion.
- * @param flags     The flags to set on the explosion.
+ * @param origin	The (x, y, z) coordinate of the explosion.
+ * @param flags	 The flags to set on the explosion.
  */
 VEffectsCreateExplosion(const Float:origin[3], flags)
 {
-    // Create an explosion entity.
-    new explosion = CreateEntityByName("env_explosion");
-    
-    // If explosion entity isn't valid, then stop.
-    if (explosion == -1)
-    {
-        return;
-    }
-    
-    // Get and modify flags on explosion.
-    new spawnflags = GetEntProp(explosion, Prop_Data, "m_spawnflags");
-    spawnflags = spawnflags | EXP_NODAMAGE | EXP_NODECAL | flags;
-    
-    // Set modified flags on entity.
-    SetEntProp(explosion, Prop_Data, "m_spawnflags", spawnflags);
-    
-    // Spawn the entity into the world.
-    DispatchSpawn(explosion);
-    
-    // Set the origin of the explosion.
-    DispatchKeyValueVector(explosion, "origin", origin);
-    
-    // Set fireball material.
-    PrecacheModel("materials/sprites/xfireball3.vmt");
-    DispatchKeyValue(explosion, "fireballsprite", "materials/sprites/xfireball3.vmt");
-    
-    // Tell the entity to explode.
-    AcceptEntityInput(explosion, "Explode");
-    
-    // Remove entity from world.
-    AcceptEntityInput(explosion, "Kill");
+	// Create an explosion entity.
+	new explosion = CreateEntityByName("env_explosion");
+	
+	// If explosion entity isn't valid, then stop.
+	if (explosion == -1)
+	{
+		return;
+	}
+	
+	// Get and modify flags on explosion.
+	new spawnflags = GetEntProp(explosion, Prop_Data, "m_spawnflags");
+	spawnflags = spawnflags | EXP_NODAMAGE | EXP_NODECAL | flags;
+	
+	// Set modified flags on entity.
+	SetEntProp(explosion, Prop_Data, "m_spawnflags", spawnflags);
+	
+	// Spawn the entity into the world.
+	DispatchSpawn(explosion);
+	
+	// Set the origin of the explosion.
+	DispatchKeyValueVector(explosion, "origin", origin);
+	
+	// Set fireball material.
+	PrecacheModel("materials/sprites/xfireball3.vmt");
+	DispatchKeyValue(explosion, "fireballsprite", "materials/sprites/xfireball3.vmt");
+	
+	// Tell the entity to explode.
+	AcceptEntityInput(explosion, "Explode");
+	
+	// Remove entity from world.
+	AcceptEntityInput(explosion, "Kill");
 }
 
 /**
  * Shake a client's screen with specific parameters.
  * 
- * @param client        The client index.
- * @param amplitude     The amplitude (intensity) of the shaking.
- * @param frequency     The frequency (speed) of the shaking.
- * @param duration      The duration (time) of the shaking.
+ * @param client		The client index.
+ * @param amplitude	 The amplitude (intensity) of the shaking.
+ * @param frequency	 The frequency (speed) of the shaking.
+ * @param duration	  The duration (time) of the shaking.
  */
 VEffectsShakeClientScreen(client, Float:amplitude, Float:frequency, Float:duration)
 {
-    new Handle:hShake = StartMessageOne("Shake", client);
-    
-    // Validate.
-    if (hShake == INVALID_HANDLE)
-    {
-        return;
-    }
-    
-    if (GetUserMessageType() == UM_Protobuf)
-    {
-        PbSetInt(hShake, "command", 0);
-        PbSetFloat(hShake, "local_amplitude", amplitude);
-        PbSetFloat(hShake, "frequency", frequency);
-        PbSetFloat(hShake, "duration", duration);
-    }
-    else
-    {
-        BfWriteByte(hShake, 0);
-        BfWriteFloat(hShake, amplitude);
-        BfWriteFloat(hShake, frequency);
-        BfWriteFloat(hShake, duration);
-    }
-    EndMessage();
+	new Handle:hShake = StartMessageOne("Shake", client);
+	
+	// Validate.
+	if (hShake == INVALID_HANDLE)
+	{
+		return;
+	}
+	
+	if (GetUserMessageType() == UM_Protobuf)
+	{
+		PbSetInt(hShake, "command", 0);
+		PbSetFloat(hShake, "local_amplitude", amplitude);
+		PbSetFloat(hShake, "frequency", frequency);
+		PbSetFloat(hShake, "duration", duration);
+	}
+	else
+	{
+		BfWriteByte(hShake, 0);
+		BfWriteFloat(hShake, amplitude);
+		BfWriteFloat(hShake, frequency);
+		BfWriteFloat(hShake, duration);
+	}
+	EndMessage();
 }

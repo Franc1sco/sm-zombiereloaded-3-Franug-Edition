@@ -3,9 +3,9 @@
  *
  *  Zombie:Reloaded
  *
- *  File:           volevents.inc
- *  Type:           Module
- *  Description:    Handles generic events for volumetric features.
+ *  File:		   volevents.inc
+ *  Type:		   Module
+ *  Description:	Handles generic events for volumetric features.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
  *
@@ -28,125 +28,125 @@
 /**
  * Called when a player enters a volume.
  *
- * @param client        The client index.
+ * @param client		The client index.
  * @param volumeIndex   The volume index.
  */
 VolOnPlayerEnter(client, volumeIndex)
 {
-    // Check if volumetric features is enabled.
-    if (!VolEnabled)
-    {
-        // Volumetric features disabled.
-        return;
-    }
-    
-    LogEvent(_, LogType_Normal, LOG_DEBUG, LogModule_Volfeatures, "Event", "Player %N entered volume %d.", client, volumeIndex);
-    
-    // Forward event to features.
-    new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
-    switch (voltype)
-    {
-        case VolFeature_ClassEdit:
-        {
-            VolClassEditOnPlayerEnter(client, volumeIndex);
-        }
-    }
+	// Check if volumetric features is enabled.
+	if (!VolEnabled)
+	{
+		// Volumetric features disabled.
+		return;
+	}
+	
+	LogEvent(_, LogType_Normal, LOG_DEBUG, LogModule_Volfeatures, "Event", "Player %N entered volume %d.", client, volumeIndex);
+	
+	// Forward event to features.
+	new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
+	switch (voltype)
+	{
+		case VolFeature_ClassEdit:
+		{
+			VolClassEditOnPlayerEnter(client, volumeIndex);
+		}
+	}
 }
 
 /**
  * Called when a player leaves a volume.
  *
- * @param client        The client index.
+ * @param client		The client index.
  * @param volumeIndex   The volume index.
  */
 VolOnPlayerLeave(client, volumeIndex)
 {
-    // Check if volumetric features is enabled.
-    if (!VolEnabled)
-    {
-        // Volumetric features disabled.
-        return;
-    }
-    
-    LogEvent(_, LogType_Normal, LOG_DEBUG, LogModule_Volfeatures, "Event", "Player %N left volume %d.", client, volumeIndex);
-    
-    // Forward event to features.
-    new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
-    switch (voltype)
-    {
-        case VolFeature_Anticamp:
-        {
-            VolAnticampOnPlayerLeave(client, volumeIndex);
-        }
-        case VolFeature_ClassEdit:
-        {
-            VolClassEditOnPlayerLeave(client, volumeIndex);
-        }
-    }
+	// Check if volumetric features is enabled.
+	if (!VolEnabled)
+	{
+		// Volumetric features disabled.
+		return;
+	}
+	
+	LogEvent(_, LogType_Normal, LOG_DEBUG, LogModule_Volfeatures, "Event", "Player %N left volume %d.", client, volumeIndex);
+	
+	// Forward event to features.
+	new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
+	switch (voltype)
+	{
+		case VolFeature_Anticamp:
+		{
+			VolAnticampOnPlayerLeave(client, volumeIndex);
+		}
+		case VolFeature_ClassEdit:
+		{
+			VolClassEditOnPlayerLeave(client, volumeIndex);
+		}
+	}
 }
 
 /**
  * Called when a player spawned. Used for initializing player data.
  *
- * @param client    The client index.
+ * @param client	The client index.
  */
 VolOnPlayerSpawn(client)
 {
-    // Check if volumetric features is enabled.
-    if (!VolEnabled)
-    {
-        // Volumetric features disabled.
-        return;
-    }
-    
-    // Cache player location.
-    VolUpdatePlayerLocation(client);
+	// Check if volumetric features is enabled.
+	if (!VolEnabled)
+	{
+		// Volumetric features disabled.
+		return;
+	}
+	
+	// Cache player location.
+	VolUpdatePlayerLocation(client);
 }
 
 /**
  * Called when a player died.
  *
- * @param client    The client index.
+ * @param client	The client index.
  */
 VolOnPlayerDeath(client)
 {
-    // Send player left volume event to all volumes the player was in.
-    for (new volindex = 0; volindex < ZR_VOLUMES_MAX; volindex++)
-    {
-        // Check if volume is unused.
-        if (!Volumes[volindex][Vol_InUse])
-        {
-            continue;
-        }
-        
-        // Check if volume is disabled.
-        if (!Volumes[volindex][Vol_Enabled])
-        {
-            continue;
-        }
-        
-        // Check if player is inside the volume.
-        if (VolPlayerInVolume[client][volindex])
-        {
-            // Mark as not in the volume and trigger event.
-            VolPlayerInVolume[client][volindex] = false;
-            VolOnPlayerLeave(client, volindex);
-        }
-    }
+	// Send player left volume event to all volumes the player was in.
+	for (new volindex = 0; volindex < ZR_VOLUMES_MAX; volindex++)
+	{
+		// Check if volume is unused.
+		if (!Volumes[volindex][Vol_InUse])
+		{
+			continue;
+		}
+		
+		// Check if volume is disabled.
+		if (!Volumes[volindex][Vol_Enabled])
+		{
+			continue;
+		}
+		
+		// Check if player is inside the volume.
+		if (VolPlayerInVolume[client][volindex])
+		{
+			// Mark as not in the volume and trigger event.
+			VolPlayerInVolume[client][volindex] = false;
+			VolOnPlayerLeave(client, volindex);
+		}
+	}
 }
 
 /**
  * Called when a player disconnects.
  *
- * @param client    The client index.
+ * @param client	The client index.
  */
 VolOnPlayerDisconnect(client)
 {
-    // Disable trigger delay counters.
-    VolResetCountDown(client);
-    
-    // Trigger death event to clean up.
-    VolOnPlayerDeath(client);
+	// Disable trigger delay counters.
+	VolResetCountDown(client);
+	
+	// Trigger death event to clean up.
+	VolOnPlayerDeath(client);
 }
 
 /**
@@ -154,18 +154,18 @@ VolOnPlayerDisconnect(client)
  */
 VolOnRoundStart()
 {
-    // Check if volumetric features is enabled.
-    if (!VolEnabled)
-    {
-        // Volumetric features disabled.
-        return;
-    }
-    
-    // Start main timer.
-    VolStartUpdateTimer();
-    
-    // Start volumes.
-    VolEnableVolumes();
+	// Check if volumetric features is enabled.
+	if (!VolEnabled)
+	{
+		// Volumetric features disabled.
+		return;
+	}
+	
+	// Start main timer.
+	VolStartUpdateTimer();
+	
+	// Start volumes.
+	VolEnableVolumes();
 }
 
 /**
@@ -173,11 +173,11 @@ VolOnRoundStart()
  */
 VolOnRoundEnd()
 {
-    // Stop main timer.
-    VolStopUpdateTimer();
-    
-    // Stop volumes.
-    VolDisableVolumes();
+	// Stop main timer.
+	VolStopUpdateTimer();
+	
+	// Stop volumes.
+	VolDisableVolumes();
 }
 
 /**
@@ -195,27 +195,27 @@ VolOnMapEnd()
  */
 VolOnDisabled(volumeIndex)
 {
-    // Check if volumetric features is enabled.
-    if (!VolEnabled)
-    {
-        // Volumetric features disabled.
-        return;
-    }
-    
-    new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
-    
-    // Forward stop event to features.
-    switch (voltype)
-    {
-        case VolFeature_Anticamp:
-        {
-            VolAnticampDisable(volumeIndex);
-        }
-        case VolFeature_ClassEdit:
-        {
-            VolClassEditOnDisabled(volumeIndex);
-        }
-    }
+	// Check if volumetric features is enabled.
+	if (!VolEnabled)
+	{
+		// Volumetric features disabled.
+		return;
+	}
+	
+	new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
+	
+	// Forward stop event to features.
+	switch (voltype)
+	{
+		case VolFeature_Anticamp:
+		{
+			VolAnticampDisable(volumeIndex);
+		}
+		case VolFeature_ClassEdit:
+		{
+			VolClassEditOnDisabled(volumeIndex);
+		}
+	}
 }
 
 /**
@@ -224,21 +224,21 @@ VolOnDisabled(volumeIndex)
  */
 VolOnEnabled(volumeIndex)
 {
-    // Check if volumetric features is enabled.
-    if (!VolEnabled)
-    {
-        // Volumetric features disabled.
-        return;
-    }
-    
-    new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
-    
-    // Forward enable event to features.
-    switch (voltype)
-    {
-        case VolFeature_Anticamp:
-        {
-            VolAnticampEnable(volumeIndex);
-        }
-    }
+	// Check if volumetric features is enabled.
+	if (!VolEnabled)
+	{
+		// Volumetric features disabled.
+		return;
+	}
+	
+	new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
+	
+	// Forward enable event to features.
+	switch (voltype)
+	{
+		case VolFeature_Anticamp:
+		{
+			VolAnticampEnable(volumeIndex);
+		}
+	}
 }

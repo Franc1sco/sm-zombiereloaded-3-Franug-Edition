@@ -3,8 +3,8 @@
  *
  *  Zombie:Reloaded
  *
- *  File:          roundstart.inc
- *  Type:          Core
+ *  File:		  roundstart.inc
+ *  Type:		  Core
  *  Description:   Handles round start actions.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
@@ -33,18 +33,18 @@
 /**
  * Client is spawning into the game.
  * 
- * @param client    The client index.
+ * @param client	The client index.
  */
 RoundStartOnClientSpawn(client)
 {
-    // If client hasn't spawned yet, then stop.
-    if (!IsPlayerAlive(client))
-    {
-        return;
-    }
-    
-    // Print to client, how to access ZMenu.
-    TranslationPrintToChat(client, "General zmenu reminder", SAYHOOKS_CHAT_PUBLIC_DEFAULT, SAYHOOKS_KEYWORD_ZMENU);
+	// If client hasn't spawned yet, then stop.
+	if (!IsPlayerAlive(client))
+	{
+		return;
+	}
+	
+	// Print to client, how to access ZMenu.
+	TranslationPrintToChat(client, "General zmenu reminder", SAYHOOKS_CHAT_PUBLIC_DEFAULT, SAYHOOKS_KEYWORD_ZMENU);
 }
 
 /**
@@ -52,11 +52,11 @@ RoundStartOnClientSpawn(client)
  */
 RoundStartOnRoundStart()
 {
-    // Print round objective to all clients.
-    TranslationPrintToChatAll(true, false, "General round objective");
-    
-    // Kill all objective entities.
-    RoundStartKillObjectives();
+	// Print round objective to all clients.
+	TranslationPrintToChatAll(true, false, "General round objective");
+	
+	// Kill all objective entities.
+	RoundStartKillObjectives();
 }
 
 /**
@@ -64,28 +64,28 @@ RoundStartOnRoundStart()
  */
 stock RoundStartKillObjectives()
 {
-    decl String:classname[64];
-    
-    // Get max entity count.
-    new maxentities = GetMaxEntities();
-    
-    // x = entity index.
-    for (new x = 0; x <= maxentities; x++)
-    {
-        // If entity isn't valid, then stop.
-        if(!IsValidEdict(x))
-        {
-            continue;
-        }
-        
-        // Get valid edict's classname.
-        GetEdictClassname(x, classname, sizeof(classname));
-        
-        // Check if it matches any objective entities, then stop if it doesn't.
-        if(StrContains(ROUNDSTART_OBJECTIVE_ENTITIES, classname) > -1)
-        {
-            // Entity is an objective, kill it.
-            AcceptEntityInput(x, "Kill");
-        }
-    }
+	decl String:classname[64];
+	
+	// Get max entity count.
+	new maxentities = GetMaxEntities();
+	
+	// x = entity index.
+	for (new x = 0; x <= maxentities; x++)
+	{
+		// If entity isn't valid, then stop.
+		if(!IsValidEdict(x))
+		{
+			continue;
+		}
+		
+		// Get valid edict's classname.
+		GetEdictClassname(x, classname, sizeof(classname));
+		
+		// Check if it matches any objective entities, then stop if it doesn't.
+		if(StrContains(ROUNDSTART_OBJECTIVE_ENTITIES, classname) > -1)
+		{
+			// Entity is an objective, kill it.
+			AcceptEntityInput(x, "Kill");
+		}
+	}
 }

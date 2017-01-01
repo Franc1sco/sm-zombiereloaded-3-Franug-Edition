@@ -3,8 +3,8 @@
  *
  *  Zombie:Reloaded
  *
- *  File:          soundeffects.inc
- *  Type:          Core 
+ *  File:		  soundeffects.inc
+ *  Type:		  Core 
  *  Description:   Basic sound-management API.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
@@ -44,8 +44,8 @@
  */
 SEffectsLoad()
 {
-    // Load ambient sound cvars.
-    AmbientSoundsLoad();
+	// Load ambient sound cvars.
+	AmbientSoundsLoad();
 }
 
 /**
@@ -53,20 +53,20 @@ SEffectsLoad()
  */ 
 SEffectsOnMapStart()
 {
-    // Forward event to sub-modules.
-    AmbientSoundsOnMapStart();
+	// Forward event to sub-modules.
+	AmbientSoundsOnMapStart();
 }
 
 /**
  * Client is joining the server.
  * 
- * @param client    The client index.
+ * @param client	The client index.
  */
 SEffectsClientInit(client)
 {
-    // Forward event to sub-modules.
-    AmbientSoundsClientInit(client);
-    ZombieSoundsClientInit(client);
+	// Forward event to sub-modules.
+	AmbientSoundsClientInit(client);
+	ZombieSoundsClientInit(client);
 }
 
 /**
@@ -74,9 +74,9 @@ SEffectsClientInit(client)
  */
 SEffectsOnRoundStart()
 {
-    // Forward event to sub-modules.
-    VoiceOnRoundStart();
-    AmbientSoundsOnRoundStart();
+	// Forward event to sub-modules.
+	VoiceOnRoundStart();
+	AmbientSoundsOnRoundStart();
 }
 
 /**
@@ -84,186 +84,186 @@ SEffectsOnRoundStart()
  */
 SEffectsOnRoundEnd()
 {
-    // Forward event to sub-modules.
-    VoiceOnRoundEnd();
-    AmbientSoundsOnRoundEnd();
-    ZombieSoundsOnRoundEnd();
+	// Forward event to sub-modules.
+	VoiceOnRoundEnd();
+	AmbientSoundsOnRoundEnd();
+	ZombieSoundsOnRoundEnd();
 }
 
 /**
  * Client is spawning into the game.
  * 
- * @param client    The client index.
+ * @param client	The client index.
  */
 SEffectsOnClientSpawn(client)
 {
-    // Forward event to sub-modules.
-    VoiceOnClientSpawn(client);
-    ZombieSoundsOnClientSpawn(client);
+	// Forward event to sub-modules.
+	VoiceOnClientSpawn(client);
+	ZombieSoundsOnClientSpawn(client);
 }
 
 /**
  * Client is spawning into the game. *Post
  * 
- * @param client    The client index.
+ * @param client	The client index.
  */
 SEffectsOnClientSpawnPost(client)
 {
-    // Forward event to sub-modules.
-    AmbientSoundsOnClientSpawnPost(client);
+	// Forward event to sub-modules.
+	AmbientSoundsOnClientSpawnPost(client);
 }
 
 /**
  * Client has been killed.
  * 
- * @param client    The client index.
+ * @param client	The client index.
  */
 SEffectsOnClientDeath(client)
 {
-    // Forward event to sub-modules.
-    ZombieSoundsOnClientDeath(client);
+	// Forward event to sub-modules.
+	ZombieSoundsOnClientDeath(client);
 }
 
 /**
  * Client has been hurt.
  * 
- * @param client    The client index.
+ * @param client	The client index.
  */
 SEffectsOnClientHurt(client)
 {
-    // Forward event to sub-modules.
-    ZombieSoundsOnClientHurt(client);
+	// Forward event to sub-modules.
+	ZombieSoundsOnClientHurt(client);
 }
 
 /**
  * Client has been infected.
  * 
- * @param client    The client index.
+ * @param client	The client index.
  */
 SEffectsOnClientInfected(client)
 {
-    // Forward event to sub-modules.
-    VoiceOnClientInfected(client);
-    ZombieSoundsOnClientInfected(client);
+	// Forward event to sub-modules.
+	VoiceOnClientInfected(client);
+	ZombieSoundsOnClientInfected(client);
 }
 
 /**
  * Client has been turned back human.
  * 
- * @param client    The client index.
+ * @param client	The client index.
  */
 SEffectsOnClientHuman(client)
 {
-    // Forward event to sub-modules.
-    VoiceOnClientHuman(client);
+	// Forward event to sub-modules.
+	VoiceOnClientHuman(client);
 }
 
 /**
  * Emits an ambient sound
  * 
- * @param sound         The path to the sound file (relative to sounds/)
+ * @param sound		 The path to the sound file (relative to sounds/)
  * @param soundvolume   The volume of the sound (0.0 - 1.0)
- * @param client        (Optional) Client index to play sound to.
+ * @param client		(Optional) Client index to play sound to.
  */
 SEffectsEmitAmbientSound(const String:sound[], Float:ambientvolume = 1.0, client = -1)
 {
-    // Precache sound before playing.
-    if (g_Game == Game_CSGO)
-    {
-        PrecacheSoundAny(sound);
-    }
-    else
-    {
-        PrecacheSound(sound);
-    }
-    
-    if (ZRIsClientValid(client))
-    {
-        // Emit ambient sound.
-        if (g_Game == Game_CSGO)
-        {
-            EmitSoundToClientAny(client, sound, SOUND_FROM_PLAYER, SOUND_AMBIENT_CHANNEL, _, _, ambientvolume);
-        }
-        else
-        {
-            EmitSoundToClient(client, sound, SOUND_FROM_PLAYER, SOUND_AMBIENT_CHANNEL, _, _, ambientvolume);
-        }
-        
-        // Flag client that sound is playing.
-        bAmbientSoundsIsPlaying[client] = true;
-        
-    }
-    else
-    {
-        for (new x = 1; x <= MaxClients; x++)
-        {
-            // If client isn't in-game, then stop.
-            if (!IsClientInGame(x))
-            {
-                continue;
-            }
-            
-            // Emit ambient sound.
-            if (g_Game == Game_CSGO)
-            {
-                EmitSoundToClientAny(x, sound, SOUND_FROM_PLAYER, SNDCHAN_AUTO, _, _, ambientvolume);
-            }
-            else
-            {
-	            EmitSoundToClient(x, sound, SOUND_FROM_PLAYER, SNDCHAN_AUTO, _, _, ambientvolume);
-            }
-        }
-    }
+	// Precache sound before playing.
+	if (g_Game == Game_CSGO)
+	{
+		PrecacheSoundAny(sound);
+	}
+	else
+	{
+		PrecacheSound(sound);
+	}
+	
+	if (ZRIsClientValid(client))
+	{
+		// Emit ambient sound.
+		if (g_Game == Game_CSGO)
+		{
+			EmitSoundToClientAny(client, sound, SOUND_FROM_PLAYER, SOUND_AMBIENT_CHANNEL, _, _, ambientvolume);
+		}
+		else
+		{
+			EmitSoundToClient(client, sound, SOUND_FROM_PLAYER, SOUND_AMBIENT_CHANNEL, _, _, ambientvolume);
+		}
+		
+		// Flag client that sound is playing.
+		bAmbientSoundsIsPlaying[client] = true;
+		
+	}
+	else
+	{
+		for (new x = 1; x <= MaxClients; x++)
+		{
+			// If client isn't in-game, then stop.
+			if (!IsClientInGame(x))
+			{
+				continue;
+			}
+			
+			// Emit ambient sound.
+			if (g_Game == Game_CSGO)
+			{
+				EmitSoundToClientAny(x, sound, SOUND_FROM_PLAYER, SNDCHAN_AUTO, _, _, ambientvolume);
+			}
+			else
+			{
+				EmitSoundToClient(x, sound, SOUND_FROM_PLAYER, SNDCHAN_AUTO, _, _, ambientvolume);
+			}
+		}
+	}
 }
 
 /**
  * Stop an ambient sound
  *  
- * @param sound     The path to the sound file (relative to sounds/) 
+ * @param sound	 The path to the sound file (relative to sounds/) 
  */
 SEffectsStopAmbientSound(const String:sound[])
 {
-    // x = client index.
-    for (new x = 1; x <= MaxClients; x++)
-    {
-        // If client isn't in-game, then stop.
-        if (!IsClientInGame(x))
-        {
-            continue;
-        }
-        
-        // Stop ambient sound.
-        StopSound(x, SOUND_AMBIENT_CHANNEL, sound);
-    }
+	// x = client index.
+	for (new x = 1; x <= MaxClients; x++)
+	{
+		// If client isn't in-game, then stop.
+		if (!IsClientInGame(x))
+		{
+			continue;
+		}
+		
+		// Stop ambient sound.
+		StopSound(x, SOUND_AMBIENT_CHANNEL, sound);
+	}
 }
 
 /**
  * Replay an ambient sound
  * 
- * @param sound     The path to the sound file (relative to sounds/)
+ * @param sound	 The path to the sound file (relative to sounds/)
  */ 
 
 /**
  * Emits a sound from a client.
  * 
- * @param client    The client index.
- * @param sound     The sound file relative to the sound/ directory.
- * @param level     The attenuation of the sound.
+ * @param client	The client index.
+ * @param sound	 The sound file relative to the sound/ directory.
+ * @param level	 The attenuation of the sound.
  */
 SEffectsEmitSoundFromClient(client, const String:sound[], level = SNDLEVEL_NORMAL)
 {
-    if (g_Game == Game_CSGO)
-    {
-        // Precache sound before playing.// Emit sound from client.
-        PrecacheSoundAny(sound);
-        // Emit sound from client.
-    	EmitSoundToAllAny(sound, client, _, level);
-    }
+	if (g_Game == Game_CSGO)
+	{
+		// Precache sound before playing.// Emit sound from client.
+		PrecacheSoundAny(sound);
+		// Emit sound from client.
+		EmitSoundToAllAny(sound, client, _, level);
+	}
 	else
-    {
-        // Precache sound before playing.// Emit sound from client.
-        PrecacheSound(sound);
-        // Emit sound from client.
-    	EmitSoundToAll(sound, client, _, level);
-    }
+	{
+		// Precache sound before playing.// Emit sound from client.
+		PrecacheSound(sound);
+		// Emit sound from client.
+		EmitSoundToAll(sound, client, _, level);
+	}
 }

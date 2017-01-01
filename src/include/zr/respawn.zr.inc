@@ -3,8 +3,8 @@
  *
  *  Zombie:Reloaded
  *
- *  File:          respawn.zr.inc
- *  Type:          Include
+ *  File:		  respawn.zr.inc
+ *  Type:		  Include
  *  Description:   Infect-related natives/forwards.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
@@ -30,19 +30,19 @@
  */
 enum ZR_RespawnCondition
 {
-    ZR_Repsawn_Default = -1,    /** Let ZR decide according to its settings. */
-    ZR_Respawn_Human = 0,       /** Respawn as a human. */
-    ZR_Respawn_Zombie,          /** Respawn as a zombie. */
-    ZR_Respawn_ZombieIfSuicide  /** Respawn as a zombie if killed by world damage. */
+	ZR_Repsawn_Default = -1,	/** Let ZR decide according to its settings. */
+	ZR_Respawn_Human = 0,	   /** Respawn as a human. */
+	ZR_Respawn_Zombie,		  /** Respawn as a zombie. */
+	ZR_Respawn_ZombieIfSuicide  /** Respawn as a zombie if killed by world damage. */
 }
 
 /**
  * Spawns a player into the round.
  * 
- * @param client            The client index.
- * @param condition         Optional. Set respawn condition, defaults to current
- *                          ZR settings. See ZR_RespawnCondition for details.
- * @error                   Invalid client index, not connected or already alive.
+ * @param client			The client index.
+ * @param condition		 Optional. Set respawn condition, defaults to current
+ *						  ZR settings. See ZR_RespawnCondition for details.
+ * @error				   Invalid client index, not connected or already alive.
  */
 native ZR_RespawnClient(client, ZR_RespawnCondition:condition = ZR_Repsawn_Default);
 
@@ -50,20 +50,20 @@ native ZR_RespawnClient(client, ZR_RespawnCondition:condition = ZR_Repsawn_Defau
  * Called right before ZR is about to respawn a player.
  * Here you can modify any variable or stop the action entirely.
  * 
- * @param client            The client index.
- * @param condition         Respawn condition. See ZR_RespawnCondition for
- *                          details.
+ * @param client			The client index.
+ * @param condition		 Respawn condition. See ZR_RespawnCondition for
+ *						  details.
  *
- * @return      Plugin_Handled to block respawn.
+ * @return	  Plugin_Handled to block respawn.
  */
 forward Action:ZR_OnClientRespawn(&client, &ZR_RespawnCondition:condition);
 
 /**
  * Called after ZR respawned a player.
  * 
- * @param client            The client index.
- * @param condition         Current condition of the respawned player. See
- *                          ZR_RespawnCondition for details.
+ * @param client			The client index.
+ * @param condition		 Current condition of the respawned player. See
+ *						  ZR_RespawnCondition for details.
  */
 forward ZR_OnClientRespawned(client, ZR_RespawnCondition:condition);
 
@@ -73,11 +73,11 @@ forward ZR_OnClientRespawned(client, ZR_RespawnCondition:condition);
  * Note: This will change the respawn condition.
  * Note: This value is reset to default by ZR when a zombie player dies.
  * 
- * @param client    The client index.
+ * @param client	The client index.
  * @param suicide   True to say the player suicided, false if killed by another
- *                  player.
+ *				  player.
  *
- * @error           Invalid client index or not connected.
+ * @error		   Invalid client index or not connected.
  */
 native ZR_SetKilledByWorld(client, bool:suicide);
 
@@ -86,10 +86,10 @@ native ZR_SetKilledByWorld(client, bool:suicide);
  *
  * Note: This value is only valid after death event, and before respawn.
  * 
- * @param client    The client index.
+ * @param client	The client index.
  * 
- * @return          True if the player died by suicide, false if killed by
- *                  another player.
- * @error           Invalid client index or not connected.
+ * @return		  True if the player died by suicide, false if killed by
+ *				  another player.
+ * @error		   Invalid client index or not connected.
  */
 native bool:ZR_GetKilledByWorld(client);

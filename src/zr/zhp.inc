@@ -3,8 +3,8 @@
  *
  *  Zombie:Reloaded
  *
- *  File:          zhp.inc
- *  Type:          Module
+ *  File:		  zhp.inc
+ *  Type:		  Module
  *  Description:   Displays HP to zombies.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
@@ -45,8 +45,8 @@ new Handle:g_hZHPEnabledCookie = INVALID_HANDLE;
  */
 ZHPOnCommandsCreate()
 {
-    // Register ZHP command.
-    RegConsoleCmd(SAYHOOKS_KEYWORD_ZHP, ZHPCommand, "Shows real HP as zombie.");
+	// Register ZHP command.
+	RegConsoleCmd(SAYHOOKS_KEYWORD_ZHP, ZHPCommand, "Shows real HP as zombie.");
 }
 
 /**
@@ -54,22 +54,22 @@ ZHPOnCommandsCreate()
  */
 ZHPOnCookiesCreate()
 {
-    // Create cookie handle if it doesn't exist.
-    if (g_hZHPEnabledCookie == INVALID_HANDLE)
-    {
-        g_hZHPEnabledCookie = RegClientCookie(ZHP_COOKIE_ENABLED, "The toggle state of ZHP.", CookieAccess_Protected);
-    }
+	// Create cookie handle if it doesn't exist.
+	if (g_hZHPEnabledCookie == INVALID_HANDLE)
+	{
+		g_hZHPEnabledCookie = RegClientCookie(ZHP_COOKIE_ENABLED, "The toggle state of ZHP.", CookieAccess_Protected);
+	}
 }
 
 /**
  * Client is joining the server.
  * 
- * @param client    The client index.
+ * @param client	The client index.
  */
 ZHPClientInit(client)
 {
-    // Reset timer handle.
-    tZHP[client] = INVALID_HANDLE;
+	// Reset timer handle.
+	tZHP[client] = INVALID_HANDLE;
 }
 
 /**
@@ -79,219 +79,219 @@ ZHPClientInit(client)
  */
 ZHPOnCookiesCached(client)
 {
-    // Get default client setting from cvar.
-    new bool:zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP_DEFAULT]);
-    
-    // Get ZHP enabled cookie value.
-    decl String:zhpenabled[8];
-    GetClientCookie(client, g_hZHPEnabledCookie, zhpenabled, sizeof(zhpenabled));
-    
-    // If the cookie is empty, then set the default value.
-    if (!zhpenabled[0])
-    {
-        // Set cookie to default value from cvar.
-        CookiesSetClientCookieBool(client, g_hZHPEnabledCookie, zhp);
-    }
+	// Get default client setting from cvar.
+	new bool:zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP_DEFAULT]);
+	
+	// Get ZHP enabled cookie value.
+	decl String:zhpenabled[8];
+	GetClientCookie(client, g_hZHPEnabledCookie, zhpenabled, sizeof(zhpenabled));
+	
+	// If the cookie is empty, then set the default value.
+	if (!zhpenabled[0])
+	{
+		// Set cookie to default value from cvar.
+		CookiesSetClientCookieBool(client, g_hZHPEnabledCookie, zhp);
+	}
 }
 
 /**
  * Client is spawning into the game.
  * 
- * @param client    The client index.
+ * @param client	The client index.
  */
 ZHPOnClientSpawn(client)
 {
-    // If timer is running, kill it.
-    if (tZHP[client] != INVALID_HANDLE)
-    {
-        KillTimer(tZHP[client]);
-    }
-    
-    // Reset timer handle.
-    tZHP[client] = INVALID_HANDLE;
+	// If timer is running, kill it.
+	if (tZHP[client] != INVALID_HANDLE)
+	{
+		KillTimer(tZHP[client]);
+	}
+	
+	// Reset timer handle.
+	tZHP[client] = INVALID_HANDLE;
 }
 
 /**
  * Client has been killed.
  * 
- * @param client    The client index.
+ * @param client	The client index.
  */
 ZHPOnClientDeath(client)
 {
-    // If timer is running, kill it.
-    if (tZHP[client] != INVALID_HANDLE)
-    {
-        KillTimer(tZHP[client]);
-    }
-    
-    // Reset timer handle.
-    tZHP[client] = INVALID_HANDLE;
+	// If timer is running, kill it.
+	if (tZHP[client] != INVALID_HANDLE)
+	{
+		KillTimer(tZHP[client]);
+	}
+	
+	// Reset timer handle.
+	tZHP[client] = INVALID_HANDLE;
 }
 
 /**
  * Client has been infected.
  * 
- * @param client    The client index.
+ * @param client	The client index.
  */
 ZHPOnClientInfected(client)
 {
-    // If ZHP is disabled, then stop.
-    new bool:zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP]);
-    if (!zhp)
-    {
-        return;
-    }
-    
-    // Update HP display.
-    ZHPUpdateHUD(client);
-    
-    // If timer is currently running, kill it.
-    if (tZHP[client] != INVALID_HANDLE)
-    {
-        KillTimer(tZHP[client]);
-    }
-    
-    // Start repeating timer to update display.
-    tZHP[client] = CreateTimer(5.0, ZHPTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	// If ZHP is disabled, then stop.
+	new bool:zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP]);
+	if (!zhp)
+	{
+		return;
+	}
+	
+	// Update HP display.
+	ZHPUpdateHUD(client);
+	
+	// If timer is currently running, kill it.
+	if (tZHP[client] != INVALID_HANDLE)
+	{
+		KillTimer(tZHP[client]);
+	}
+	
+	// Start repeating timer to update display.
+	tZHP[client] = CreateTimer(5.0, ZHPTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 }
 
 /**
  * Client has been hurt.
  * 
- * @param client    The client index.
+ * @param client	The client index.
  */
 ZHPOnClientHurt(client)
 {
-    // Update HP display.
-    ZHPUpdateHUD(client);
+	// Update HP display.
+	ZHPUpdateHUD(client);
 }
 
 /**
  * Zombie has gained health for infecting a player.
  * 
- * @param client    The client index.
+ * @param client	The client index.
  */
 ZHPOnHealthInfectGain(client)
 {
-    // Update HP display.
-    ZHPUpdateHUD(client);
+	// Update HP display.
+	ZHPUpdateHUD(client);
 }
 
 /**
  * Toggle ZHP on a client.
  * 
- * @param client    The client index.
+ * @param client	The client index.
  */
 bool:ZHPToggle(client)
 {
-    // If ZHP is disabled, then stop.
-    new bool:zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP]);
-    if (!zhp)
-    {
-        // Tell client feature is disabled.
-        TranslationPrintToChat(client, "Feature is disabled");
-        
-        // Stop.
-        return false;
-    }
-    
-    // Get the cookie value.
-    new bool:zhpstate = CookiesGetClientCookieBool(client, g_hZHPEnabledCookie);
-    
-    // Toggle the value.
-    CookiesSetClientCookieBool(client, g_hZHPEnabledCookie, !zhpstate);
-    
-    // If ZHP was enabled, then tell client it has been disabled.
-    if (zhpstate)
-    {
-        TranslationPrintToChat(client, "ZHP disable");
-    }
-    // If ZHP was disabled, then tell client it has been enabled.
-    else
-    {
-        TranslationPrintToChat(client, "ZHP enable");
-        
-        // Update HP display.
-        ZHPUpdateHUD(client);
-    }
-    
-    return true;
+	// If ZHP is disabled, then stop.
+	new bool:zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP]);
+	if (!zhp)
+	{
+		// Tell client feature is disabled.
+		TranslationPrintToChat(client, "Feature is disabled");
+		
+		// Stop.
+		return false;
+	}
+	
+	// Get the cookie value.
+	new bool:zhpstate = CookiesGetClientCookieBool(client, g_hZHPEnabledCookie);
+	
+	// Toggle the value.
+	CookiesSetClientCookieBool(client, g_hZHPEnabledCookie, !zhpstate);
+	
+	// If ZHP was enabled, then tell client it has been disabled.
+	if (zhpstate)
+	{
+		TranslationPrintToChat(client, "ZHP disable");
+	}
+	// If ZHP was disabled, then tell client it has been enabled.
+	else
+	{
+		TranslationPrintToChat(client, "ZHP enable");
+		
+		// Update HP display.
+		ZHPUpdateHUD(client);
+	}
+	
+	return true;
 }
 
 /**
  * Update HP display for a player.
  * 
- * @param client    The client index.
+ * @param client	The client index.
  */ 
 ZHPUpdateHUD(client)
 {
-    // If ZHP is disabled, then stop.
-    new bool:zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP]);
-    if (!zhp)
-    {
-        return;
-    }
-    
-    // Get ZHP enabled cookie as a bool.
-    new bool:zhpstate = CookiesGetClientCookieBool(client, g_hZHPEnabledCookie);
-    
-    // If player is a zombie, or has ZHP disabled, then stop.
-    if (!InfectIsClientInfected(client) || !zhpstate)
-    {
-        return;
-    }
-    
-    // Get health, and if below 0 then set back to 0. (for display purposes)
-    new health = GetClientHealth(client);
-    if (health < 0)
-    {
-        health = 0;
-    }
-    
-    // Display HP
-    TranslationPrintHintText(client, "Display HP", health);
+	// If ZHP is disabled, then stop.
+	new bool:zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP]);
+	if (!zhp)
+	{
+		return;
+	}
+	
+	// Get ZHP enabled cookie as a bool.
+	new bool:zhpstate = CookiesGetClientCookieBool(client, g_hZHPEnabledCookie);
+	
+	// If player is a zombie, or has ZHP disabled, then stop.
+	if (!InfectIsClientInfected(client) || !zhpstate)
+	{
+		return;
+	}
+	
+	// Get health, and if below 0 then set back to 0. (for display purposes)
+	new health = GetClientHealth(client);
+	if (health < 0)
+	{
+		health = 0;
+	}
+	
+	// Display HP
+	TranslationPrintHintText(client, "Display HP", health);
 }
 
 /**
  * Command callback (zhp)
  * Shows real HP as zombie.
  * 
- * @param client    The client index.
- * @param argc      Argument count.
+ * @param client	The client index.
+ * @param argc	  Argument count.
  */
 public Action:ZHPCommand(client, argc)
 {
-    // If client is console, then stop and tell them this feature is for players only.
-    if (ZRIsConsole(client))
-    {
-        TranslationPrintToServer("Must be player");
-        return Plugin_Handled;
-    }
-    
-    // Toggle ZHP setting.
-    ZHPToggle(client);
-    
-    // This stops the "Unknown command" message in client's console.
-    return Plugin_Handled;
+	// If client is console, then stop and tell them this feature is for players only.
+	if (ZRIsConsole(client))
+	{
+		TranslationPrintToServer("Must be player");
+		return Plugin_Handled;
+	}
+	
+	// Toggle ZHP setting.
+	ZHPToggle(client);
+	
+	// This stops the "Unknown command" message in client's console.
+	return Plugin_Handled;
 }
 
 /**
  * Timer callback.  Repetitively calls ZHPUpdateHUD() until stopped.
  * 
- * @param timer     The timer handle. 
- * @param client    The client index.
+ * @param timer	 The timer handle. 
+ * @param client	The client index.
  */
 public Action:ZHPTimer(Handle:timer, any:client)
 {
-    // If client leaves, then stop timer.
-    if (!IsClientInGame(client))
-    {
-        return Plugin_Stop;
-    }
-    
-    // Update HP display.
-    ZHPUpdateHUD(client);
-    
-    // Allow timer to continue.
-    return Plugin_Continue;
+	// If client leaves, then stop timer.
+	if (!IsClientInGame(client))
+	{
+		return Plugin_Stop;
+	}
+	
+	// Update HP display.
+	ZHPUpdateHUD(client);
+	
+	// Allow timer to continue.
+	return Plugin_Continue;
 }

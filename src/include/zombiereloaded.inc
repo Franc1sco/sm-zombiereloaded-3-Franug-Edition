@@ -3,10 +3,10 @@
  *
  *  Zombie:Reloaded
  *
- *  File:          zombiereloaded.inc
- *  Type:          Include
+ *  File:		  zombiereloaded.inc
+ *  Type:		  Include
  *  Description:   Main API include file.
- *  Notes:         Include this file to include the whole ZR API. 
+ *  Notes:		 Include this file to include the whole ZR API. 
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
  *

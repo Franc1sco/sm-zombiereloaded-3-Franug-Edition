@@ -3,8 +3,8 @@
  *
  *  Zombie:Reloaded
  *
- *  File:          account.inc
- *  Type:          Module
+ *  File:		  account.inc
+ *  Type:		  Module
  *  Description:   Handles client's accounts. (cash)
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
@@ -40,98 +40,98 @@ new g_iToolsAccount;
  */
 AccountOnOffsetsFound()
 {
-    // If offset "m_iAccount" can't be found, then stop the plugin.
-    g_iToolsAccount = FindSendPropInfo("CCSPlayer", "m_iAccount");
-    if (g_iToolsAccount == -1)
-    {
-        LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Account, "Offsets", "Offset \"CCSPlayer::m_iAccount\" was not found.");
-    }
+	// If offset "m_iAccount" can't be found, then stop the plugin.
+	g_iToolsAccount = FindSendPropInfo("CCSPlayer", "m_iAccount");
+	if (g_iToolsAccount == -1)
+	{
+		LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Account, "Offsets", "Offset \"CCSPlayer::m_iAccount\" was not found.");
+	}
 }
 
 /**
  * Client is spawning into the game.
  * 
- * @param client    The client index.
+ * @param client	The client index.
  */
 AccountOnClientSpawn(client)
 {
-    // If cashfill cvar is disabled, then stop.
-    new bool:accountcashfill = GetConVarBool(g_hCvarsList[CVAR_ACCOUNT_CASHFILL]);
-    if (!accountcashfill)
-    {
-        return;
-    }
-    
-    // Get cash value.
-    new cash = GetConVarInt(g_hCvarsList[CVAR_ACCOUNT_CASHFILL_VALUE]);
-    
-    // Set client's account.
-    AccountSetClientCash(client, cash);
+	// If cashfill cvar is disabled, then stop.
+	new bool:accountcashfill = GetConVarBool(g_hCvarsList[CVAR_ACCOUNT_CASHFILL]);
+	if (!accountcashfill)
+	{
+		return;
+	}
+	
+	// Get cash value.
+	new cash = GetConVarInt(g_hCvarsList[CVAR_ACCOUNT_CASHFILL_VALUE]);
+	
+	// Set client's account.
+	AccountSetClientCash(client, cash);
 }
 
 /** Client has been hurt.
  *
  * @param attacker  The attacker index.
- * @param dmg       The amount of damage inflicted.
+ * @param dmg	   The amount of damage inflicted.
  */
 AccountOnClientHurt(client, attacker, dmg_health)
 {
-    // If attacker isn't valid, then stop.
-    if (!ZRIsClientValid(attacker))
-    {
-        return;
-    }
-    
-    // If cashdmg cvar is disabled, then stop.
-    new bool:accountcashdmg = GetConVarBool(g_hCvarsList[CVAR_ACCOUNT_CASHDMG]);
-    if (!accountcashdmg)
-    {
-        return;
-    }
-    
-    // If attacker is hurting themself, then stop.
-    if (client == attacker)
-    {
-        return;
-    }
-    
-    // If attacker isn't a human, then stop.
-    if (!InfectIsClientHuman(attacker))
-    {
-        return;
-    }
-    
-    // Get current cash, add the damage done to it, then set new value.
-    new cash = AccountGetClientCash(attacker);
-    AccountSetClientCash(attacker, cash + dmg_health);
+	// If attacker isn't valid, then stop.
+	if (!ZRIsClientValid(attacker))
+	{
+		return;
+	}
+	
+	// If cashdmg cvar is disabled, then stop.
+	new bool:accountcashdmg = GetConVarBool(g_hCvarsList[CVAR_ACCOUNT_CASHDMG]);
+	if (!accountcashdmg)
+	{
+		return;
+	}
+	
+	// If attacker is hurting themself, then stop.
+	if (client == attacker)
+	{
+		return;
+	}
+	
+	// If attacker isn't a human, then stop.
+	if (!InfectIsClientHuman(attacker))
+	{
+		return;
+	}
+	
+	// Get current cash, add the damage done to it, then set new value.
+	new cash = AccountGetClientCash(attacker);
+	AccountSetClientCash(attacker, cash + dmg_health);
 }
 
 /**
  * Get's a client's account value (cash)
  * 
- * @param client    The client index.
- * @return          The client's current account value.
+ * @param client	The client index.
+ * @return		  The client's current account value.
  */
 stock AccountGetClientCash(client)
 {
-    // Set client's cash.
-    return GetEntData(client, g_iToolsAccount, 4);
+	// Set client's cash.
+	return GetEntData(client, g_iToolsAccount, 4);
 }
 
 /**
  * Set's a client's account value (cash)
  * 
- * @param client    The client index.
- * @param value    The value to set to.
+ * @param client	The client index.
+ * @param value	The value to set to.
  */
 stock AccountSetClientCash(client, value)
 {
-    // If value if below 0, then set to 0.
-    if (value < 0)
-    {
-        value = 0;
-    }
-    
-    // Set client's cash.
-    SetEntData(client, g_iToolsAccount, value, 4);
+	// If value if below 0, then set to 0.
+	if (value < 0)
+	{
+		value = 0;
+	}
+	
+	// Set client's cash.
+	SetEntData(client, g_iToolsAccount, value, 4);
 }

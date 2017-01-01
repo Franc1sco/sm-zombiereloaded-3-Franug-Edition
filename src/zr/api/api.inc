@@ -3,8 +3,8 @@
  *
  *  Zombie:Reloaded
  *
- *  File:          api.inc
- *  Type:          Core
+ *  File:		  api.inc
+ *  Type:		  Core
  *  Description:   Native handlers for the ZR API.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
@@ -50,47 +50,47 @@
  */
 APIInit()
 {
-    // Forward event to sub-modules.
-    APIInfectInit();
-    APIRespawnInit();
-    APIClassInit();
+	// Forward event to sub-modules.
+	APIInfectInit();
+	APIRespawnInit();
+	APIClassInit();
 }
 
 /**
  * Validates a client index and when it fails, an error is thrown.
  * 
- * @param client    The client index to validate.
- * @param alive     Set to true to validate that the client is alive, false to ignore.
+ * @param client	The client index to validate.
+ * @param alive	 Set to true to validate that the client is alive, false to ignore.
  * 
- * @error           Throws an error when the client isn't valid.
+ * @error		   Throws an error when the client isn't valid.
  */
 stock APIValidateClientIndex(client, EligibleCondition:alive = Condition_Either)
 {
-    // Verify client index.
-    if (client < 1 || client > MaxClients)
-    {
-        ThrowNativeError(SP_ERROR_NATIVE, "Invalid client index. (%d)", client);
-        return;
-    }
-    
-    // Verify that the client is connected.
-    if (!IsClientConnected(client))
-    {
-        ThrowNativeError(SP_ERROR_NATIVE, "Client %d is not connected.", client);
-        return;
-    }
-    
-    // Check if the player must be dead or alive.
-    new bool:bAlive = bool:alive;
-    if (alive != Condition_Either)
-    {
-        if (bAlive && !IsPlayerAlive(client))
-        {
-            ThrowNativeError(SP_ERROR_NATIVE, "Client %d must be alive.", client);
-        }
-        else if (!bAlive && IsPlayerAlive(client))
-        {
-            ThrowNativeError(SP_ERROR_NATIVE, "Client %d must be dead.", client);
-        }
-    }
+	// Verify client index.
+	if (client < 1 || client > MaxClients)
+	{
+		ThrowNativeError(SP_ERROR_NATIVE, "Invalid client index. (%d)", client);
+		return;
+	}
+	
+	// Verify that the client is connected.
+	if (!IsClientConnected(client))
+	{
+		ThrowNativeError(SP_ERROR_NATIVE, "Client %d is not connected.", client);
+		return;
+	}
+	
+	// Check if the player must be dead or alive.
+	new bool:bAlive = bool:alive;
+	if (alive != Condition_Either)
+	{
+		if (bAlive && !IsPlayerAlive(client))
+		{
+			ThrowNativeError(SP_ERROR_NATIVE, "Client %d must be alive.", client);
+		}
+		else if (!bAlive && IsPlayerAlive(client))
+		{
+			ThrowNativeError(SP_ERROR_NATIVE, "Client %d must be dead.", client);
+		}
+	}
 }

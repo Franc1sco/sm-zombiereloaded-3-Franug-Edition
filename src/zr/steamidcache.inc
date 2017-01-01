@@ -3,8 +3,8 @@
  *
  *  Zombie:Reloaded
  *
- *  File:          steamidcache.inc
- *  Type:          Core
+ *  File:		  steamidcache.inc
+ *  Type:		  Core
  *  Description:   A SteamID caching API.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
@@ -37,51 +37,51 @@
  */
 stock Handle:SteamidCacheCreate()
 {
-    // Return steamid cache handle.
-    return CreateArray(STEAMIDCACHE_MAX_LENGTH);
+	// Return steamid cache handle.
+	return CreateArray(STEAMIDCACHE_MAX_LENGTH);
 }
 
 /**
  * Add client serial number to the SteamID cache.
  * 
  * @param steamidcache  The SteamID cache to add client to.
- * @param client        The client index.
- * @return              True if the client was added successfully, false if the client already exists.
+ * @param client		The client index.
+ * @return			  True if the client was added successfully, false if the client already exists.
  */
 stock bool:SteamidCacheAddClient(Handle:steamidcache, client)
 {
-    // Check if client is in the cache.
-    if (SteamidCacheClientExists(steamidcache, client))
-    {
-        return false;
-    }
-    
-    // Get client's SteamID.
-    decl String:steamid[STEAMIDCACHE_MAX_LENGTH];
-    GetClientAuthId(client, AuthId_Engine, steamid, sizeof(steamid));
-    
-    // Push SteamID into the SteamID cache.
-    PushArrayString(steamidcache, steamid);
-    
-    // Client added successfully.
-    return true;
+	// Check if client is in the cache.
+	if (SteamidCacheClientExists(steamidcache, client))
+	{
+		return false;
+	}
+	
+	// Get client's SteamID.
+	decl String:steamid[STEAMIDCACHE_MAX_LENGTH];
+	GetClientAuthId(client, AuthId_Engine, steamid, sizeof(steamid));
+	
+	// Push SteamID into the SteamID cache.
+	PushArrayString(steamidcache, steamid);
+	
+	// Client added successfully.
+	return true;
 }
 
 /**
  * Check if a client is in the SteamID cache.
  * 
  * @param steamidcache  The SteamID cache to check in.
- * @param client        The client index.
- * @return              True if the client exists, false otherwise.
+ * @param client		The client index.
+ * @return			  True if the client exists, false otherwise.
  */
 stock bool:SteamidCacheClientExists(Handle:steamidcache, client)
 {
-    // Get client's SteamID.
-    decl String:steamid[STEAMIDCACHE_MAX_LENGTH];
-    GetClientAuthId(client, AuthId_Engine,steamid, sizeof(steamid));
-    
-    // Return true if client was found, false otherwise.
-    return (FindStringInArray(steamidcache, steamid) != -1);
+	// Get client's SteamID.
+	decl String:steamid[STEAMIDCACHE_MAX_LENGTH];
+	GetClientAuthId(client, AuthId_Engine,steamid, sizeof(steamid));
+	
+	// Return true if client was found, false otherwise.
+	return (FindStringInArray(steamidcache, steamid) != -1);
 }
 
 /**
@@ -91,6 +91,6 @@ stock bool:SteamidCacheClientExists(Handle:steamidcache, client)
  */
 stock SteamidCacheReset(Handle:steamidcache)
 {
-    // Clear array.
-    ClearArray(steamidcache);
+	// Clear array.
+	ClearArray(steamidcache);
 }

@@ -3,8 +3,8 @@
  *
  *  Zombie:Reloaded
  *
- *  File:          clientoverlays.inc
- *  Type:          Core 
+ *  File:		  clientoverlays.inc
+ *  Type:		  Core 
  *  Description:   Handles overlays on clients, as a part of class attributes.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
@@ -49,21 +49,21 @@ new Handle:g_hOverlayEnabledCookie = INVALID_HANDLE;
  */
 ClassOverlayOnCommandsHook()
 {
-    decl String:togglecmds[CLASSOVERLAY_TOGGLE_MAX_CMDS * CLASSOVERLAY_TOGGLE_MAX_LENGTH];
-    GetConVarString(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS], togglecmds, sizeof(togglecmds));
-    
-    // Array to store commands.
-    new String:arrayCmds[CLASSOVERLAY_TOGGLE_MAX_CMDS][CLASSOVERLAY_TOGGLE_MAX_LENGTH];
-    
-    // Put the commands into an array.
-    new cmdcount = ExplodeString(togglecmds, ",", arrayCmds, sizeof(arrayCmds), sizeof(arrayCmds[]));
-    
-    // Register all overlay commands.
-    for (new i = 0; i < cmdcount; i++)
-    {
-        TrimString(arrayCmds[i]);
-        RegConsoleCmd(arrayCmds[i], ClassOverlayEnableCommand);
-    }
+	decl String:togglecmds[CLASSOVERLAY_TOGGLE_MAX_CMDS * CLASSOVERLAY_TOGGLE_MAX_LENGTH];
+	GetConVarString(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS], togglecmds, sizeof(togglecmds));
+	
+	// Array to store commands.
+	new String:arrayCmds[CLASSOVERLAY_TOGGLE_MAX_CMDS][CLASSOVERLAY_TOGGLE_MAX_LENGTH];
+	
+	// Put the commands into an array.
+	new cmdcount = ExplodeString(togglecmds, ",", arrayCmds, sizeof(arrayCmds), sizeof(arrayCmds[]));
+	
+	// Register all overlay commands.
+	for (new i = 0; i < cmdcount; i++)
+	{
+		TrimString(arrayCmds[i]);
+		RegConsoleCmd(arrayCmds[i], ClassOverlayEnableCommand);
+	}
 }
 
 /**
@@ -71,11 +71,11 @@ ClassOverlayOnCommandsHook()
  */
 ClassOverlayOnCookiesCreate()
 {
-    // Create cookie handle only if it don't exist.
-    if (g_hOverlayEnabledCookie == INVALID_HANDLE)
-    {
-        g_hOverlayEnabledCookie = RegClientCookie(CLASSOVERLAY_COOKIE_ENABLED, "The toggle state of the class overlay.", CookieAccess_Protected);
-    }
+	// Create cookie handle only if it don't exist.
+	if (g_hOverlayEnabledCookie == INVALID_HANDLE)
+	{
+		g_hOverlayEnabledCookie = RegClientCookie(CLASSOVERLAY_COOKIE_ENABLED, "The toggle state of the class overlay.", CookieAccess_Protected);
+	}
 }
 
 /**
@@ -85,90 +85,90 @@ ClassOverlayOnCookiesCreate()
  */
 ClassOverlayOnCookiesCached(client)
 {
-    // Get overlay toggle cvar values.
-    new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);
-    new bool:overlaydefault = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_DEFAULT]);
-    
-    // Get ZHP enabled cookie value.
-    decl String:overlayenabled[8];
-    GetClientCookie(client, g_hOverlayEnabledCookie, overlayenabled, sizeof(overlayenabled));
-    
-    // If the cookie is empty, then set the default value.
-    if (!overlayenabled[0])
-    {
-        // Set cookie to default value from cvar.
-        new bool:overlayvalue = overlaytoggle ? overlaydefault : true;
-        CookiesSetClientCookieBool(client, g_hOverlayEnabledCookie, overlayvalue);
-    }
+	// Get overlay toggle cvar values.
+	new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);
+	new bool:overlaydefault = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_DEFAULT]);
+	
+	// Get ZHP enabled cookie value.
+	decl String:overlayenabled[8];
+	GetClientCookie(client, g_hOverlayEnabledCookie, overlayenabled, sizeof(overlayenabled));
+	
+	// If the cookie is empty, then set the default value.
+	if (!overlayenabled[0])
+	{
+		// Set cookie to default value from cvar.
+		new bool:overlayvalue = overlaytoggle ? overlaydefault : true;
+		CookiesSetClientCookieBool(client, g_hOverlayEnabledCookie, overlayvalue);
+	}
 }
 
 /**
  * Client has been killed.
  * 
- * @param client    The client index.
+ * @param client	The client index.
  */
 ClassOverlayOnClientDeath(client)
 {
-    // Disable overlay.
-    OverlaysClientSetChannelState(client, OVERLAYS_CHANNEL_CLASSES, true, false, false, true);
+	// Disable overlay.
+	OverlaysClientSetChannelState(client, OVERLAYS_CHANNEL_CLASSES, true, false, false, true);
 }
 
 ClassOverlayInitialize(client, const String:overlay[])
 {
-    if (IsFakeClient(client))
-    {
-        return;
-    }
-    
-    // If overlay path is empty, then disable channel, then stop.
-    if (!overlay[0])
-    {
-        OverlaysClientSetChannelState(client, OVERLAYS_CHANNEL_CLASSES, true, false, false, true);
-        return;
-    }
-    
-    // If overlay toggle is enabled and class has an overlay, then send center text.
-    new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);
-    
-    decl String:overlaypath[PLATFORM_MAX_PATH];
-    ClassGetOverlayPath(client, overlaypath, sizeof(overlaypath));
-    
-    if (overlaytoggle && overlaypath[0])
-    {
-        decl String:togglecmds[CLASSOVERLAY_TOGGLE_MAX_CMDS * CLASSOVERLAY_TOGGLE_MAX_LENGTH];
-        GetConVarString(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS], togglecmds, sizeof(togglecmds));
-        
-        TranslationPrintHintText(client, "Classes overlay toggle", togglecmds);
-    }
-    
-    // Display class overlays.
-    OverlaysClientSetChannelPath(client, OVERLAYS_CHANNEL_CLASSES, overlay);
-    OverlaysClientSetChannelState(client, OVERLAYS_CHANNEL_CLASSES, true, false, CookiesGetClientCookieBool(client, g_hOverlayEnabledCookie));
+	if (IsFakeClient(client))
+	{
+		return;
+	}
+	
+	// If overlay path is empty, then disable channel, then stop.
+	if (!overlay[0])
+	{
+		OverlaysClientSetChannelState(client, OVERLAYS_CHANNEL_CLASSES, true, false, false, true);
+		return;
+	}
+	
+	// If overlay toggle is enabled and class has an overlay, then send center text.
+	new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);
+	
+	decl String:overlaypath[PLATFORM_MAX_PATH];
+	ClassGetOverlayPath(client, overlaypath, sizeof(overlaypath));
+	
+	if (overlaytoggle && overlaypath[0])
+	{
+		decl String:togglecmds[CLASSOVERLAY_TOGGLE_MAX_CMDS * CLASSOVERLAY_TOGGLE_MAX_LENGTH];
+		GetConVarString(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS], togglecmds, sizeof(togglecmds));
+		
+		TranslationPrintHintText(client, "Classes overlay toggle", togglecmds);
+	}
+	
+	// Display class overlays.
+	OverlaysClientSetChannelPath(client, OVERLAYS_CHANNEL_CLASSES, overlay);
+	OverlaysClientSetChannelState(client, OVERLAYS_CHANNEL_CLASSES, true, false, CookiesGetClientCookieBool(client, g_hOverlayEnabledCookie));
 }
 
 /**
  * Command callback. (See zr_classes_overlay_togglecmds)
  * Toggles nightvision of a client.
  *   
- * @param client    The client index.
- * @param argc      Argument count.
+ * @param client	The client index.
+ * @param argc	  Argument count.
  */
 public Action:ClassOverlayEnableCommand(client, argc)
 {
-    // If client isn't valid, then stop.
-    if (!ZRIsClientValid(client))
-    {
-        return;
-    }
-    
-    // If overlay toggle is disabled, then stop.
-    new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);
-    if (!overlaytoggle)
-    {
-        return;
-    }
-    
-    // Toggle current overlay channel, retrieve new value, and update cookie.
-    new bool:overlayenabled = OverlaysClientSetChannelState(client, OVERLAYS_CHANNEL_CLASSES, true, true);
-    CookiesSetClientCookieBool(client, g_hOverlayEnabledCookie, overlayenabled);
+	// If client isn't valid, then stop.
+	if (!ZRIsClientValid(client))
+	{
+		return;
+	}
+	
+	// If overlay toggle is disabled, then stop.
+	new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);
+	if (!overlaytoggle)
+	{
+		return;
+	}
+	
+	// Toggle current overlay channel, retrieve new value, and update cookie.
+	new bool:overlayenabled = OverlaysClientSetChannelState(client, OVERLAYS_CHANNEL_CLASSES, true, true);
+	CookiesSetClientCookieBool(client, g_hOverlayEnabledCookie, overlayenabled);
 }

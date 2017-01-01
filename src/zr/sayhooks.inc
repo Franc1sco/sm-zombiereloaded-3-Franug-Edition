@@ -3,8 +3,8 @@
  *
  *  Zombie:Reloaded
  *
- *  File:          sayhooks.inc
- *  Type:          Core
+ *  File:		  sayhooks.inc
+ *  Type:		  Core
  *  Description:   Hook plugin say commands and redirect to their handling module.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
@@ -42,15 +42,15 @@
 /**
  * @section Say command key words.
  */
-#define SAYHOOKS_KEYWORD_ZMENU      "zmenu"
-#define SAYHOOKS_KEYWORD_ZADMIN     "zadmin"
-#define SAYHOOKS_KEYWORD_ZCLASS     "zclass"
+#define SAYHOOKS_KEYWORD_ZMENU	  "zmenu"
+#define SAYHOOKS_KEYWORD_ZADMIN	 "zadmin"
+#define SAYHOOKS_KEYWORD_ZCLASS	 "zclass"
 #define SAYHOOKS_KEYWORD_ZCOOKIES   "zcookies"
-#define SAYHOOKS_KEYWORD_ZSPAWN     "zspawn"
-#define SAYHOOKS_KEYWORD_ZTELE      "ztele"
-#define SAYHOOKS_KEYWORD_ZHP        "zhp"
-#define SAYHOOKS_KEYWORD_ZMARKET    "zmarket"
-#define SAYHOOKS_KEYWORD_ZSHIELD    "zshield"
+#define SAYHOOKS_KEYWORD_ZSPAWN	 "zspawn"
+#define SAYHOOKS_KEYWORD_ZTELE	  "ztele"
+#define SAYHOOKS_KEYWORD_ZHP		"zhp"
+#define SAYHOOKS_KEYWORD_ZMARKET	"zmarket"
+#define SAYHOOKS_KEYWORD_ZSHIELD	"zshield"
 /**
  * @endsection
  */

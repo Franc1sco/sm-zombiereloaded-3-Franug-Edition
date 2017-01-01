@@ -3,8 +3,8 @@
  *
  *  Zombie:Reloaded
  *
- *  File:          global.inc
- *  Type:          Core
+ *  File:		  global.inc
+ *  Type:		  Core
  *  Description:   External API.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby

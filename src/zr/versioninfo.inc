@@ -3,7 +3,7 @@
  *
  *  Zombie:Reloaded
  *
- *  File:          version.inc
+ *  File:		  version.inc
  *  Description:   Command for version information.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
@@ -26,39 +26,39 @@
 
 VersionOnCommandsCreate()
 {
-    RegConsoleCmd("zr_version", Command_Version, "Prints version info about this plugin.");
+	RegConsoleCmd("zr_version", Command_Version, "Prints version info about this plugin.");
 }
 
 public Action:Command_Version(client, argc)
 {
-    decl String:buffer[512];
-    decl String:linebuffer[128];
-    buffer[0] = 0;
-    linebuffer[0] = 0;
-    
-    #define FORMATSTRING "%24s: %s\n"
-    
-    Format(linebuffer, sizeof(linebuffer), "%s\n", ZR_VER_PRODUCT_NAME);
-    StrCat(buffer, sizeof(buffer), linebuffer);
-    
-    Format(linebuffer, sizeof(linebuffer), "%s\n\n", ZR_VER_COPYRIGHT);
-    StrCat(buffer, sizeof(buffer), linebuffer);
-    
-    Format(linebuffer, sizeof(linebuffer), FORMATSTRING, "Version", ZR_VER_VERSION);
-    StrCat(buffer, sizeof(buffer), linebuffer);
-    
-    Format(linebuffer, sizeof(linebuffer), FORMATSTRING, "Compile date", ZR_VER_DATE);
-    StrCat(buffer, sizeof(buffer), linebuffer);
-    
-    Format(linebuffer, sizeof(linebuffer), FORMATSTRING, "License", ZR_VER_LICENSE);
-    StrCat(buffer, sizeof(buffer), linebuffer);
-    
-    Format(linebuffer, sizeof(linebuffer), FORMATSTRING, "Build", ZR_VER_REVISION);
-    StrCat(buffer, sizeof(buffer), linebuffer);
-    
-    Format(linebuffer, sizeof(linebuffer), FORMATSTRING, "Development branch", ZR_VER_BRANCH);
-    StrCat(buffer, sizeof(buffer), linebuffer);
-    
-    ReplyToCommand(client, buffer);
-    return Plugin_Handled;
+	decl String:buffer[512];
+	decl String:linebuffer[128];
+	buffer[0] = 0;
+	linebuffer[0] = 0;
+	
+	#define FORMATSTRING "%24s: %s\n"
+	
+	Format(linebuffer, sizeof(linebuffer), "%s\n", ZR_VER_PRODUCT_NAME);
+	StrCat(buffer, sizeof(buffer), linebuffer);
+	
+	Format(linebuffer, sizeof(linebuffer), "%s\n\n", ZR_VER_COPYRIGHT);
+	StrCat(buffer, sizeof(buffer), linebuffer);
+	
+	Format(linebuffer, sizeof(linebuffer), FORMATSTRING, "Version", ZR_VER_VERSION);
+	StrCat(buffer, sizeof(buffer), linebuffer);
+	
+	Format(linebuffer, sizeof(linebuffer), FORMATSTRING, "Compile date", ZR_VER_DATE);
+	StrCat(buffer, sizeof(buffer), linebuffer);
+	
+	Format(linebuffer, sizeof(linebuffer), FORMATSTRING, "License", ZR_VER_LICENSE);
+	StrCat(buffer, sizeof(buffer), linebuffer);
+	
+	Format(linebuffer, sizeof(linebuffer), FORMATSTRING, "Build", ZR_VER_REVISION);
+	StrCat(buffer, sizeof(buffer), linebuffer);
+	
+	Format(linebuffer, sizeof(linebuffer), FORMATSTRING, "Development branch", ZR_VER_BRANCH);
+	StrCat(buffer, sizeof(buffer), linebuffer);
+	
+	ReplyToCommand(client, buffer);
+	return Plugin_Handled;
 }

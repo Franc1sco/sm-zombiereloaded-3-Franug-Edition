@@ -3,8 +3,8 @@
  *
  *  Zombie:Reloaded
  *
- *  File:          healthregen.inc
- *  Type:          Core 
+ *  File:		  healthregen.inc
+ *  Type:		  Core 
  *  Description:   Functions for managing health regeneration on a client.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
@@ -34,56 +34,56 @@ new Handle:tHealthRegen[MAXPLAYERS + 1];
  */
 ClassHealthRegenInit()
 {
-    for (new client = 0; client < MAXPLAYERS + 1; client++)
-    {
-        tHealthRegen[client] = INVALID_HANDLE;
-    }
+	for (new client = 0; client < MAXPLAYERS + 1; client++)
+	{
+		tHealthRegen[client] = INVALID_HANDLE;
+	}
 }
 
 /**
  * Prepares and starts HP regeneration on a client.
  *
- * @param client        The client to apply HP regeneration on.
- * @param interval      Regeneration interval.
- * @param amount        HP amount per interval.
- * @param max           Regeneration limit. Don't give HP if player HP is above
- *                      this value.
+ * @param client		The client to apply HP regeneration on.
+ * @param interval	  Regeneration interval.
+ * @param amount		HP amount per interval.
+ * @param max		   Regeneration limit. Don't give HP if player HP is above
+ *					  this value.
  */
 ClassHealthRegenInitClient(client, Float:interval, amount, max)
 {
-    ClientHealthRegenAmount[client] = amount;
-    ClientHealthRegenMax[client] = max;
-    ClassHealthRegenStart(client, interval);
+	ClientHealthRegenAmount[client] = amount;
+	ClientHealthRegenMax[client] = max;
+	ClassHealthRegenStart(client, interval);
 }
 
 /**
  * Starts HP regeneration on a client using current client settings.
  *
- * @param client        The client index.
- * @param interval      Regeneration interval.
+ * @param client		The client index.
+ * @param interval	  Regeneration interval.
  */
 ClassHealthRegenStart(client, Float:interval)
 {
-    // Stop timer if it already exist.
-    ClassHealthRegenStop(client);
-    
-    // Create new timer.
-    tHealthRegen[client] = CreateTimer(interval, ClassHealthRegenTimer, client, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+	// Stop timer if it already exist.
+	ClassHealthRegenStop(client);
+	
+	// Create new timer.
+	tHealthRegen[client] = CreateTimer(interval, ClassHealthRegenTimer, client, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 }
 
 /**
  * Stops HP regeneration on a client.
  *
- * @param client    The client index.
+ * @param client	The client index.
  */
 ClassHealthRegenStop(client)
 {
-    // Kill the timer if it exist.
-    if (tHealthRegen[client] != INVALID_HANDLE)
-    {
-        KillTimer(tHealthRegen[client]);
-        tHealthRegen[client] = INVALID_HANDLE;
-    }
+	// Kill the timer if it exist.
+	if (tHealthRegen[client] != INVALID_HANDLE)
+	{
+		KillTimer(tHealthRegen[client]);
+		tHealthRegen[client] = INVALID_HANDLE;
+	}
 }
 
 /**
@@ -91,22 +91,22 @@ ClassHealthRegenStop(client)
  */
 public Action:ClassHealthRegenTimer(Handle:timer, any:client)
 {
-    // Kill the timer if the player is dead or not in game.
-    if (!IsClientConnected(client) || !IsClientInGame(client) || !IsPlayerAlive(client))
-    {
-        tHealthRegen[client] = INVALID_HANDLE;
-        return Plugin_Stop;
-    }
-    
-    new health = GetClientHealth(client);    
-    health += ClientHealthRegenAmount[client];
-    
-    // Check if the health points is below the limit.
-    if (health < ClientHealthRegenMax[client])
-    {
-        // Increase health.
-        SetEntityHealth(client, health);
-    }
-    
-    return Plugin_Continue;
+	// Kill the timer if the player is dead or not in game.
+	if (!IsClientConnected(client) || !IsClientInGame(client) || !IsPlayerAlive(client))
+	{
+		tHealthRegen[client] = INVALID_HANDLE;
+		return Plugin_Stop;
+	}
+	
+	new health = GetClientHealth(client);	
+	health += ClientHealthRegenAmount[client];
+	
+	// Check if the health points is below the limit.
+	if (health < ClientHealthRegenMax[client])
+	{
+		// Increase health.
+		SetEntityHealth(client, health);
+	}
+	
+	return Plugin_Continue;
 }

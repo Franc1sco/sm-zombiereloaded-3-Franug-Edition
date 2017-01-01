@@ -3,8 +3,8 @@
  *
  *  Zombie:Reloaded
  *
- *  File:          commands.inc
- *  Type:          Core
+ *  File:		  commands.inc
+ *  Type:		  Core
  *  Description:   Console command creation and hooking.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
@@ -30,30 +30,30 @@
  */
 CommandsInit()
 {
-    // Forward event to modules. (create commands)
-    ConfigOnCommandsCreate();
-    LogOnCommandsCreate();
-    ClassOnCommandsCreate();
-    WeaponsOnCommandsCreate();
-    HitgroupsOnCommandsCreate();
-    InfectOnCommandsCreate();
-    MenuOnCommandsCreate();
-    ZAdminOnCommandsCreate();
-    AntiStickOnCommandsCreate();
-    ZCookiesOnCommandsCreate();
-    ZSpawnOnCommandsCreate();
-    ZTeleOnCommandsCreate();
-    ZHPOnCommandsCreate();
-    VolOnCommandsCreate();
-    ZombieSoundsOnCommandsCreate();
-    ImmunityOnCommandsCreate();
-    
-    #if defined ADD_VERSION_INFO
-        VersionOnCommandsCreate();
-    #endif
-    
-    DebugOnCommandsCreate();
-    
-    // Forward event to modules. (hook commands)
-    ClassOnCommandsHook();
+	// Forward event to modules. (create commands)
+	ConfigOnCommandsCreate();
+	LogOnCommandsCreate();
+	ClassOnCommandsCreate();
+	WeaponsOnCommandsCreate();
+	HitgroupsOnCommandsCreate();
+	InfectOnCommandsCreate();
+	MenuOnCommandsCreate();
+	ZAdminOnCommandsCreate();
+	AntiStickOnCommandsCreate();
+	ZCookiesOnCommandsCreate();
+	ZSpawnOnCommandsCreate();
+	ZTeleOnCommandsCreate();
+	ZHPOnCommandsCreate();
+	VolOnCommandsCreate();
+	ZombieSoundsOnCommandsCreate();
+	ImmunityOnCommandsCreate();
+	
+	#if defined ADD_VERSION_INFO
+		VersionOnCommandsCreate();
+	#endif
+	
+	DebugOnCommandsCreate();
+	
+	// Forward event to modules. (hook commands)
+	ClassOnCommandsHook();
 }

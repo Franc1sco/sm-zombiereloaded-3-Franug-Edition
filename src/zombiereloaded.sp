@@ -3,8 +3,8 @@
  *
  *  Zombie:Reloaded
  *
- *  File:          zombiereloaded.sp
- *  Type:          Base
+ *  File:		  zombiereloaded.sp
+ *  Type:		  Base
  *  Description:   Plugin's base file.
  *
  *  Copyright (C) 2009  Greyscale, Richard Helgeby
@@ -36,17 +36,17 @@
 #include <emitsoundany>
 
 #if defined USE_SDKHOOKS
-    #include <sdkhooks>
-    
-    #define ACTION_CONTINUE     Plugin_Continue
-    #define ACTION_CHANGED      Plugin_Changed
-    #define ACTION_HANDLED      Plugin_Handled
+	#include <sdkhooks>
+	
+	#define ACTION_CONTINUE	 Plugin_Continue
+	#define ACTION_CHANGED	  Plugin_Changed
+	#define ACTION_HANDLED	  Plugin_Handled
 #else
-    #include <zrtools>
-    
-    #define ACTION_CONTINUE     ZRTools_Continue
-    #define ACTION_CHANGED      ZRTools_Changed
-    #define ACTION_HANDLED      ZRTools_Handled
+	#include <zrtools>
+	
+	#define ACTION_CONTINUE	 ZRTools_Continue
+	#define ACTION_CHANGED	  ZRTools_Changed
+	#define ACTION_HANDLED	  ZRTools_Handled
 #endif
 
 #define VERSION "3.2 Franug edition"
@@ -124,48 +124,48 @@
  */
 public Plugin:myinfo =
 {
-    name = "Zombie:Reloaded",
-    author = "Greyscale | Richard Helgeby and Franc1sco franug",
-    description = "Infection/survival style gameplay",
-    version = VERSION,
-    url = "http://forums.alliedmods.net/forumdisplay.php?f=132"
+	name = "Zombie:Reloaded",
+	author = "Greyscale | Richard Helgeby and Franc1sco franug",
+	description = "Infection/survival style gameplay",
+	version = VERSION,
+	url = "http://forums.alliedmods.net/forumdisplay.php?f=132"
 };
 
 /**
  * Called before plugin is loaded.
  * 
- * @param myself    The plugin handle.
- * @param late      True if the plugin was loaded after map change, false on map start.
- * @param error     Error message if load failed.
+ * @param myself	The plugin handle.
+ * @param late	  True if the plugin was loaded after map change, false on map start.
+ * @param error	 Error message if load failed.
  * @param err_max   Max length of the error message.
  *
- * @return          APLRes_Success for load success, APLRes_Failure or APLRes_SilentFailure otherwise.
+ * @return		  APLRes_Success for load success, APLRes_Failure or APLRes_SilentFailure otherwise.
  */
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
-    // Load API.
-    APIInit();
-    
-    // Let plugin load.
-    return APLRes_Success;
+	// Load API.
+	APIInit();
+	
+	// Let plugin load.
+	return APLRes_Success;
 }
-
+	
 /**
  * Plugin is loading.
  */
 public OnPluginStart()
 {
-    UpdateGameFolder();
-    
-    // Forward event to modules.
-    LogInit();          // Doesn't depend on CVARs.
-    TranslationInit();
-    CvarsInit();
-    ToolsInit();
-    CookiesInit();
-    CommandsInit();
-    WeaponsInit();
-    EventInit();
+	UpdateGameFolder();
+	
+	// Forward event to modules.
+	LogInit();		  // Doesn't depend on CVARs.
+	TranslationInit();
+	CvarsInit();
+	ToolsInit();
+	CookiesInit();
+	CommandsInit();
+	WeaponsInit();
+	EventInit();
 }
 
 /**
@@ -173,9 +173,9 @@ public OnPluginStart()
  */
 public OnAllPluginsLoaded()
 {
-    // Forward event to modules.
-    WeaponsOnAllPluginsLoaded();
-    ConfigOnAllPluginsLoaded();
+	// Forward event to modules.
+	WeaponsOnAllPluginsLoaded();
+	ConfigOnAllPluginsLoaded();
 }
 
 /**
@@ -183,8 +183,8 @@ public OnAllPluginsLoaded()
  */
 public OnLibraryAdded(const String:name[])
 {
-    // Forward event to modules.
-    ConfigOnLibraryAdded(name);
+	// Forward event to modules.
+	ConfigOnLibraryAdded(name);
 }
 
 /**
@@ -192,7 +192,7 @@ public OnLibraryAdded(const String:name[])
  */
 public OnLibraryRemoved(const String:name[])
 {
-    ConfigOnLibraryRemoved(name);
+	ConfigOnLibraryRemoved(name);
 }
 
 /**
@@ -200,15 +200,15 @@ public OnLibraryRemoved(const String:name[])
  */
 public OnMapStart()
 {
-    // Forward event to modules.
-    ClassOnMapStart();
-    OverlaysOnMapStart();
-    RoundEndOnMapStart();
-    SEffectsOnMapStart();
-    ZSpawnOnMapStart();
-    VolInit();
+	// Forward event to modules.
+	ClassOnMapStart();
+	OverlaysOnMapStart();
+	RoundEndOnMapStart();
+	SEffectsOnMapStart();
+	ZSpawnOnMapStart();
+	VolInit();
 	
-    CountDown();
+	CountDown();
 }
 
 /**
@@ -216,12 +216,12 @@ public OnMapStart()
  */
 public OnMapEnd()
 {
-    // Forward event to modules.
-    InfectOnMapEnd();
-    VolOnMapEnd();
-    VEffectsOnMapEnd();
-    ZombieSoundsOnMapEnd();
-    ImmunityOnMapEnd();
+	// Forward event to modules.
+	InfectOnMapEnd();
+	VolOnMapEnd();
+	VEffectsOnMapEnd();
+	ZombieSoundsOnMapEnd();
+	ImmunityOnMapEnd();
 }
 
 /**
@@ -230,7 +230,7 @@ public OnMapEnd()
 public OnAutoConfigsBuffered()
 {
 	// Load map configurations.
-    ConfigLoad();
+	ConfigLoad();
 }
 
 /**
@@ -238,22 +238,22 @@ public OnAutoConfigsBuffered()
  */
 public OnConfigsExecuted()
 {
-    // Forward event to modules. (OnConfigsExecuted)
-    ModelsLoad();
-    DownloadsLoad();
-    WeaponsLoad();
-    HitgroupsLoad();
-    InfectLoad();
-    DamageLoad();
-    VEffectsLoad();
-    SEffectsLoad();
-    ClassOnConfigsExecuted();
-    ClassLoad();
-    VolLoad();
-    
-    // Forward event to modules. (OnModulesLoaded)
-    ConfigOnModulesLoaded();
-    ClassOnModulesLoaded();
+	// Forward event to modules. (OnConfigsExecuted)
+	ModelsLoad();
+	DownloadsLoad();
+	WeaponsLoad();
+	HitgroupsLoad();
+	InfectLoad();
+	DamageLoad();
+	VEffectsLoad();
+	SEffectsLoad();
+	ClassOnConfigsExecuted();
+	ClassLoad();
+	VolLoad();
+	
+	// Forward event to modules. (OnModulesLoaded)
+	ConfigOnModulesLoaded();
+	ClassOnModulesLoaded();
 }
 
 /**
@@ -261,30 +261,30 @@ public OnConfigsExecuted()
  */
 public OnClientConnected(client)
 {
-    // Forward event to modules.
-    ClassOnClientConnected(client);
+	// Forward event to modules.
+	ClassOnClientConnected(client);
 }
 
 /**
  * Client is joining the server.
  * 
- * @param client    The client index.
+ * @param client	The client index.
  */
 public OnClientPutInServer(client)
 {
-    // Forward event to modules.
-    ClassClientInit(client);
-    OverlaysClientInit(client);
-    WeaponsClientInit(client);
-    InfectClientInit(client);
-    DamageClientInit(client);
-    SEffectsClientInit(client);
-    AntiStickClientInit(client);
-    SpawnProtectClientInit(client);
-    RespawnClientInit(client);
-    ZTeleClientInit(client);
-    ZHPClientInit(client);
-    ImmunityClientInit(client);
+	// Forward event to modules.
+	ClassClientInit(client);
+	OverlaysClientInit(client);
+	WeaponsClientInit(client);
+	InfectClientInit(client);
+	DamageClientInit(client);
+	SEffectsClientInit(client);
+	AntiStickClientInit(client);
+	SpawnProtectClientInit(client);
+	RespawnClientInit(client);
+	ZTeleClientInit(client);
+	ZHPClientInit(client);
+	ImmunityClientInit(client);
 }
 
 /**
@@ -294,16 +294,16 @@ public OnClientPutInServer(client)
  */
 public OnClientCookiesCached(client)
 {
-    // Check if client disconnected before cookies were done caching.
-    if (!IsClientConnected(client))
-    {
-        return;
-    }
-    
-    // Forward "OnCookiesCached" event to modules.
-    ClassOnCookiesCached(client);
-    WeaponsOnCookiesCached(client);
-    ZHPOnCookiesCached(client);
+	// Check if client disconnected before cookies were done caching.
+	if (!IsClientConnected(client))
+	{
+		return;
+	}
+	
+	// Forward "OnCookiesCached" event to modules.
+	ClassOnCookiesCached(client);
+	WeaponsOnCookiesCached(client);
+	ZHPOnCookiesCached(client);
 }
 
 /**
@@ -318,26 +318,26 @@ public OnClientCookiesCached(client)
  */
 public OnClientPostAdminCheck(client)
 {
-    // Forward authorized event to modules that depend on client admin info.
-    ClassOnClientPostAdminCheck(client);
+	// Forward authorized event to modules that depend on client admin info.
+	ClassOnClientPostAdminCheck(client);
 }
 
 /**
  * Client is leaving the server.
  * 
- * @param client    The client index.
+ * @param client	The client index.
  */
 public OnClientDisconnect(client)
 {
-    // Forward event to modules.
-    ClassOnClientDisconnect(client);
-    WeaponsOnClientDisconnect(client);
-    InfectOnClientDisconnect(client);
-    DamageOnClientDisconnect(client);
-    AntiStickOnClientDisconnect(client);
-    ZSpawnOnClientDisconnect(client);
-    VolOnPlayerDisconnect(client);
-    ImmunityOnClientDisconnect(client);
+	// Forward event to modules.
+	ClassOnClientDisconnect(client);
+	WeaponsOnClientDisconnect(client);
+	InfectOnClientDisconnect(client);
+	DamageOnClientDisconnect(client);
+	AntiStickOnClientDisconnect(client);
+	ZSpawnOnClientDisconnect(client);
+	VolOnPlayerDisconnect(client);
+	ImmunityOnClientDisconnect(client);
 }
 
 /**
@@ -353,6 +353,6 @@ public OnClientDisconnect(client)
  */
 public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:angles[3], &weapon)
 {
-    Class_OnPlayerRunCmd(client, vel);
-    return Plugin_Continue;
+	Class_OnPlayerRunCmd(client, vel);
+	return Plugin_Continue;
 }

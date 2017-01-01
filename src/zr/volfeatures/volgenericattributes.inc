@@ -3,9 +3,9 @@
  *
  *  Zombie:Reloaded
  *
- *  File:           volgenericattributes.inc
- *  Type:           Module 
- *  Description:    Functions for getting or setting general volume attributes.
+ *  File:		   volgenericattributes.inc
+ *  Type:		   Module 
+ *  Description:	Functions for getting or setting general volume attributes.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
  *
@@ -29,196 +29,196 @@
  * Parses a team string value and applies it to the specified volume.
  *
  * @param volumeIndex   The volume index to apply to.
- * @param team          A team string value. Valid options: "all", "humans"
- *                      and "zombies".
- * @return              True if successfully set, false otherwise.
+ * @param team		  A team string value. Valid options: "all", "humans"
+ *					  and "zombies".
+ * @return			  True if successfully set, false otherwise.
  */
 stock bool:VolSetTeamString(volumeIndex, const String:team[])
 {
-    new VolumeTeamFilters:teamfilter;
-    
-    // Check if string value is empty.
-    if (strlen(team) == 0)
-    {
-        return false;
-    }
-    
-    // Convert value.
-    if (StrEqual(team, "all", false))
-    {
-        teamfilter = VolTeam_All;
-    }
-    else if (StrEqual(team, "humans", false))
-    {
-        teamfilter = VolTeam_Humans;
-    }
-    else if (StrEqual(team, "zombies", false))
-    {
-        teamfilter = VolTeam_Zombies;
-    }
-    
-    // Apply value.
-    Volumes[volumeIndex][Vol_TeamFilter] = teamfilter;
-    return true;
-    
+	new VolumeTeamFilters:teamfilter;
+	
+	// Check if string value is empty.
+	if (strlen(team) == 0)
+	{
+		return false;
+	}
+	
+	// Convert value.
+	if (StrEqual(team, "all", false))
+	{
+		teamfilter = VolTeam_All;
+	}
+	else if (StrEqual(team, "humans", false))
+	{
+		teamfilter = VolTeam_Humans;
+	}
+	else if (StrEqual(team, "zombies", false))
+	{
+		teamfilter = VolTeam_Zombies;
+	}
+	
+	// Apply value.
+	Volumes[volumeIndex][Vol_TeamFilter] = teamfilter;
+	return true;
+	
 }
 
 /**
  * Sets the feam filter attribute on a volume.
  *
  * @param volumeIndex   The volume index to apply to.
- * @param team          The team filter value.
+ * @param team		  The team filter value.
  */
 stock VolSetTeam(volumeIndex, VolumeTeamFilters:team[])
 {
-    Volumes[volumeIndex][Vol_TeamFilter] = team;
+	Volumes[volumeIndex][Vol_TeamFilter] = team;
 }
 
 /**
  * Converts a team name type to a string.
  *
- * @param team          Team type to convert.
- * @param buffer        Destination string buffer.
- * @param maxlen        Size of destination buffer.
- * @param shortName     Optional. Write short name or human readable name.
- *                      Default is human readable (false).
- * @return              Number of cells written.
+ * @param team		  Team type to convert.
+ * @param buffer		Destination string buffer.
+ * @param maxlen		Size of destination buffer.
+ * @param shortName	 Optional. Write short name or human readable name.
+ *					  Default is human readable (false).
+ * @return			  Number of cells written.
  */
 stock VolTeamToString(VolumeTeamFilters:team, String:buffer[], maxlen, bool:shortName = false)
 {
-    switch (team)
-    {
-        case VolTeam_All:
-        {
-            return shortName ? strcopy(buffer, maxlen, "all") : strcopy(buffer, maxlen, "All");
-        }
-        case VolTeam_Humans:
-        {
-            return shortName ? strcopy(buffer, maxlen, "humans") : strcopy(buffer, maxlen, "Humans");
-        }
-        case VolTeam_Zombies:
-        {
-            return shortName ? strcopy(buffer, maxlen, "zombies") : strcopy(buffer, maxlen, "Zombies");
-        }
-    }
-    
-    return 0;
+	switch (team)
+	{
+		case VolTeam_All:
+		{
+			return shortName ? strcopy(buffer, maxlen, "all") : strcopy(buffer, maxlen, "All");
+		}
+		case VolTeam_Humans:
+		{
+			return shortName ? strcopy(buffer, maxlen, "humans") : strcopy(buffer, maxlen, "Humans");
+		}
+		case VolTeam_Zombies:
+		{
+			return shortName ? strcopy(buffer, maxlen, "zombies") : strcopy(buffer, maxlen, "Zombies");
+		}
+	}
+	
+	return 0;
 }
 
 /**
  * Parses a delay string value and applies it to the specified volume.
  *
  * @param volumeIndex   The volume index to apply to.
- * @param delay         The delay to apply. A floating point number formatted
- *                      as a string. 
- * @return              True if successfully set, false otherwise.
+ * @param delay		 The delay to apply. A floating point number formatted
+ *					  as a string. 
+ * @return			  True if successfully set, false otherwise.
  */
 stock bool:VolSetDelayString(volumeIndex, const String:delay[])
 {
-    new Float:triggerdelay;
-    
-    // Check if string value is empty.
-    if (strlen(delay) == 0)
-    {
-        return false;
-    }
-    
-    // Convert value.
-    triggerdelay = StringToFloat(delay);
-    
-    // Apply value.
-    Volumes[volumeIndex][Vol_TriggerDelay] = triggerdelay;
-    return true;
+	new Float:triggerdelay;
+	
+	// Check if string value is empty.
+	if (strlen(delay) == 0)
+	{
+		return false;
+	}
+	
+	// Convert value.
+	triggerdelay = StringToFloat(delay);
+	
+	// Apply value.
+	Volumes[volumeIndex][Vol_TriggerDelay] = triggerdelay;
+	return true;
 }
 
 /**
  * Sets the trigger delay attribute on a volume.
  *
  * @param volumeIndex   The volume index to apply to.
- * @param delay         The trigger delay, in seconds.
+ * @param delay		 The trigger delay, in seconds.
  */
 stock VolSetDelay(volumeIndex, Float:delay)
 {
-    Volumes[volumeIndex][Vol_TriggerDelay] = delay;
+	Volumes[volumeIndex][Vol_TriggerDelay] = delay;
 }
 
 /**
  * Parses a effect string value and applies it to the specified volume.
  *
  * @param volumeIndex   The volume index to apply to.
- * @param effect        A effect string value. Valid options: see VolumeEffects
- *                      enumeration, exclude prefix.
- * @return              True if successfully set, false otherwise.
+ * @param effect		A effect string value. Valid options: see VolumeEffects
+ *					  enumeration, exclude prefix.
+ * @return			  True if successfully set, false otherwise.
  */
 stock bool:VolSetEffectString(volumeIndex, const String:effect[])
 {
-    // Check if string value is empty.
-    if (strlen(effect) == 0)
-    {
-        return false;
-    }
-    
-    // Check effect string values and apply them to the volume.
-    if (StrEqual(effect, "none", false))
-    {
-        Volumes[volumeIndex][Vol_Effect] = VolEffect_None;
-        return true;
-    }
-    else if (StrEqual(effect, "wireframe", false))
-    {
-        Volumes[volumeIndex][Vol_Effect] = VolEffect_Wireframe;
-        return true;
-    }
-    else if (StrEqual(effect, "smoke", false))
-    {
-        Volumes[volumeIndex][Vol_Effect] = VolEffect_Smoke;
-        return true;
-    }
-    
-    // The string value didn't match any valid effects.
-    return false;
+	// Check if string value is empty.
+	if (strlen(effect) == 0)
+	{
+		return false;
+	}
+	
+	// Check effect string values and apply them to the volume.
+	if (StrEqual(effect, "none", false))
+	{
+		Volumes[volumeIndex][Vol_Effect] = VolEffect_None;
+		return true;
+	}
+	else if (StrEqual(effect, "wireframe", false))
+	{
+		Volumes[volumeIndex][Vol_Effect] = VolEffect_Wireframe;
+		return true;
+	}
+	else if (StrEqual(effect, "smoke", false))
+	{
+		Volumes[volumeIndex][Vol_Effect] = VolEffect_Smoke;
+		return true;
+	}
+	
+	// The string value didn't match any valid effects.
+	return false;
 }
 
 /**
  * Sets the effect attribute on a volume.
  *
  * @param volumeIndex   The volume index to apply to.
- * @param effect        Specifies what effect to apply on the volume.
+ * @param effect		Specifies what effect to apply on the volume.
  */
 stock VolSetEffect(volumeIndex, VolumeEffects:effect)
 {
-    Volumes[volumeIndex][Vol_Effect] = effect;
+	Volumes[volumeIndex][Vol_Effect] = effect;
 }
 
 /**
  * Converts a volume effect type to a string.
  *
- * @param effect        Effect type to convert.
- * @param buffer        Destination string buffer.
- * @param maxlen        Size of destination buffer.
- * @param shortName     Optional. Write short name or human readable name.
- *                      Default is human readable (false).
- * @return              Number of cells written.
+ * @param effect		Effect type to convert.
+ * @param buffer		Destination string buffer.
+ * @param maxlen		Size of destination buffer.
+ * @param shortName	 Optional. Write short name or human readable name.
+ *					  Default is human readable (false).
+ * @return			  Number of cells written.
  */
 stock VolEffectToString(VolumeEffects:effect, String:buffer[], maxlen, bool:shortName = false)
 {
-    switch (effect)
-    {
-        case VolEffect_None:
-        {
-            return shortName ? strcopy(buffer, maxlen, "none") : strcopy(buffer, maxlen, "No effect");
-        }
-        case VolEffect_Wireframe:
-        {
-            return shortName ? strcopy(buffer, maxlen, "wireframe") : strcopy(buffer, maxlen, "Wire frame");
-        }
-        case VolEffect_Smoke:
-        {
-            return shortName ? strcopy(buffer, maxlen, "smoke") : strcopy(buffer, maxlen, "Smoke");
-        }
-    }
-    
-    return 0;
+	switch (effect)
+	{
+		case VolEffect_None:
+		{
+			return shortName ? strcopy(buffer, maxlen, "none") : strcopy(buffer, maxlen, "No effect");
+		}
+		case VolEffect_Wireframe:
+		{
+			return shortName ? strcopy(buffer, maxlen, "wireframe") : strcopy(buffer, maxlen, "Wire frame");
+		}
+		case VolEffect_Smoke:
+		{
+			return shortName ? strcopy(buffer, maxlen, "smoke") : strcopy(buffer, maxlen, "Smoke");
+		}
+	}
+	
+	return 0;
 }
 
 /**
@@ -226,118 +226,118 @@ stock VolEffectToString(VolumeEffects:effect, String:buffer[], maxlen, bool:shor
  *
  * @param volumeIndex   The volume index to apply to.
  * @param effect_color  A effect color string value. No whitespace! Format
- *                      (0-255): "red,green,blue".
- * @return              True if successfully set, false otherwise.
+ *					  (0-255): "red,green,blue".
+ * @return			  True if successfully set, false otherwise.
  */
 stock bool:VolSetEffectColorString(volumeIndex, const String:effect_color[])
 {
-    new String:colors[3][3];
-    new red, green, blue;
-    
-    // Check if string value is empty.
-    if (strlen(effect_color) == 0)
-    {
-        return false;
-    }
-    
-    // Split values into a string array.
-    ExplodeString(effect_color, ",", colors, 3, 3);
-    
-    // Convert values.
-    red = StringToInt(colors[0]);
-    green = StringToInt(colors[1]);
-    blue = StringToInt(colors[2]);
-    
-    // Apply values.
-    Volumes[volumeIndex][Vol_EffectColor][0] = red;
-    Volumes[volumeIndex][Vol_EffectColor][1] = green;
-    Volumes[volumeIndex][Vol_EffectColor][2] = blue;
-    return true;
+	new String:colors[3][3];
+	new red, green, blue;
+	
+	// Check if string value is empty.
+	if (strlen(effect_color) == 0)
+	{
+		return false;
+	}
+	
+	// Split values into a string array.
+	ExplodeString(effect_color, ",", colors, 3, 3);
+	
+	// Convert values.
+	red = StringToInt(colors[0]);
+	green = StringToInt(colors[1]);
+	blue = StringToInt(colors[2]);
+	
+	// Apply values.
+	Volumes[volumeIndex][Vol_EffectColor][0] = red;
+	Volumes[volumeIndex][Vol_EffectColor][1] = green;
+	Volumes[volumeIndex][Vol_EffectColor][2] = blue;
+	return true;
 }
 
 /**
  * Sets the effect color attribute on a volume.
  *
  * @param volumeIndex   The volume index to apply to.
- * @param red           Amount of red color. 0 to 255.
- * @param green         Amount of green color. 0 to 255.
- * @param blue          Amount of blue color. 0 to 255.
+ * @param red		   Amount of red color. 0 to 255.
+ * @param green		 Amount of green color. 0 to 255.
+ * @param blue		  Amount of blue color. 0 to 255.
  */
 stock VolSetEffectColor(volumeIndex, red, green, blue)
 {
-    Volumes[volumeIndex][vol_effect_color][0] = red;
-    Volumes[volumeIndex][vol_effect_color][1] = green;
-    Volumes[volumeIndex][vol_effect_color][2] = blue;
+	Volumes[volumeIndex][vol_effect_color][0] = red;
+	Volumes[volumeIndex][vol_effect_color][1] = green;
+	Volumes[volumeIndex][vol_effect_color][2] = blue;
 }
 
 /**
  * Parses a enabled string value and applies it to the specified volume.
  *
  * @param volumeIndex   The volume index to apply to.
- * @param enabled       A enabled string value. Valid options: A number that
- *                      evaluates to true or false, "yes" or "no".
- * @return              True if successfully set, false otherwise.
+ * @param enabled	   A enabled string value. Valid options: A number that
+ *					  evaluates to true or false, "yes" or "no".
+ * @return			  True if successfully set, false otherwise.
  */
 stock bool:VolSetEnabledString(volumeIndex, const String:enabled[])
 {
-    // Check if string value is empty.
-    if (strlen(enabled) == 0)
-    {
-        return false;
-    }
-    
-    new bool:val = bool:StringToInt(enabled);
-    
-    // Check yes or no values first.
-    if (StrEqual(enabled, "yes", false))
-    {
-        val = true;
-    }
-    else if (StrEqual(enabled, "no", false))
-    {
-        val = false;
-    }
-    
-    // Check if the new value is different from the current.
-    if (Volumes[volumeIndex][Vol_Enabled] != val)
-    {
-        // Forward event.
-        if (val)
-        {
-            VolOnEnabled(volumeIndex);
-        }
-        else
-        {
-            VolOnDisabled(volumeIndex);
-        }
-    }
-    
-    // Apply converted value.
-    Volumes[volumeIndex][Vol_Enabled] = val;
-    return true;
+	// Check if string value is empty.
+	if (strlen(enabled) == 0)
+	{
+		return false;
+	}
+	
+	new bool:val = bool:StringToInt(enabled);
+	
+	// Check yes or no values first.
+	if (StrEqual(enabled, "yes", false))
+	{
+		val = true;
+	}
+	else if (StrEqual(enabled, "no", false))
+	{
+		val = false;
+	}
+	
+	// Check if the new value is different from the current.
+	if (Volumes[volumeIndex][Vol_Enabled] != val)
+	{
+		// Forward event.
+		if (val)
+		{
+			VolOnEnabled(volumeIndex);
+		}
+		else
+		{
+			VolOnDisabled(volumeIndex);
+		}
+	}
+	
+	// Apply converted value.
+	Volumes[volumeIndex][Vol_Enabled] = val;
+	return true;
 }
 
 /**
  * Sets the enabled attribute on a volume.
  *
  * @param volumeIndex   The volume index to apply to.
- * @param enabled       Specifies if the volume should be enabled or not.
+ * @param enabled	   Specifies if the volume should be enabled or not.
  */
 stock VolSetEnabled(volumeIndex, bool:enabled)
 {
-    // Check if the new value is different from the current.
-    if (Volumes[volumeIndex][Vol_Enabled] != enabled)
-    {
-        // Forward event.
-        if (enabled)
-        {
-            VolOnVolumeEnabled(volumeIndex);
-        }
-        else
-        {
-            VolOnVolumeDisabled(volumeIndex);
-        }
-    }
+	// Check if the new value is different from the current.
+	if (Volumes[volumeIndex][Vol_Enabled] != enabled)
+	{
+		// Forward event.
+		if (enabled)
+		{
+			VolOnVolumeEnabled(volumeIndex);
+		}
+		else
+		{
+			VolOnVolumeDisabled(volumeIndex);
+		}
+	}
 
-    Volumes[volumeIndex][Vol_Enabled] = enabled;
+	Volumes[volumeIndex][Vol_Enabled] = enabled;
 }

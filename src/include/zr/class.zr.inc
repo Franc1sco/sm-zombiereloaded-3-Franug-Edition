@@ -3,8 +3,8 @@
  *
  *  Zombie:Reloaded
  *
- *  File:          class.zr.inc
- *  Type:          Include
+ *  File:		  class.zr.inc
+ *  Type:		  Include
  *  Description:   Player class API.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
@@ -40,26 +40,26 @@
  */
 enum ClassSelectResult
 {
-    ClassSelected_NoChange,     /** No class change was necessary (class already selected). */
-    ClassSelected_Instant,      /** Class was instantly changed. */
-    ClassSelected_NextSpawn     /** Class will be used next spawn. */
+	ClassSelected_NoChange,	 /** No class change was necessary (class already selected). */
+	ClassSelected_Instant,	  /** Class was instantly changed. */
+	ClassSelected_NextSpawn	 /** Class will be used next spawn. */
 }
 
 /**
  * Returns whether a class index is valid or not.
  *
- * @param classIndex    Class index to validate.
+ * @param classIndex	Class index to validate.
  *
- * @return              True if valid, false otherwise.
+ * @return			  True if valid, false otherwise.
  */
 native bool:ZR_IsValidClassIndex(classIndex);
 
 /**
  * Gets the currently active class index that the player is using.
  *
- * @param client    The client index.
+ * @param client	The client index.
  *
- * @return          The active class index.
+ * @return		  The active class index.
  */
 native bool:ZR_GetActiveClass(client);
 
@@ -72,14 +72,14 @@ native bool:ZR_GetActiveClass(client);
  *
  * Class selection will be saved in client cookies if enabled.
  *
- * @param client            Client index.
- * @param classIndex        Class index.
+ * @param client			Client index.
+ * @param classIndex		Class index.
  * @param applyIfPossible   Optional. Apply class attributes if conditions allow
- *                          it. Default is true.
- * @param saveIfEnabled     Optional. Save class selection in client cookies if
- *                          enabled. Default is true.
+ *						  it. Default is true.
+ * @param saveIfEnabled	 Optional. Save class selection in client cookies if
+ *						  enabled. Default is true.
  *
- * @return                  Class selection result. See enum ClassSelectResult.
+ * @return				  Class selection result. See enum ClassSelectResult.
  */
 native ClassSelectResult:ZR_SelectClientClass(client, classIndex, bool:applyIfPossible = true, bool:saveIfEnabled = true);
 
@@ -88,22 +88,22 @@ native ClassSelectResult:ZR_SelectClientClass(client, classIndex, bool:applyIfPo
  *
  * Note: This search is linear and probably won't perform well in large loops.
  *
- * @param className     Class name to search for.
- * @param cacheType     Optional. Specifies which class cache to read from,
- *                      except player cache.
+ * @param className	 Class name to search for.
+ * @param cacheType	 Optional. Specifies which class cache to read from,
+ *					  except player cache.
  *
- * @return              Class index, or -1 if none found.
+ * @return			  Class index, or -1 if none found.
  */
 native ZR_GetClassByName(const String:className[], cacheType = ZR_CLASS_CACHE_MODIFIED);
 
 /**
  * Gets the class name displayed in the class menu.
  *
- * @param index         Index of the class in a class cache or a client index,
- *                      depending on the cache type specified.
- * @param buffer        The destination string buffer.
- * @param maxlen        The length of the destination string buffer.
- * @param cacheType     Optional. Specifies which class cache to read from.
- * @return              Number of cells written. -1 on error.
+ * @param index		 Index of the class in a class cache or a client index,
+ *					  depending on the cache type specified.
+ * @param buffer		The destination string buffer.
+ * @param maxlen		The length of the destination string buffer.
+ * @param cacheType	 Optional. Specifies which class cache to read from.
+ * @return			  Number of cells written. -1 on error.
  */
 native ZR_GetClassDisplayName(index, String:buffer[], maxlen, cacheType = ZR_CLASS_CACHE_MODIFIED);
