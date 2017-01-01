@@ -34,3 +34,4 @@
 #include <zr/infect.zr>
 #include <zr/respawn.zr>
 #include <zr/class.zr>
+#include <zr/weapons.zr>
