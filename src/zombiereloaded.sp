@@ -7,7 +7,7 @@
  *  Type:		  Base
  *  Description:   Plugin's base file.
  *
- *  Copyright (C) 2009  Greyscale, Richard Helgeby
+ *  Copyright (C) 2009  Greyscale, Richard Helgeby, Francisco 'Franc1sco' García
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
