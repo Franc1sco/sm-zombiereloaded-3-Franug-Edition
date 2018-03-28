@@ -49,7 +49,7 @@
 	#define ACTION_HANDLED	  ZRTools_Handled
 #endif
 
-#define VERSION "3.2 Franug edition"
+#define VERSION "3.3 Franug edition"
 
 bool g_allweapons[MAXPLAYERS + 1];
 
@@ -211,6 +211,13 @@ public OnMapStart()
 	VolInit();
 	
 	CountDown();
+	
+	// Fixed crashes on CS:GO
+	ModelsLoad();
+	DownloadsLoad();
+	InfectLoad();
+	VEffectsLoad();
+	SEffectsLoad();
 }
 
 /**
@@ -241,14 +248,10 @@ public OnAutoConfigsBuffered()
 public OnConfigsExecuted()
 {
 	// Forward event to modules. (OnConfigsExecuted)
-	ModelsLoad();
-	DownloadsLoad();
+
 	WeaponsLoad();
 	HitgroupsLoad();
-	InfectLoad();
 	DamageLoad();
-	VEffectsLoad();
-	SEffectsLoad();
 	ClassOnConfigsExecuted();
 	ClassLoad();
 	VolLoad();
