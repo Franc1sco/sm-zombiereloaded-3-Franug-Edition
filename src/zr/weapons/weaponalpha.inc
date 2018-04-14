@@ -143,6 +143,10 @@ WeaponAlphaApplyWeaponAlpha(entity, alpha)
 {
 	if (entity > MaxClients)
 	{
+		if(!HasEntProp(entity, Prop_Send, "m_nRenderMode"))
+			return;
+			
+			
 		// Turn rendermode on, on the weapon.
 		SetEntityRenderMode(entity, RENDER_TRANSALPHA);
 		
@@ -167,6 +171,10 @@ WeaponAlphaApplyWeaponAlpha(entity, alpha)
 			continue;
 		}
 		
+		if(!HasEntProp(weapons[x], Prop_Send, "m_nRenderMode"))
+			continue;
+			
+			
 		// Turn rendermode on, on the weapon.
 		SetEntityRenderMode(weapons[x], RENDER_TRANSALPHA);
 		

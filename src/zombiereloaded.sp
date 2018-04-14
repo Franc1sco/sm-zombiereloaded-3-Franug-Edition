@@ -49,7 +49,7 @@
 	#define ACTION_HANDLED	  ZRTools_Handled
 #endif
 
-#define VERSION "3.3 Franug edition"
+#define VERSION "3.3.1 Franug edition"
 
 bool g_allweapons[MAXPLAYERS + 1];
 

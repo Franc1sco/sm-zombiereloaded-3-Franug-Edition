@@ -436,6 +436,8 @@ public Action:DamageSuicideIntercept(client, argc)
 	
 	// Check various criterias that will _allow_ the command. If no criterias
 	// match, block it.
+	if(!IsClientInGame(client))
+		return Plugin_Continue;
 	
 	// Check general criterias.
 	if ((suicideAfterInfect && !g_bZombieSpawned) ||	// Check if it should block suicides before mother zombie.
