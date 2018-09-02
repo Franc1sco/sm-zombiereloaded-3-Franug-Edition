@@ -145,6 +145,9 @@ public Plugin:myinfo =
  */
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
+	//Register the plugin library.
+	RegPluginLibrary("zombiereloaded");
+	
 	// Load API.
 	APIInit();
 	
