@@ -375,9 +375,9 @@ VolResetCountDown(client = -1)
 	if (client > -1)
 	{
 		// Reset volume counters.
-		for (new volumeIndex = 0; volumeIndex < ZR_VOLUMES_MAX; volumeIndex++)
+		for (new iVolumeIndex = 0; iVolumeIndex < ZR_VOLUMES_MAX; iVolumeIndex++)
 		{
-			VolPlayerCountDown[client][volumeIndex] = -1.0;
+			VolPlayerCountDown[client][iVolumeIndex] = -1.0;
 		}
 	}
 	else
@@ -385,9 +385,9 @@ VolResetCountDown(client = -1)
 		// Reset all volume counters.
 		for (new clientIndex = 0; clientIndex < MAXPLAYERS + 1; clientIndex++)
 		{
-			for (new volumeIndex = 0; volumeIndex < ZR_VOLUMES_MAX; volumeIndex++)
+			for (new iVolumeIndex = 0; iVolumeIndex < ZR_VOLUMES_MAX; iVolumeIndex++)
 			{
-				VolPlayerCountDown[clientIndex][volumeIndex] = -1.0;
+				VolPlayerCountDown[clientIndex][iVolumeIndex] = -1.0;
 			}
 		}
 	}
@@ -459,24 +459,24 @@ VolUpdatePlayerChanges()
 		VolGetPlayerStates(client, volumeNewStates, sizeof(volumeNewStates));
 		
 		// Loop through each volume and compare states.
-		for (new volumeIndex = 0; volumeIndex < ZR_VOLUMES_MAX; volumeIndex++)
+		for (new iVolumeIndex = 0; iVolumeIndex < ZR_VOLUMES_MAX; iVolumeIndex++)
 		{
 			// Check if the volume is disabled and unused.
-			if (!VolInUse(volumeIndex) || !VolIsEnabled(volumeIndex))
+			if (!VolInUse(iVolumeIndex) || !VolIsEnabled(iVolumeIndex))
 			{
 				// Skip volume.
 				continue;
 			}
 			
 			// Check team filtering on the volume.
-			if (!VolTeamFilterMatch(client, volumeIndex))
+			if (!VolTeamFilterMatch(client, iVolumeIndex))
 			{
 				// Team filter mismatch.
 				continue;
 			}
 			
-			newState = volumeNewStates[volumeIndex];
-			oldState = volumeStates[volumeIndex];
+			newState = volumeNewStates[iVolumeIndex];
+			oldState = volumeStates[iVolumeIndex];
 			
 			// Check for no change.
 			if (newState == oldState)
@@ -489,21 +489,21 @@ VolUpdatePlayerChanges()
 			if (newState && !oldState)
 			{
 				// Get trigger delay value.
-				trigger_delay = Volumes[volumeIndex][Vol_TriggerDelay];
+				trigger_delay = Volumes[iVolumeIndex][Vol_TriggerDelay];
 				
 				// Check if the volume has a trigger delay.
 				if (trigger_delay > 0.0)
 				{
 					// Set count down value.
-					VolPlayerCountDown[client][volumeIndex] = trigger_delay;
+					VolPlayerCountDown[client][iVolumeIndex] = trigger_delay;
 				}
 				else
 				{
 					// Update cache.
-					VolPlayerInVolume[client][volumeIndex] = true;
+					VolPlayerInVolume[client][iVolumeIndex] = true;
 					
 					// No trigger delay, trigger event instantly.
-					VolOnPlayerEnter(client, volumeIndex);
+					VolOnPlayerEnter(client, iVolumeIndex);
 				}
 			}
 			
@@ -511,18 +511,18 @@ VolUpdatePlayerChanges()
 			else if (!newState && oldState)
 			{
 				// Make sure count down value is reset.
-				VolPlayerCountDown[client][volumeIndex] = -1.0;
+				VolPlayerCountDown[client][iVolumeIndex] = -1.0;
 				
 				// Only trigger left volume event if player already is in the
 				// volume, so volumes with trigger delay won't get a left event
 				// before the enter event.
-				if (VolPlayerInVolume[client][volumeIndex])
+				if (VolPlayerInVolume[client][iVolumeIndex])
 				{
 					// Update cache.
-					VolPlayerInVolume[client][volumeIndex] = false;
+					VolPlayerInVolume[client][iVolumeIndex] = false;
 					
 					// Trigger event.
-					VolOnPlayerLeave(client, volumeIndex);
+					VolOnPlayerLeave(client, iVolumeIndex);
 				}
 			}
 		}
@@ -548,17 +548,17 @@ public Action:Event_VolTriggerTimer(Handle:timer)
 	for (new client = 1; client <= MaxClients; client++)
 	{
 		// Loop through all volumes.
-		for (new volumeIndex = 0; volumeIndex < ZR_VOLUMES_MAX; volumeIndex++)
+		for (new iVolumeIndex = 0; iVolumeIndex < ZR_VOLUMES_MAX; iVolumeIndex++)
 		{
 			// Check if volume is in use and enabled.
-			if (!VolInUse(volumeIndex) || !VolIsEnabled(volumeIndex))
+			if (!VolInUse(iVolumeIndex) || !VolIsEnabled(iVolumeIndex))
 			{
 				// Not in use or enabled, skip volume.
 				continue;
 			}
 			
 			// Get count down value.
-			countDown = VolPlayerCountDown[client][volumeIndex];
+			countDown = VolPlayerCountDown[client][iVolumeIndex];
 			
 			// Check if volume trigger delay is enabled.
 			if (countDown > 0.0)
@@ -570,17 +570,17 @@ public Action:Event_VolTriggerTimer(Handle:timer)
 				if (countDown <= 0.0)
 				{
 					// Update cache.
-					VolPlayerInVolume[client][volumeIndex] = true;
+					VolPlayerInVolume[client][iVolumeIndex] = true;
 					
 					// Trigger volume enter event.
-					VolOnPlayerEnter(client, volumeIndex);
+					VolOnPlayerEnter(client, iVolumeIndex);
 					
 					// Reset count down value.
-					VolPlayerCountDown[client][volumeIndex] = -1.0;
+					VolPlayerCountDown[client][iVolumeIndex] = -1.0;
 				}
 				
 				// Update count down value and continue.
-				VolPlayerCountDown[client][volumeIndex] = countDown;
+				VolPlayerCountDown[client][iVolumeIndex] = countDown;
 			}
 		}
 	}

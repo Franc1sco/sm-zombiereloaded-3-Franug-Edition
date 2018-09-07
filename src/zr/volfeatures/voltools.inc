@@ -113,12 +113,12 @@ bool:VolIsValidIndex(volumeIndex)
 VolGetFreeVolume()
 {
 	// Loop through all volumes.
-	for (new volumeIndex = 0; volumeIndex < ZR_VOLUMES_MAX; volumeIndex++)
+	for (new iVolumeIndex = 0; iVolumeIndex < ZR_VOLUMES_MAX; iVolumeIndex++)
 	{
 		// Check if it's free.
-		if (!VolInUse(volumeIndex))
+		if (!VolInUse(iVolumeIndex))
 		{
-			return volumeIndex;
+			return iVolumeIndex;
 		}
 	}
 	
@@ -218,12 +218,12 @@ VolGetPlayerStates(client, bool:buffer[], maxlen)
 	new Float:volMaxBuffer[3];
 	
 	// Loop through all available volumes.
-	for (new volumeIndex = 0; volumeIndex < ZR_VOLUMES_MAX && volumeIndex < maxlen; volumeIndex++)
+	for (new iVolumeIndex = 0; iVolumeIndex < ZR_VOLUMES_MAX && iVolumeIndex < maxlen; iVolumeIndex++)
 	{
-		if (VolInUse(volumeIndex))
+		if (VolInUse(iVolumeIndex))
 		{
 			// Chache volume to avoid re-indexing.
-			volumeBuffer = Volumes[volumeIndex];
+			volumeBuffer = Volumes[iVolumeIndex];
 			
 			// Get min positions.
 			volMinBuffer[0] = volumeBuffer[Vol_xMin];
@@ -239,13 +239,13 @@ VolGetPlayerStates(client, bool:buffer[], maxlen)
 			if (IsPointInLocation(VolPlayerLoc[client], volMinBuffer, volMaxBuffer))
 			{
 				// Mark player as in volume.
-				buffer[volumeIndex] = true;
+				buffer[iVolumeIndex] = true;
 				volCount++;
 			}
 			else
 			{
 				// Do explicit reset.
-				buffer[volumeIndex] = false;
+				buffer[iVolumeIndex] = false;
 			}
 		}
 	}

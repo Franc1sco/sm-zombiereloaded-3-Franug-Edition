@@ -77,7 +77,6 @@ new AnticampData[ZR_VOLUMES_MAX][VolTypeAnticamp];
 VolAnticampEnable(volumeIndex)
 {
 	new Float:interval;
-	new Handle:timer;
 	
 	// Validate index.
 	if (!VolIsValidIndex(volumeIndex))
@@ -98,10 +97,10 @@ VolAnticampEnable(volumeIndex)
 	if (AnticampData[dataindex][Anticamp_InUse])
 	{
 		// Kill timer if it exist.
-		timer = AnticampData[dataindex][Anticamp_Timer];
-		if (timer != INVALID_HANDLE)
+		Handle timers = AnticampData[dataindex][Anticamp_Timer];
+		if (timers != INVALID_HANDLE)
 		{
-			KillTimer(timer);
+			KillTimer(timers);
 			AnticampData[dataindex][Anticamp_Timer] = INVALID_HANDLE;
 		}
 		
@@ -148,10 +147,10 @@ stock VolAnticampEnableAll()
 			dataindex = Volumes[volumeindex][Vol_DataIndex];
 			
 			// Kill timer if it exist.
-			timer = AnticampData[dataindex][Anticamp_Timer];
-			if (timer != INVALID_HANDLE)
+			Handle timers = AnticampData[dataindex][Anticamp_Timer];
+			if (timers != INVALID_HANDLE)
 			{
-				KillTimer(timer);
+				KillTimer(timers);
 				AnticampData[dataindex][Anticamp_Timer] = INVALID_HANDLE;
 			}
 			

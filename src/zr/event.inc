@@ -265,10 +265,10 @@ public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroad
 	new index = GetClientOfUserId(GetEventInt(event, "userid"));
 	
 	// If client is being infected, then stop.
-	if (InfectIsClientInfected(attacker) && index != attacker)
+	/*if (InfectIsClientInfected(attacker) && index != attacker)
 	{
 		return;
-	}
+	}*/
 	
 	// Validate client.
 	if (!ZRIsClientValid(index))

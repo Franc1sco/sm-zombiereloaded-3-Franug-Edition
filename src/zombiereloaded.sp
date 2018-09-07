@@ -49,7 +49,7 @@
 	#define ACTION_HANDLED	  ZRTools_Handled
 #endif
 
-#define VERSION "3.3.1 Franug edition"
+#define VERSION "3.3.2 Franug edition"
 
 bool g_allweapons[MAXPLAYERS + 1];
 
@@ -130,7 +130,7 @@ public Plugin:myinfo =
 	author = "Greyscale | Richard Helgeby and Franc1sco franug",
 	description = "Infection/survival style gameplay",
 	version = VERSION,
-	url = "http://forums.alliedmods.net/forumdisplay.php?f=132"
+	url = "https://github.com/Franc1sco/sm-zombiereloaded-3-Franug-Edition"
 };
 
 /**
