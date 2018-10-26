@@ -11,7 +11,7 @@ public Plugin:myinfo =
 	name = "SM ZR Force Teams",
 	author = "Franc1sco franug",
 	description = "",
-	version = "1.0",
+	version = "1.1",
 	url = "http://steamcommunity.com/id/franug"
 };
 
@@ -19,7 +19,7 @@ public OnPluginStart()
 {
 	HookEvent("player_spawn", OnSpawn);
 	
-	HookEvent("round_prestart", EventRoundStart, EventHookMode_Pre);
+	HookEvent("round_start", EventRoundStart, EventHookMode_Pre);
 }
 
 public Action:OnSpawn(Handle:event, const String:name[], bool:dontBroadcast) 
