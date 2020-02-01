@@ -79,7 +79,7 @@
         "description"           "Need brains!!! Arrrrggghh!"
         
         // Model
-        "model_path"            "models/player/zombieskincsgo/zombie.mdl"
+        "model_path"            "models/player/kuristaja/zombies/gozombie/gozombie.mdl"
         "model_skin_index"      "0"
         "alpha_initial"         "255"
         "alpha_damaged"         "255"
@@ -125,7 +125,7 @@
         "description"           "-HP | +Speed | +Jump | +Knockback"
         
         // Model
-        "model_path"            "models/player/zombieskincsgo/zombie.mdl"
+        "model_path"            "models/player/kuristaja/zombies/gozombie/gozombie.mdl"
         "model_skin_index"      "0"
         "alpha_initial"         "255"
         "alpha_damaged"         "255"
@@ -171,7 +171,7 @@
         "description"           "+HP | -Speed | +Jump | +Knockback"
         
         // Model
-        "model_path"            "models/player/zombieskincsgo/zombie.mdl"
+        "model_path"            "models/player/kuristaja/zombies/gozombie/gozombie.mdl"
         "model_skin_index"      "0"
         "alpha_initial"         "255"
         "alpha_damaged"         "255"
@@ -217,7 +217,7 @@
         "description"           "+HP | -Speed | -Knockback"
         
         // Model
-        "model_path"            "models/player/zombieskincsgo/zombie.mdl"
+        "model_path"            "models/player/kuristaja/zombies/gozombie/gozombie.mdl"
         "model_skin_index"      "0"
         "alpha_initial"         "255"
         "alpha_damaged"         "255"
@@ -263,7 +263,7 @@
         "description"           "+HP regen | +Speed | +Jump | -Knockback"
         
         // Model
-        "model_path"            "models/player/zombieskincsgo/zombie.mdl"
+        "model_path"            "models/player/kuristaja/zombies/gozombie/gozombie.mdl"
         "model_skin_index"      "0"
         "alpha_initial"         "255"
         "alpha_damaged"         "255"
@@ -309,7 +309,7 @@
         "description"           "+HP regen | +Speed | +Jump | -Knockback"
         
         // Model
-        "model_path"            "models/player/zombieskincsgo/zombie.mdl"
+        "model_path"            "models/player/kuristaja/zombies/gozombie/gozombie.mdl"
         "model_skin_index"      "0"
         "alpha_initial"         "255"
         "alpha_damaged"         "255"

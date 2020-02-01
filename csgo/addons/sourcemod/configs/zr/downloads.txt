@@ -51,3 +51,15 @@ sound/zr/zombie_die3.mp3
 
 sound/ambient/zr/zr_ambience.mp3
 sound/zr/fz_scream1.mp3
+
+
+// -- GOZOMBIE
+
+materials/models/player/kuristaja/zombies/gozombie/csgo_zombie_skin.vmt
+materials/models/player/kuristaja/zombies/gozombie/csgo_zombie_normal.vtf
+
+// Player model
+models/player/kuristaja/zombies/gozombie/gozombie.dx90.vtx
+models/player/kuristaja/zombies/gozombie/gozombie.mdl
+models/player/kuristaja/zombies/gozombie/gozombie.phy
+models/player/kuristaja/zombies/gozombie/gozombie.vvd

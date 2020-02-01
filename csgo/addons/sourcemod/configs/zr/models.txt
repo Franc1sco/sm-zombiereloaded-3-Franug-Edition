@@ -26,10 +26,10 @@
 
 "models"
 {
-    "zombie"
+    "gozombie"
     {
-        "name"      "zombie"
-        "path"      "models/player/zombieskincsgo/"
+        "name"      "gozombie"
+        "path"      "models/player/kuristaja/zombies/gozombie/"
         "team"      "zombies"
         "access"    "public"
         "group"     ""
