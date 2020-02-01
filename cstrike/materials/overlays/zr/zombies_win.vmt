@@ -1,0 +1,9 @@
+"Refract"
+{
+	"$model" 1
+	"$refractamount" "0"
+	"$bluramount" "0"
+	"$REFRACTTINT" "{150 50 50}"
+	"$REFRACTTINTtexture" "overlays/zr/zombies_win"
+	"$scale" "[1 1]"
+}

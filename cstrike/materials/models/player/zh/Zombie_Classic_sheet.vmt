@@ -1,0 +1,11 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/Zombie_Classic/Zombie_Classic_sheet"
+	"VertexLitGeneric_DX9"
+	{
+		"$bumpmap" "Models/zombie_classic/zombie_classic_sheet_normal"
+		"$envmap" "env_cubemap"
+		"$envmapcontrast" 1
+		"$normalmapalphaenvmapmask" 1
+	}
+}

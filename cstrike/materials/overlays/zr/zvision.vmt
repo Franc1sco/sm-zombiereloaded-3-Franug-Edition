@@ -1,0 +1,12 @@
+"Refract"
+{
+	"$model" 1
+	"$refractamount" "0.007"
+	"$bluramount" "0.5"
+	"$REFRACTTINT" "{255 90 90}"
+	"$REFRACTTINTtexture" "overlays/zr/zvision"
+	"$scale" "[1 1]"
+	"$additive" 1
+	"$envmapcontrast" 1
+	"$envmapsaturation" 1
+}
