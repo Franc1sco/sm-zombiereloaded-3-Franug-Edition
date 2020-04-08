@@ -157,7 +157,6 @@ public Action:EventRoundEnd(Handle:event, const String:name[], bool:dontBroadcas
  */
 public Action:EventPlayerTeam(Handle:event, const String:name[], bool:dontBroadcast)
 {
-	dontBroadcast = false;
 	// Get all required event info.
 	new index = GetClientOfUserId(GetEventInt(event, "userid"));
 	new team = GetEventInt(event, "team");
@@ -166,7 +165,7 @@ public Action:EventPlayerTeam(Handle:event, const String:name[], bool:dontBroadc
 	InfectOnClientTeam(index, team);
 	ImmunityOnClientTeam(index);
 	
-	return Plugin_Changed;
+	return Plugin_Handled;
 }
 
 /**
