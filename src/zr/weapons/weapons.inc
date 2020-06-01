@@ -806,7 +806,8 @@ stock WeaponsSlot:WeaponsGetDeployedWeaponSlot(client)
 stock WeaponsForceClientDrop(client, weapon)
 {
 	// Force client to drop weapon.
-	CS_DropWeapon(client, weapon, true, false);
+	//CS_DropWeapon(client, weapon, true, false);
+	SDKHooks_DropWeapon(client, weapon);
 }
 
 /**

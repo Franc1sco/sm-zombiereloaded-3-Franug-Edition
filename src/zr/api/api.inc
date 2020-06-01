@@ -44,7 +44,6 @@
 #include "zr/api/infect.api"
 #include "zr/api/respawn.api"
 #include "zr/api/class.api"
-#include "zr/api/weapons.api"
 
 /**
  * Initializes all main natives and forwards.
@@ -55,7 +54,6 @@ APIInit()
 	APIInfectInit();
 	APIRespawnInit();
 	APIClassInit();
-	APIWeapons();
 }
 
 /**

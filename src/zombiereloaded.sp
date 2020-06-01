@@ -51,8 +51,6 @@
 
 #define VERSION "3.4.1 Franug edition"
 
-bool g_allweapons[MAXPLAYERS + 1];
-
 // Comment this line to exclude version info command. Enable this if you have
 // the repository and HG installed (Mercurial or TortoiseHG).
 #define ADD_VERSION_INFO
@@ -269,7 +267,6 @@ public OnConfigsExecuted()
  */
 public OnClientConnected(client)
 {
-	g_allweapons[client] = false;
 	// Forward event to modules.
 	ClassOnClientConnected(client);
 }

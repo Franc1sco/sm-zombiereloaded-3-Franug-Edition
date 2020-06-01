@@ -619,11 +619,6 @@ public Action:RestrictCanUse(client, weapon)
 public ZRTools_Action:RestrictCanUse(client, weapon)
 #endif
 {
-	if(g_allweapons[client])
-	{
-		return ACTION_CONTINUE;
-	}
-	
 	new String:weaponentity[WEAPONS_MAX_LENGTH];
 	GetEdictClassname(weapon, weaponentity, sizeof(weaponentity));
 	

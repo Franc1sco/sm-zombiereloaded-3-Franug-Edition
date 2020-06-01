@@ -344,11 +344,8 @@ public ZRTools_Action:DamageOnTakeDamage(client, inflictor, attacker, Float:dama
 		// knife. But only do this when immunity mode is disabled.
 		if (ClassGetImmunityMode(client) == Immunity_None)
 		{
-			if(!g_allweapons[attackerzombie])
-			{
-				new health = GetClientHealth(client);
-				SetEntityHealth(client, health + RoundToNearest(damage));
-			}
+			new health = GetClientHealth(client);
+			SetEntityHealth(client, health + RoundToNearest(damage));
 			// Allow damage.
 			return ACTION_CONTINUE;
 		}
