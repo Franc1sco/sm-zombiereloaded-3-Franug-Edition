@@ -7,7 +7,7 @@ public Plugin:myinfo =
 	name = "ZR Class Fix",
 	author = "Franc1sco franug",
 	description = "Class Fix",
-	version = "3.0",
+	version = "3.1",
 	url = "http://steamcommunity.com/id/franug"
 };
 
@@ -117,16 +117,16 @@ public ZR_OnClientInfected(client, attacker, bool:motherInfect, bool:respawnOver
 	new vida = GetClientHealth(client);
 	if(vida < 300)
 	{
-		CreateTimer(0.5, TimerAsegurarClase, client, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(0.5, Timer_SetDefaultClass, client, TIMER_FLAG_NO_MAPCHANGE);
 	}
 }
 
-public Action:TimerAsegurarClase(Handle:timer, any:client)
+public Action:Timer_SetDefaultClass(Handle:timer, any:client)
 {
-	if(IsClientInGame(client) && IsPlayerAlive(client)) AsegurarClaseDefault(client);
+	if(client > 0 && IsClientInGame(client) && IsPlayerAlive(client)) SetDefaultClass(client);
 }
 
-AsegurarClaseDefault(client)
+SetDefaultClass(client)
 {
 	zrClasses Items;
 	new randomnum = GetRandomInt(0, GetArraySize(array_classes)-1); // random value in the array
