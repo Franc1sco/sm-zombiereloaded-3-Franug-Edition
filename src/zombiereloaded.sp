@@ -49,6 +49,8 @@
 	#define ACTION_HANDLED	  ZRTools_Handled
 #endif
 
+#pragma newdecls required
+
 #define VERSION "3.4.1 Franug edition"
 
 bool g_allweapons[MAXPLAYERS + 1];
@@ -124,7 +126,7 @@ bool g_allweapons[MAXPLAYERS + 1];
 /**
  * Record plugin info.
  */
-public Plugin:myinfo =
+public Plugin myinfo =
 {
 	name = "Zombie:Reloaded",
 	author = "Greyscale | Richard Helgeby and Franc1sco franug",
@@ -143,7 +145,7 @@ public Plugin:myinfo =
  *
  * @return		  APLRes_Success for load success, APLRes_Failure or APLRes_SilentFailure otherwise.
  */
-public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
 	//Register the plugin library.
 	RegPluginLibrary("zombiereloaded");
@@ -158,7 +160,7 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 /**
  * Plugin is loading.
  */
-public OnPluginStart()
+public void OnPluginStart()
 {
 	UpdateGameFolder();
 	
@@ -176,7 +178,7 @@ public OnPluginStart()
 /**
  * All plugins have finished loading.
  */
-public OnAllPluginsLoaded()
+public void OnAllPluginsLoaded()
 {
 	// Forward event to modules.
 	WeaponsOnAllPluginsLoaded();
@@ -186,7 +188,7 @@ public OnAllPluginsLoaded()
 /**
  * A library was added.
  */
-public OnLibraryAdded(const String:name[])
+public void OnLibraryAdded(const char[] name)
 {
 	// Forward event to modules.
 	ConfigOnLibraryAdded(name);
@@ -195,7 +197,7 @@ public OnLibraryAdded(const String:name[])
 /**
  * A library was removed.
  */
-public OnLibraryRemoved(const String:name[])
+public void OnLibraryRemoved(const char[] name)
 {
 	ConfigOnLibraryRemoved(name);
 }
@@ -203,7 +205,7 @@ public OnLibraryRemoved(const String:name[])
 /**
  * The map is starting.
  */
-public OnMapStart()
+public void OnMapStart()
 {
 	// Forward event to modules.
 	ClassOnMapStart();
@@ -226,7 +228,7 @@ public OnMapStart()
 /**
  * The map is ending.
  */
-public OnMapEnd()
+public void OnMapEnd()
 {
 	// Forward event to modules.
 	InfectOnMapEnd();
@@ -239,7 +241,7 @@ public OnMapEnd()
 /**
  * Main configs were just executed.
  */
-public OnAutoConfigsBuffered()
+public void OnAutoConfigsBuffered()
 {
 	// Load map configurations.
 	ConfigLoad();
@@ -248,7 +250,7 @@ public OnAutoConfigsBuffered()
 /**
  * Configs just finished getting executed.
  */
-public OnConfigsExecuted()
+public void OnConfigsExecuted()
 {
 	// Forward event to modules. (OnConfigsExecuted)
 
@@ -267,7 +269,7 @@ public OnConfigsExecuted()
 /**
  * Client has just connected to the server.
  */
-public OnClientConnected(client)
+public void OnClientConnected(int client)
 {
 	g_allweapons[client] = false;
 	// Forward event to modules.
@@ -279,7 +281,7 @@ public OnClientConnected(client)
  * 
  * @param client	The client index.
  */
-public OnClientPutInServer(client)
+public void OnClientPutInServer(int client)
 {
 	// Forward event to modules.
 	ClassClientInit(client);
@@ -301,7 +303,7 @@ public OnClientPutInServer(client)
  * 
  * @param client		Client index.
  */
-public OnClientCookiesCached(client)
+public void OnClientCookiesCached(int client)
 {
 	// Check if client disconnected before cookies were done caching.
 	if (!IsClientConnected(client))
@@ -325,7 +327,7 @@ public OnClientCookiesCached(client)
  * @param client		Client index.
  * @noreturn
  */
-public OnClientPostAdminCheck(client)
+public void OnClientPostAdminCheck(int client)
 {
 	// Forward authorized event to modules that depend on client admin info.
 	ClassOnClientPostAdminCheck(client);
@@ -336,7 +338,7 @@ public OnClientPostAdminCheck(client)
  * 
  * @param client	The client index.
  */
-public OnClientDisconnect(client)
+public void OnClientDisconnect(int client)
 {
 	// Forward event to modules.
 	ClassOnClientDisconnect(client);
@@ -360,7 +362,7 @@ public OnClientDisconnect(client)
  * @param weapon	Entity index of the new weapon if player switches weapon, 0 otherwise.
  * @return 			Plugin_Handled to block the commands from being processed, Plugin_Continue otherwise.
  */
-public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:angles[3], &weapon)
+public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon)
 {
 	Class_OnPlayerRunCmd(client, vel);
 	return Plugin_Continue;
