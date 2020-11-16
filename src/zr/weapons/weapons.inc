@@ -33,7 +33,7 @@
 /**
  * Number of REAL weapon slots (For CS:S)
  */
-#define WEAPONS_SLOTS_MAX 6
+#define WEAPONS_SLOTS_MAX 5
 
 /**
  * @section CS:S start weapons.
