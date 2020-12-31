@@ -35,6 +35,9 @@
 #include <cstrike>
 #include <emitsoundany>
 
+#undef REQUIRE_EXTENSIONS
+#include <hitboxchanger>
+
 #if defined USE_SDKHOOKS
 	#include <sdkhooks>
 	
@@ -49,7 +52,9 @@
 	#define ACTION_HANDLED	  ZRTools_Handled
 #endif
 
-#define VERSION "3.4.2 Franug edition"
+
+
+#define VERSION "3.5 Franug edition"
 
 bool g_allweapons[MAXPLAYERS + 1];
 
