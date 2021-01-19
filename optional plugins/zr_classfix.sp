@@ -7,7 +7,7 @@ public Plugin:myinfo =
 	name = "ZR Class Fix",
 	author = "Franc1sco franug",
 	description = "Class Fix",
-	version = "3.1",
+	version = "3.2",
 	url = "http://steamcommunity.com/id/franug"
 };
 
@@ -28,11 +28,6 @@ public OnPluginStart()
 {
 	array_classes = CreateArray(130);
 	RegConsoleCmd("sm_testzrfix", Test);
-}
-
-public OnPluginEnd()
-{
-	CloseHandle(array_classes);
 }
 
 public Action:Test(client,args)
@@ -117,13 +112,16 @@ public ZR_OnClientInfected(client, attacker, bool:motherInfect, bool:respawnOver
 	new vida = GetClientHealth(client);
 	if(vida < 300)
 	{
-		CreateTimer(0.5, Timer_SetDefaultClass, client, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(0.5, Timer_SetDefaultClass, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 	}
 }
 
-public Action:Timer_SetDefaultClass(Handle:timer, any:client)
+public Action:Timer_SetDefaultClass(Handle:timer, any:userid)
 {
-	if(client > 0 && IsClientInGame(client) && IsPlayerAlive(client)) SetDefaultClass(client);
+	int client = GetClientOfUserId(userid);
+	
+	if(client && IsClientInGame(client) && IsPlayerAlive(client) && ZR_IsClientZombie(client)) 
+		SetDefaultClass(client);
 }
 
 SetDefaultClass(client)
@@ -134,6 +132,6 @@ SetDefaultClass(client)
 	
 	ZR_SelectClientClass(client, Items.Index, true, true); // set a valid class
 	SetEntityHealth(client, Items.health); // apply health of the class selected
-	if(strcmp(Items.model, "") != 0 && IsModelPrecached(Items.model)) // check if model is valid and is precached
+	if(strlen(Items.model) > 2 && IsModelPrecached(Items.model)) // check if model is valid and is precached
 		SetEntityModel(client, Items.model); // then apply it
 }
