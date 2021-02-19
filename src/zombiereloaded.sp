@@ -33,7 +33,6 @@
 #include <sdktools>
 #include <clientprefs>
 #include <cstrike>
-#include <emitsoundany>
 
 #undef REQUIRE_EXTENSIONS
 #include <hitboxchanger>
@@ -54,7 +53,7 @@
 
 
 
-#define VERSION "3.5.1 Franug edition"
+#define VERSION "3.6 Franug edition"
 
 bool g_allweapons[MAXPLAYERS + 1];
 
