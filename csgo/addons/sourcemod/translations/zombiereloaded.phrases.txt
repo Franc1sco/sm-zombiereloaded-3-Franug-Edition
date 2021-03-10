@@ -506,6 +506,11 @@
 		"en"		"ZMarket - Customize loadouts here"
 	}
 
+	"Menu main zvolume"
+	{
+		"en"		"ZVolume - Adjust Zombie Volume"
+	}
+
 	// ===========================
 	// Weapons (core)
 	// ===========================
@@ -1137,6 +1142,101 @@
 		"#format"	"{1:d}"
 		"en"		"HP: {1}"
 	}
+	
+	// ===========================
+	// ZVolume (module)
+	// ===========================
+
+	// General
+	"Volume_Menu_Title"
+	{
+		"en"		"[ZR] Volume Control Menu\nCommand: !zvolume"
+	}
+	
+	"Zombie Voice"
+	{
+		"en"		"Zombie Voice"
+	}
+	
+	"Ambient"
+	{
+		"en"		"Ambient"
+	}
+	
+	"Infect Countdown"
+	{
+		"en"		"Infect Countdown"
+	}
+	
+	// Countdown
+	"Countdown_Usage"
+	{
+		"en"		"Usage: zr_countdown_volume <0 - 100>"
+	}
+	
+	"Countdown_Title_Menu"
+	{
+		"#format"	"{1:d}"
+		"en"		"[ZR] Countdown Volume (Current: {1}%)"	
+	}
+	
+	"Countdown_CommandUsage"
+	{
+		"en"		"Command: !countdown_volume <1-100>"
+	}
+	
+	"Set_Countdown_Volume"
+	{
+		"#format"	"{1:d}"
+		"en"		"Set Countdown Volume to @lgreen{1}."
+	}
+	
+	// Zombie Voice
+	"ZombieVoice_Usage"
+	{
+		"en"		"Usage: zr_zombie_volume <0 - 100>"
+	}
+	
+	"ZombieVoice_Title_Menu"
+	{
+		"#format"	"{1:d}"
+		"en"		"[ZR] Zombie Voice Volume (Current: {1}%)"
+	}
+	
+	"ZombieVoice_CommandUsage"
+	{
+		"en"		"Command: !zombie_volume <1-100>"
+	}
+	
+	"Set_ZombieVoice_Volume"
+	{
+		"#format"	"{1:d}"
+		"en"		"Set Zombie Voice Volume to @lgreen{1}."
+	}
+	
+	// Ambient
+	"Ambient_Usage"
+	{
+		"en"		"Usage: zr_ambient_volume <0 - 100>"
+	}
+	
+	"Ambient_Title_Menu"
+	{
+		"#format"	"{1:d}"
+		"en"		"[ZR] Ambient Volume (Current: {1}%)"
+	}
+	
+	"Ambient_CommandUsage"
+	{
+		"en"		"Command: !ambient_volume <1-100>"
+	}
+	
+	"Set_Ambient_Volume"
+	{
+		"#format"	"{1:d}"
+		"en"		"Set Ambient Volume to @lgreen{1}."
+	}
+	
 
 	// ===========================
 	// Volumetric features (module)

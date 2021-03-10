@@ -673,7 +673,14 @@ public Action:InfectCountdown(Handle:timer)
 	{
 		ReplaceString(sounddir, 128, "sound/", "");
 		
-		EmitSoundToAll(sounddir);
+		for (new x = 1; x < MaxClients; x++)
+		{
+			if (IsClientInGame(x))
+			{
+				if (zfCountdownVolume[x] > 0)
+					EmitSoundToClient(x, sounddir, _, _, SNDLEVEL_NORMAL, _, zfCountdownVolume[x]);
+			}
+		}
 	}
 	
 	// Print the countdown text to the clients.
