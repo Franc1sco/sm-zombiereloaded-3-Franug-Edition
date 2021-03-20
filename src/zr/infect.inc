@@ -65,10 +65,20 @@ new Handle:hInfectCountdownData = INVALID_HANDLE;
 new bool:bZombie[MAXPLAYERS + 1];
 
 /**
- * @section bInfectImmune indexes
+ * Available mother zombie infection status.
  */
-#define INFECT_TYPE_MOTHER 0
-#define INFECT_TYPE_NORMAL 1
+enum InfectMotherStatus
+{
+    MotherStatus_None = 0,
+    MotherStatus_Chosen = 1,
+    MotherStatus_Last = 2
+}
+
+/**
+ * Array for storing client mother zombie protection status.
+ */
+new InfectMotherStatus:g_InfectMotherStatus[MAXPLAYERS + 1];
+
 /**
  * @endsection
  */
@@ -76,7 +86,7 @@ new bool:bZombie[MAXPLAYERS + 1];
 /**
  * Array for flagging client to be protected. (See defines above)
  */
-new bool:bInfectImmune[MAXPLAYERS + 1][2];
+new bool:bInfectImmune[MAXPLAYERS + 1];
 
 /**
  * Available mother zombie infection modes.
@@ -140,8 +150,9 @@ InfectOnCommandsCreate()
 InfectClientInit(client)
 {
 	// Reset infect immunity flags.
-	bInfectImmune[client][INFECT_TYPE_MOTHER] = false;
-	bInfectImmune[client][INFECT_TYPE_NORMAL] = false;
+	bInfectImmune[client] = false;
+	
+	g_InfectMotherStatus[client] = MotherStatus_None;
 }
 
 /**
@@ -340,7 +351,7 @@ InfectOnClientHurt(client, attacker, const String:weapon[])
 	}
 	
 	// If client has infect immunity, then stop.
-	if (bInfectImmune[client][INFECT_TYPE_NORMAL])
+	if (bInfectImmune[client])
 	{
 		return;
 	}
@@ -466,7 +477,7 @@ public Action:InfectMotherZombie(Handle:timer)
 	}
 	
 	// Prune list of immune clients.
-	eligibleclients = InfectRemoveImmuneClients(arrayEligibleClients);
+	//eligibleclients = InfectRemoveImmuneClients(arrayEligibleClients);
 	
 	// Move all clients to CT.
 	InfectMoveAllToCT();
@@ -537,36 +548,88 @@ public Action:InfectMotherZombie(Handle:timer)
 		}
 	}
 	
-	// Infect players.
-	for (new n = 0; n < mothercount; n++)
-	{
-		// Recount eligible clients.
-		eligibleclients = GetArraySize(arrayEligibleClients);
-		
-		// Stop if there are no more eligible clients.
-		if (eligibleclients <= 0)
-		{
-			break;
-		}
-		
-		// Get a random array index.
-		new i = Math_GetRandomInt(0, eligibleclients - 1);
-		
-		// Get the client stored in the random array index.
-		new client = GetArrayCell(arrayEligibleClients, i);
-		
-		// Infect player.
-		InfectHumanToZombie(client, _, true);
-		
-		// Remove player from eligible client list.
-		RemoveFromArray(arrayEligibleClients, i);
-	}
-	
-	// Mother zombies have been infected.
-	g_bZombieSpawned = true;
-	
-	// Destroy client list.
-	CloseHandle(arrayEligibleClients);
+	new candidates = 0;
+	new Handle:aCandidates = CreateArray();
+    for (new n = 0; n < eligibleclients; n++)
+    {
+        // Get the client stored in the array index.
+        new client = GetArrayCell(arrayEligibleClients, n);
+
+        // If client hasn't been chosen this cycle, put into aCandidates array.
+        if (g_InfectMotherStatus[client] == MotherStatus_None)
+        {
+            PushArrayCell(aCandidates, client);
+            candidates++;
+        }
+    }
+
+    // Not enough candidates found.
+    if (candidates < mothercount)
+    {
+        for (new n = 0; n < eligibleclients; n++)
+        {
+            // Get the client stored in the array index.
+            new client = GetArrayCell(arrayEligibleClients, n);
+
+            // If client hasn't been chosen last round, put into aCandidates array,
+            // but only until we have enough candidates.
+            if (!(g_InfectMotherStatus[client] & MotherStatus_Last))
+            {
+                PushArrayCell(aCandidates, client);
+                candidates++;
+
+                // Enough candidates found.
+                if(candidates >= mothercount)
+                    break;
+            }
+        }
+
+        // Restart the cycle.
+        // Reset all players MotherStatus.
+        for (int client = 0; client <= MAXPLAYERS; client++)
+        {
+            g_InfectMotherStatus[client] = MotherStatus_None;
+        }
+
+        // Announce start of new cycle
+        TranslationPrintToChatAll(true, false, "Mother zombie infect cycle reset");
+    }
+
+    // Remove MotherStatus_Last flag from all players.
+    for (int client = 0; client <= MAXPLAYERS; client++)
+    {
+        g_InfectMotherStatus[client] &= ~MotherStatus_Last;
+    }
+
+    // Infect players.
+    for (new n = 0; n < mothercount; n++)
+    {
+        // Stop if there are no more candidates.
+        if (candidates <= 0)
+        {
+            break;
+        }
+
+        // Get a random array index.
+        new i = Math_GetRandomInt(0, candidates - 1);
+
+        // Get the client stored in the random array index.
+        new client = GetArrayCell(aCandidates, i);
+
+        // Infect player.
+        InfectHumanToZombie(client, _, true);
+
+        // Remove player from eligible client list.
+        RemoveFromArray(aCandidates, i);
+        candidates--;
+    }
+
+    // Mother zombies have been infected.
+    g_bZombieSpawned = true;
+
+    // Destroy client list.
+    CloseHandle(arrayEligibleClients);
+    CloseHandle(aCandidates);
 }
 
 /**
@@ -592,51 +655,6 @@ InfectMoveAllToCT()
 		// Switch client to CT team.
 		CS_SwitchTeam(client, CS_TEAM_CT);
 	}
-}
-
-/**
- * Removes immune clients from a client list. If a client is removed, their
- * immunity is also removed.
- *
- * @param clientList		List of clients.
- * @param keepLastPlayer	Don't remove if there's only one player left.
- *
- * @return				  Number of clients remaining.
- */
-InfectRemoveImmuneClients(Handle:clientList, bool:keepLastPlayer = true)
-{
-	new len = GetArraySize(clientList);
-	
-	// Loop though client list.
-	for (new i = 0; i < len; i++)
-	{
-		// Stop pruning if there is only one player left.
-		if (keepLastPlayer && len <= 1)
-		{
-			break;
-		}
-		
-		// Get client.
-		new client = GetArrayCell(clientList, i);
-		
-		// Check if client is immune from mother zombie infection.
-		if (bInfectImmune[client][INFECT_TYPE_MOTHER])
-		{
-			// Take away immunity.
-			bInfectImmune[client][INFECT_TYPE_MOTHER] = false;
-			
-			// Remove client from array.
-			RemoveFromArray(clientList, i);
-			
-			// Update list size.
-			len--;
-			
-			// Backtrack one index, because we deleted it out from under the loop.
-			i--;
-		}
-	}
-	
-	return len;
 }
 
 /**
@@ -762,16 +780,16 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
 		// infection. Otherwise do nothing and keep the current flag.
 		if (motherinfect)
 		{
-			bInfectImmune[client][INFECT_TYPE_MOTHER] = true;
+			g_InfectMotherStatus[client] = MotherStatus_Chosen | MotherStatus_Last;
 		}
 	}
 	else
 	{
 		// Consecutive infection protection is disabled. No immunity.
-		bInfectImmune[client][INFECT_TYPE_MOTHER] = false;
+		g_InfectMotherStatus[client] = MotherStatus_None;
 	}
 	
-	// Apply effects.
+	ZombieSoundsScream(client);
 	InfectFireEffects(client);
 	
 	// Stop coundown, if running.
@@ -982,9 +1000,6 @@ InfectFireEffects(client)
 		// Create explosion at client's origin.
 		VEffectsCreateExplosion(clientloc, flags);
 	}
-	
-	// Emit scream sound if enabled.
-	ZombieSoundsScream(client);
 	
 	// If energy splash effect is enabled, then continue.
 	new bool:esplash = GetConVarBool(g_hCvarsList[CVAR_INFECT_ESPLASH]);

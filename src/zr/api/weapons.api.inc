@@ -31,7 +31,7 @@
 
 APIWeapons()
 {
-	CreateNative("ZR_NoWeaponRestrictions", Native_NoWeaponRestrictions);	
+	CreateNative("ZR_NoWeaponRestrictions", Native_NoWeaponRestrictions);
 }
 
 public Native_NoWeaponRestrictions(Handle:plugin, numParams)

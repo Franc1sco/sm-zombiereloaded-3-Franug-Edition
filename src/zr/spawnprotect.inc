@@ -76,7 +76,7 @@ SpawnProtectOnClientSpawnPost(client)
 	}
 	
 	// Disable spawn protection on client.
-	bInfectImmune[client][INFECT_TYPE_NORMAL] = false;
+	bInfectImmune[client] = false;
 	
 	// Start spawn protection.
 	SpawnProtectStart(client);
@@ -158,7 +158,7 @@ SpawnProtectStart(client)
 	}
 	
 	// Set spawn protect flag on client.
-	bInfectImmune[client][INFECT_TYPE_NORMAL] = true;
+	bInfectImmune[client] = true;
 	
 	// Set spawn protect attributes.
 	ClassApplySpeedEx(client, speed);
@@ -212,7 +212,7 @@ public Action:SpawnProtectTimer(Handle:timer, any:client)
 	if (pSpawnProtectTime[client] <= 0)
 	{
 		// Remove protect flag.
-		bInfectImmune[client][INFECT_TYPE_NORMAL] = false;
+		bInfectImmune[client] = false;
 		
 		// Tell client spawn protection is over.
 		TranslationPrintHintText(client, "Spawn protection end");
