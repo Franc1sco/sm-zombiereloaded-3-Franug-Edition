@@ -1258,4 +1258,9 @@
 		"#format"	"{1:s},{2:d}"
 		"en"		"Ignited player \"{1}\" for camping in a restricted area (ID: {2})."
 	}
+
+	"Mother zombie infect cycle reset"
+	{
+		"en"		"Mother zombie infect cycle has been reset"
+	}
 }
