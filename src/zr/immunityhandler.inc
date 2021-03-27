@@ -278,7 +278,7 @@ Action:ImmunityOnClientDamage(client, attacker, &Float:damage)
 	}
 	
 	// Check if spawn protection is on.
-	if (bInfectImmune[client][INFECT_TYPE_NORMAL])
+	if (bInfectImmune[client])
 	{
 		// Block damage.
 		return Plugin_Handled;

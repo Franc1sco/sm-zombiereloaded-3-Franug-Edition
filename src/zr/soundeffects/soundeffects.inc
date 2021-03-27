@@ -165,19 +165,26 @@ SEffectsOnClientHuman(client)
  * @param soundvolume   The volume of the sound (0.0 - 1.0)
  * @param client		(Optional) Client index to play sound to.
  */
-SEffectsEmitAmbientSound(const String:sound[], Float:ambientvolume = 1.0, client = -1)
+SEffectsEmitAmbientSound(const String:sound[], client = -1)
 {
 	// Precache sound before playing.
 	PrecacheSound(sound);
 	
+	
 	if (ZRIsClientValid(client))
 	{
 		// Emit ambient sound.
-		EmitSoundToClient(client, sound, SOUND_FROM_PLAYER, SOUND_AMBIENT_CHANNEL, _, _, ambientvolume);
+		if(zfAmbientVolume[client] > 0)
+		{
+			EmitSoundToClient(client, sound, SOUND_FROM_PLAYER, SOUND_AMBIENT_CHANNEL, _, _, zfAmbientVolume[client]);
 		
-		// Flag client that sound is playing.
-		bAmbientSoundsIsPlaying[client] = true;
-		
+			// Flag client that sound is playing.
+			bAmbientSoundsIsPlaying[client] = true;
+		}
+		else
+		{
+			bAmbientSoundsIsPlaying[client] = false;
+		}
 	}
 	else
 	{
@@ -190,7 +197,8 @@ SEffectsEmitAmbientSound(const String:sound[], Float:ambientvolume = 1.0, client
 			}
 			
 			// Emit ambient sound.
-			EmitSoundToClient(x, sound, SOUND_FROM_PLAYER, SNDCHAN_AUTO, _, _, ambientvolume);
+			if(zfAmbientVolume[x] > 0)
+				EmitSoundToClient(x, sound, SOUND_FROM_PLAYER, SNDCHAN_AUTO, _, _, zfAmbientVolume[x]);
 		}
 	}
 }
@@ -212,7 +220,8 @@ SEffectsStopAmbientSound(const String:sound[])
 		}
 		
 		// Stop ambient sound.
-		StopSound(x, SOUND_AMBIENT_CHANNEL, sound);
+		if(zfAmbientVolume[x] > 0)
+			StopSound(x, SOUND_AMBIENT_CHANNEL, sound);
 	}
 }
 
@@ -234,5 +243,12 @@ SEffectsEmitSoundFromClient(client, const String:sound[], level = SNDLEVEL_NORMA
 	// Precache sound before playing.// Emit sound from client.
 	PrecacheSound(sound);
 	// Emit sound from client.
-	EmitSoundToAll(sound, client, _, level);
+	for(new i = 1; i <= MaxClients; i++)
+	{
+		if(IsClientInGame(i))
+		{
+			if(zfZSoundVolume[i] > 0) 
+				EmitSoundToClient(i, sound, client, _, level, _, zfZSoundVolume[i]);
+		}
+	}
 }

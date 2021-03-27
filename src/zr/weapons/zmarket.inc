@@ -66,12 +66,20 @@ new bool:g_bZMarketWeaponsBought[MAXPLAYERS + 1];
 new Handle:g_hZMarketLoadoutCookie[WEAPONS_SLOTS_MAX + 1];
 
 /**
+ * Create Zmarket Gun Command Status
+ */
+new bool:g_bZMarketCommandInitialized = false;
+
+/**
  * Create commands specific to ZMarket.
  */
 ZMarketOnCommandsCreate()
 {
 	// Register ZMarket command.
 	RegConsoleCmd(SAYHOOKS_KEYWORD_ZMARKET, ZMarketCommand, "Opens custom buymenu.");
+	
+	// Hold on Register the Zmarket Gun Command
+	g_bZMarketCommandInitialized = false;
 }
 
 ZMarketOnCookiesCreate()
@@ -98,6 +106,103 @@ ZMarketOnCookiesCreate()
 			g_hZMarketLoadoutCookie[x] = RegClientCookie(rebuycookiename, rebuycookiedesc, CookieAccess_Protected);
 		}
 	}
+}
+
+ZMarketLoad()
+{
+	// Do not register commands multiple times
+	if(g_bZMarketCommandInitialized)
+		return;
+
+	decl String:zmarketcommand[CONFIG_MAX_LENGTH];
+	decl String:weaponname[WEAPONS_MAX_LENGTH];
+
+	new size = GetArraySize(arrayWeapons);
+	for (new weaponindex = 0; weaponindex < size; weaponindex++)
+	{
+		WeaponsGetZMarketCommand(weaponindex, zmarketcommand, sizeof(zmarketcommand));
+		if(zmarketcommand[0])
+		{
+			WeaponsGetName(weaponindex, weaponname, sizeof(weaponname));
+
+			if (FindCharInString(zmarketcommand, ',') != -1)
+			{
+				int idx;
+				int lastidx;
+				while ((idx = FindCharInString(zmarketcommand[lastidx], ',')) != -1)
+				{
+					char out[16];
+					char fmt[8];
+					Format(fmt, sizeof(fmt), "%%.%ds", idx);
+					Format(out, sizeof(out), fmt, zmarketcommand[lastidx]);
+					RegConsoleCmd(out, ZMarketBuyCommand, weaponname);
+					lastidx += ++idx;
+
+					if (FindCharInString(zmarketcommand[lastidx], ',') == -1 && zmarketcommand[lastidx+1] != '\0')
+						RegConsoleCmd(zmarketcommand[lastidx], ZMarketBuyCommand, weaponname);
+				}
+			}
+			else
+			{
+				RegConsoleCmd(zmarketcommand, ZMarketBuyCommand, weaponname);
+			}
+		}
+	}
+
+	g_bZMarketCommandInitialized = true;
+}
+
+public Action:ZMarketBuyCommand(client, argc)
+{
+    decl String:command[CONFIG_MAX_LENGTH];
+    decl String:zmarketcommand[CONFIG_MAX_LENGTH];
+    decl String:weaponname[WEAPONS_MAX_LENGTH];
+
+    GetCmdArg(0, command, sizeof(command));
+
+    new size = GetArraySize(arrayWeapons);
+    for (new weaponindex = 0; weaponindex < size; weaponindex++)
+    {
+        WeaponsGetZMarketCommand(weaponindex, zmarketcommand, sizeof(zmarketcommand));
+
+        if (FindCharInString(zmarketcommand, ',') != -1)
+        {
+            int idx;
+            int lastidx;
+            while ((idx = FindCharInString(zmarketcommand[lastidx], ',')) != -1)
+            {
+                if (!strncmp(command, zmarketcommand[lastidx], idx))
+                {
+                    WeaponsGetName(weaponindex, weaponname, sizeof(weaponname));
+                    ZMarketEquip(client, weaponname);
+                    return Plugin_Handled;
+                }
+
+                lastidx += ++idx;
+
+                if (FindCharInString(zmarketcommand[lastidx], ',') == -1 && zmarketcommand[lastidx+1] != '\0')
+                {
+                    if (!strncmp(command, zmarketcommand[lastidx], idx))
+                    {
+                        WeaponsGetName(weaponindex, weaponname, sizeof(weaponname));
+                        ZMarketEquip(client, weaponname);
+                        return Plugin_Handled;
+                    }
+                }
+            }
+        }
+        else
+        {
+            if(StrEqual(command, zmarketcommand))
+            {
+                WeaponsGetName(weaponindex, weaponname, sizeof(weaponname));
+                ZMarketEquip(client, weaponname);
+                return Plugin_Handled;
+            }
+        }
+    }
+
+    return Plugin_Handled;
 }
 
 /**
@@ -917,9 +1022,16 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
 				WeaponsForceClientDrop(client, weapons[slot]);
 			}
 		}
-		
-		// Give client the weapon.
-		GivePlayerItem(client, weaponentity);
+		if (StrEqual(weaponentity, "item_kevlar"))
+		{
+			SetEntProp(client, Prop_Send, "m_ArmorValue", 100);
+			SetEntProp(client, Prop_Send, "m_bHasHelmet", 1);
+		}
+		else
+		{
+			// Give client the weapon.
+			GivePlayerItem(client, weaponentity);
+		}
 		
 		// Update cookie with new weapon.
 		ZMarketSetRebuyCookie(client, slot, weapon);
@@ -934,41 +1046,26 @@ stock bool:ZMarketEquip(client, const String:weapon[], bool:rebuy = false)
 			TranslationPrintToChat(client, "Weapons zmarket purchase", weapondisplay);
 		}
 	}
-	else if (!rebuy)
+	else if (rebuy || hasweapon || slot == Slot_Projectile || slot == Slot_NVGs)
 	{
-		// Get ammo type and stop if it's invalid.
-		decl String:weaponammo[WEAPONS_MAX_LENGTH];
-		WeaponsGetAmmoType(weaponindex, weaponammo, sizeof(weaponammo));
-		if (!weaponammo[0])
+		// If the item is a projectile or NVGs, then skip.
+		if (slot != Slot_Projectile && slot != Slot_NVGs)
 		{
-			return false;
+			// If there is already a weapon in the slot, then force client to drop it.
+			if (weapons[slot] > -1)
+			{
+				// Force client to drop the weapon.
+				WeaponsForceClientDrop(client, weapons[slot]);
+			}
 		}
 		
-		// Prevent exploit by refilling ammo by re-buying weapon.
-		// Current clip amounts are stored, ammo is refilled, and then clips are reset.
+		// Give client the weapon.
+		GivePlayerItem(client, weaponentity);
 		
-		new prim_clip;
-		new sec_clip;
-		
-		if (weapons[Slot_Primary] > 0)
-		{
-			prim_clip = WeaponAmmoGetAmmo(weapons[Slot_Primary], true);
-		}
-		if (weapons[Slot_Secondary] > 0)
-		{
-			sec_clip = WeaponAmmoGetAmmo(weapons[Slot_Secondary], true);
-		}
-		
-		GivePlayerItem(client, weaponammo);
-		
-		if (weapons[Slot_Primary] > 0)
-		{
-			WeaponAmmoSetAmmo(weapons[Slot_Primary], true, prim_clip);
-		}
-		if (weapons[Slot_Secondary] > 0)
-		{
-			WeaponAmmoSetAmmo(weapons[Slot_Secondary], true, sec_clip);
-		}
+		TranslationPrintToChat(client, "Weapons zmarket purchase", weapondisplay);
+
+		// Add 1 to the client's purchase count.
+		ZMarketSetPurchaseCount(client, weapon, 1, true);
 	}
 	
 	return true;

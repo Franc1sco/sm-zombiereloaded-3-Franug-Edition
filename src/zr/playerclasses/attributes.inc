@@ -235,6 +235,41 @@ stock ClassGetGroup(index, String:buffer[], maxlen, cachetype = ZR_CLASS_CACHE_P
 }
 
 /**
+ * Gets the class sourcemod flags required to use the class.
+ *
+ * @param index     Index of the class in a class cache or a client index,
+ *                  depending on the cache type specified.
+ * @param buffer    The destination string buffer.
+ * @param maxlen    The length of the destination string buffer.
+ * @param cachetype Optional. Specifies what class cache to read from. Options:
+ *                  ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
+ *                  ZR_CLASS_CACHE_MODIFIED - Changed/newest class data.
+ *                  ZR_CLASS_CACHE_PLAYER (default) - Player cache. If this one
+ *                  is used, index will be used as a client index.
+ * @return          Number of cells written. -1 on error.
+ */
+stock ClassGetSM_Flags(index, String:buffer[], maxlen, cachetype = ZR_CLASS_CACHE_PLAYER)
+{
+	switch (cachetype)
+	{
+		case ZR_CLASS_CACHE_ORIGINAL:
+		{
+			return strcopy(buffer, maxlen, ClassData[index][Class_SM_Flags]);
+		}
+		case ZR_CLASS_CACHE_MODIFIED:
+		{
+			return strcopy(buffer, maxlen, ClassDataCache[index][Class_SM_Flags]);
+		}
+		case ZR_CLASS_CACHE_PLAYER:
+		{
+			return strcopy(buffer, maxlen, ClassPlayerCache[index][Class_SM_Flags]);
+		}
+	}
+
+	return -1;
+}
+
+/**
  * Gets the class name displayed in the class menu.
  *
  * @param index	 Index of the class in a class cache or a client index,
@@ -1156,6 +1191,10 @@ stock ClassAttributeNameToFlag(const String:attributename[])
 	else if (StrEqual(attributename, "group", false))
 	{
 		return ZR_CLASS_GROUP;
+	}
+	else if (StrEqual(attributename, "sm_flags", false))
+	{
+		return ZR_CLASS_SM_FLAGS;
 	}
 	else if (StrEqual(attributename, "name", false))
 	{

@@ -841,6 +841,11 @@ stock bool:ClassFilterMatch(index, filter[ClassFilter], cachetype = ZR_CLASS_CAC
 	decl String:groupname[64];
 	groupname[0] = 0;
 	ClassGetGroup(index, groupname, sizeof(groupname), cachetype);
+
+	// Get class sm_flags.
+	decl String:sm_flags[64];
+	sm_flags[0] = 0;
+	ClassGetSM_Flags(index, sm_flags, sizeof(sm_flags), cachetype);
 	
 	// Check if a client is specified in the filter.
 	new client = filter[ClassFilter_Client];
@@ -855,6 +860,19 @@ stock bool:ClassFilterMatch(index, filter[ClassFilter], cachetype = ZR_CLASS_CAC
 				return false;
 			}
 		}
+		// Check if there are any sm_flags set.
+		if (strlen(sm_flags))
+		{
+			int flags = ReadFlagString(sm_flags);
+
+			// No valid flag, blocked for everyone.
+			if(!flags)
+				return false;
+
+			// Check if user doesn't have the required flags.
+			if(GetUserFlagBits(client) & flags != flags)
+			return false;
+		}
 	}
 	
 	// Check if classes with groups are set to be excluded.
@@ -862,6 +880,12 @@ stock bool:ClassFilterMatch(index, filter[ClassFilter], cachetype = ZR_CLASS_CAC
 	{
 		// Exclude class if it has a group name.
 		if (strlen(groupname))
+		{
+			return false;
+		}
+
+		// Exclude class if it requires flags.
+		if (strlen(sm_flags))
 		{
 			return false;
 		}

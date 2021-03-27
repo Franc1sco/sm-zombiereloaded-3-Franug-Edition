@@ -86,16 +86,6 @@ bool:AmbientSoundsValidateConfig()
 		return false;
 	}
 	
-	// If volume is muted or invalid, then log error and stop.
-	new Float:ambientvolume = GetConVarFloat(g_hCvarsList[CVAR_AMBIENTSOUNDS_VOLUME]);
-	if (ambientvolume <= 0.0)
-	{
-		// Log invalid ambient sound volume error.
-		LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_SEffects, "Config Validation", "Ambient sound volume specified in \"zr_ambientsounds_volume\" is either muted or invalid.");
-		
-		return false;
-	}
-	
 	// If length is invalid, then log error and stop.
 	new Float:ambientlength = GetConVarFloat(g_hCvarsList[CVAR_AMBIENTSOUNDS_LENGTH]);
 	if (ambientlength <= 0.0)
@@ -166,11 +156,8 @@ AmbientSoundsOnClientSpawnPost(client)
 	decl String:sound[SOUND_MAX_PATH];
 	GetConVarString(g_hCvarsList[CVAR_AMBIENTSOUNDS_FILE], sound, sizeof(sound));
 	
-	// Get ambient sound volume.
-	new Float:ambientvolume = GetConVarFloat(g_hCvarsList[CVAR_AMBIENTSOUNDS_VOLUME]);
-	
 	// Emit ambient sound.
-	SEffectsEmitAmbientSound(sound, ambientvolume, client);
+	SEffectsEmitAmbientSound(sound, client);
 	
 	// Flag client that sound is playing.
 	bAmbientSoundsIsPlaying[client] = true;
@@ -217,14 +204,11 @@ public Action:AmbientSoundsTimer(Handle:timer)
 	decl String:sound[SOUND_MAX_PATH];
 	GetConVarString(g_hCvarsList[CVAR_AMBIENTSOUNDS_FILE], sound, sizeof(sound));
 	
-	// Get ambient sound volume.
-	new Float:ambientvolume = GetConVarFloat(g_hCvarsList[CVAR_AMBIENTSOUNDS_VOLUME]);
-	
 	// Stop sound before playing again.
 	SEffectsStopAmbientSound(sound);
 	
 	// Emit ambient sound.
-	SEffectsEmitAmbientSound(sound, ambientvolume);
+	SEffectsEmitAmbientSound(sound);
 	
 	// Get ambient sound length.
 	new Float:ambientlength = GetConVarFloat(g_hCvarsList[CVAR_AMBIENTSOUNDS_LENGTH]);

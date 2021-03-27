@@ -37,13 +37,13 @@
 /**
  * Prefix on all messages printed from the plugin.
  */
-#define TRANSLATION_PHRASE_PREFIX "[ZR]"
+#define TRANSLATION_PHRASE_PREFIX " \x04[ZR]\x01"
 
 /**
  * @section Text color chars.
  */
 #define TRANSLATION_TEXT_COLOR_DEFAULT "\x01"
-#define TRANSLATION_TEXT_COLOR_LGREEN "\x03"
+#define TRANSLATION_TEXT_COLOR_LGREEN "\x05"
 #define TRANSLATION_TEXT_COLOR_GREEN "\x04"
 /**
  * @endsection

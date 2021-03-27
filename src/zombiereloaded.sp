@@ -53,7 +53,7 @@
 
 
 
-#define VERSION "3.6 Franug edition"
+#define VERSION "3.6.3 Franug edition"
 
 bool g_allweapons[MAXPLAYERS + 1];
 
@@ -98,6 +98,7 @@ bool g_allweapons[MAXPLAYERS + 1];
 #include "zr/hitgroups"
 #include "zr/roundstart"
 #include "zr/roundend"
+#include "zr/soundeffects/volumecontrol"
 #include "zr/infect"
 #include "zr/immunityhandler"
 #include "zr/damage"
@@ -177,6 +178,7 @@ public OnPluginStart()
 	CommandsInit();
 	WeaponsInit();
 	EventInit();
+	VolumeOnCommandCreate();
 }
 
 /**
@@ -319,6 +321,7 @@ public OnClientCookiesCached(client)
 	ClassOnCookiesCached(client);
 	WeaponsOnCookiesCached(client);
 	ZHPOnCookiesCached(client);
+	VolumeOnCookiesCached(client);
 }
 
 /**
