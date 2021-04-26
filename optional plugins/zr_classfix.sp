@@ -7,7 +7,7 @@ public Plugin:myinfo =
 	name = "ZR Class Fix",
 	author = "Franc1sco franug",
 	description = "Class Fix",
-	version = "3.3",
+	version = "2.1",
 	url = "http://steamcommunity.com/id/franug"
 };
 
@@ -17,11 +17,11 @@ new Handle:hPlayerClasses, String:sClassPath[PLATFORM_MAX_PATH] = "configs/zr/pl
 
 new Handle:array_classes;
 
-enum struct zrClasses
+enum Classes
 {
-	int Index;
-	int health;
-	char model[128];
+	Index,
+	health,
+	String:model[128]
 }
 
 public OnPluginStart()
@@ -30,13 +30,18 @@ public OnPluginStart()
 	RegConsoleCmd("sm_testzrfix", Test);
 }
 
+public OnPluginEnd()
+{
+	CloseHandle(array_classes);
+}
+
 public Action:Test(client,args)
 {
-	zrClasses Items;
+	new Items[Classes];
 	for(new i=0;i<GetArraySize(array_classes);++i)
 	{
-		GetArrayArray(array_classes, i, Items);
-		ReplyToCommand(client, "Zombie Class index %i with health %i and model %s", Items.Index,Items.health,Items.model);
+		GetArrayArray(array_classes, i, Items[0]);
+		ReplyToCommand(client, "Zombie Class index %i with health %i and model %s", Items[Index],Items[health],Items[model]);
 	} 
 	
 	return Plugin_Handled;
@@ -87,22 +92,19 @@ public Action:OnConfigsExecutedPost(Handle:timer)
 	if (KvGotoFirstSubKey(kv))
 	{
 		ClearArray(array_classes);
-		decl String:name[64], String:enable[32], String:defaultclass[32];
-		zrClasses Items;
+		decl String:name[64], String:enable[32];
+		new Items[Classes];
 
 		do
 		{
 			KvGetString(kv, "enabled", enable, 32);
-			KvGetString(kv, "team_default", defaultclass, 32);
-			
-			// check if is a enabled zombie class and no admin class and it's default class
-			if(StrEqual(enable, "yes") && StrEqual(defaultclass, "yes") && KvGetNum(kv, "team") == 0 && KvGetNum(kv, "flags") == 0)
+			if(StrEqual(enable, "yes") && KvGetNum(kv, "team") == 0 && KvGetNum(kv, "flags") == 0) // check if is a enabled zombie class and no admin class
 			{
 				KvGetString(kv, "name", name, sizeof(name));
-				Items.Index = ZR_GetClassByName(name);
-				Items.health = KvGetNum(kv, "health", 5000);
-				KvGetString(kv, "model_path", Items.model, 128);
-				PushArrayArray(array_classes, Items); // save all info in the array
+				Items[Index] = ZR_GetClassByName(name);
+				Items[health] = KvGetNum(kv, "health", 5000);
+				KvGetString(kv, "model_path", Items[model], 128);
+				PushArrayArray(array_classes, Items[0]); // save all info in the array
 			}
 			
 		} while (KvGotoNextKey(kv));
@@ -115,26 +117,23 @@ public ZR_OnClientInfected(client, attacker, bool:motherInfect, bool:respawnOver
 	new vida = GetClientHealth(client);
 	if(vida < 300)
 	{
-		CreateTimer(0.5, Timer_SetDefaultClass, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(0.5, TimerAsegurarClase, client, TIMER_FLAG_NO_MAPCHANGE);
 	}
 }
 
-public Action:Timer_SetDefaultClass(Handle:timer, any:userid)
+public Action:TimerAsegurarClase(Handle:timer, any:client)
 {
-	int client = GetClientOfUserId(userid);
-	
-	if(client && IsClientInGame(client) && IsPlayerAlive(client) && ZR_IsClientZombie(client)) 
-		SetDefaultClass(client);
+	if(IsClientInGame(client) && IsPlayerAlive(client)) AsegurarClaseDefault(client);
 }
 
-SetDefaultClass(client)
+AsegurarClaseDefault(client)
 {
-	zrClasses Items;
+	new Items[Classes];
 	new randomnum = GetRandomInt(0, GetArraySize(array_classes)-1); // random value in the array
-	GetArrayArray(array_classes, randomnum, Items); // get class info from the array
+	GetArrayArray(array_classes, randomnum, Items[0]); // get class info from the array
 	
-	ZR_SelectClientClass(client, Items.Index, true, true); // set a valid class
-	SetEntityHealth(client, Items.health); // apply health of the class selected
-	if(strlen(Items.model) > 2 && IsModelPrecached(Items.model)) // check if model is valid and is precached
-		SetEntityModel(client, Items.model); // then apply it
+	ZR_SelectClientClass(client, Items[Index], true, true); // set a valid class
+	SetEntityHealth(client, Items[health]); // apply health of the class selected
+	if(strcmp(Items[model], "") != 0 && IsModelPrecached(Items[model])) // check if model is valid and is precached
+		SetEntityModel(client, Items[model]); // then apply it
 }
