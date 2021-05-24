@@ -112,28 +112,6 @@ InfectOnMapEnd()
 }
 
 /**
- * Loads downloadable content data for infect module.
- */
-InfectLoad()
-{
-	// Get infection sound.
-	decl String:sound[PLATFORM_MAX_PATH];
-	GetConVarString(g_hCvarsList[CVAR_INFECT_SOUND], sound, sizeof(sound));
-	
-	// If infect sound cvar is empty, then stop.
-	if (!sound[0])
-	{
-		return;
-	}
-	
-	// Prepend sound/ to the path.
-	Format(sound, sizeof(sound), "sound/%s", sound);
-	
-	// Add sound file to downloads table.
-	AddFileToDownloadsTable(sound);
-}
-
-/**
  * Create commands specific to infect here.
  */
 InfectOnCommandsCreate()
@@ -463,37 +441,37 @@ public Action:InfectMotherZombie(Handle:timer)
 {
 	// Reset timer handle.
 	tInfect = INVALID_HANDLE;
-	
+
 	// Create eligible player list.
 	new Handle:arrayEligibleClients = INVALID_HANDLE;
 	new eligibleclients = ZRCreateEligibleClientList(arrayEligibleClients, true, true, true);
-	
+
 	// If there are no eligible client's then stop.
-	if (!eligibleclients)
+	if(!eligibleclients)
 	{
 		// Destroy handle.
 		CloseHandle(arrayEligibleClients);
 		return;
 	}
-	
+
 	// Prune list of immune clients.
 	//eligibleclients = InfectRemoveImmuneClients(arrayEligibleClients);
-	
+
 	// Move all clients to CT.
 	InfectMoveAllToCT();
-	
+
 	new mothercount;
 	new ratio = GetConVarInt(g_hCvarsList[CVAR_INFECT_MZOMBIE_RATIO]);
 	new min = GetConVarInt(g_hCvarsList[CVAR_INFECT_MZOMBIE_MIN]);
 	new max = GetConVarInt(g_hCvarsList[CVAR_INFECT_MZOMBIE_MAX]);
-	
+
 	// Count valid human clients.
 	new humancount;
 	ZRCountValidClients(_, humancount, _, true);
-	
+
 	// Get and validate infection mode. This will also log a warning on error.
 	new InfectMode:mode = InfectGetModeOrFail();
-	
+
 	// Apply infection mode.
 	switch (mode)
 	{
@@ -505,16 +483,16 @@ public Action:InfectMotherZombie(Handle:timer)
 		case InfectMode_Dynamic:
 		{
 			// Dynamic mode. Every n-th player is infected.
-			
+
 			// A ratio of 0 will infect one zombie (to keep backwards compatibility).
 			if (ratio == 0)
 			{
 				mothercount = 1;
 			}
-			
+
 			// Calculate number of zombies to infect.
 			mothercount = RoundToNearest(float(humancount) / ratio);
-			
+
 			// Require at least one mother zombie.
 			if (mothercount == 0)
 			{
@@ -533,7 +511,7 @@ public Action:InfectMotherZombie(Handle:timer)
 				// Infect all but n humans. Since ratio already is negative
 				// just add the numbers. (Zero ratio is catched by validator.)
 				mothercount = humancount + ratio;
-				
+
 				// Force at least one mother zombie.
 				if (mothercount == 0)
 				{
@@ -547,89 +525,89 @@ public Action:InfectMotherZombie(Handle:timer)
 			mothercount = Math_GetRandomInt(min, max);
 		}
 	}
-	
+
 	new candidates = 0;
 	new Handle:aCandidates = CreateArray();
-    for (new n = 0; n < eligibleclients; n++)
-    {
-        // Get the client stored in the array index.
-        new client = GetArrayCell(arrayEligibleClients, n);
+	for (new n = 0; n < eligibleclients; n++)
+	{
+		// Get the client stored in the array index.
+		new client = GetArrayCell(arrayEligibleClients, n);
 
-        // If client hasn't been chosen this cycle, put into aCandidates array.
-        if (g_InfectMotherStatus[client] == MotherStatus_None)
-        {
-            PushArrayCell(aCandidates, client);
-            candidates++;
-        }
-    }
+		// If client hasn't been chosen this cycle, put into aCandidates array.
+		if (g_InfectMotherStatus[client] == MotherStatus_None)
+		{
+			PushArrayCell(aCandidates, client);
+			candidates++;
+		}
+	}
 
-    // Not enough candidates found.
-    if (candidates < mothercount)
-    {
-        for (new n = 0; n < eligibleclients; n++)
-        {
-            // Get the client stored in the array index.
-            new client = GetArrayCell(arrayEligibleClients, n);
+	// Not enough candidates found.
+	if(candidates < mothercount)
+	{
+		for(new n = 0; n < eligibleclients; n++)
+		{
+			// Get the client stored in the array index.
+			new client = GetArrayCell(arrayEligibleClients, n);
 
-            // If client hasn't been chosen last round, put into aCandidates array,
-            // but only until we have enough candidates.
-            if (!(g_InfectMotherStatus[client] & MotherStatus_Last))
-            {
-                PushArrayCell(aCandidates, client);
-                candidates++;
+			// If client hasn't been chosen last round, put into aCandidates array,
+			// but only until we have enough candidates.
+			if (!(g_InfectMotherStatus[client] & MotherStatus_Last))
+			{
+				PushArrayCell(aCandidates, client);
+				candidates++;
 
-                // Enough candidates found.
-                if(candidates >= mothercount)
-                    break;
-            }
-        }
+				// Enough candidates found.
+				if(candidates >= mothercount)
+					break;
+			}
+		}
 
-        // Restart the cycle.
-        // Reset all players MotherStatus.
-        for (int client = 0; client <= MAXPLAYERS; client++)
-        {
-            g_InfectMotherStatus[client] = MotherStatus_None;
-        }
+		// Restart the cycle.
+		// Reset all players MotherStatus.
+		for(int client = 0; client <= MAXPLAYERS; client++)
+		{
+			g_InfectMotherStatus[client] = MotherStatus_None;
+		}
 
-        // Announce start of new cycle
-        TranslationPrintToChatAll(true, false, "Mother zombie infect cycle reset");
-    }
+		// Announce start of new cycle
+		TranslationPrintToChatAll(true, false, "Mother zombie infect cycle reset");
+	}
 
-    // Remove MotherStatus_Last flag from all players.
-    for (int client = 0; client <= MAXPLAYERS; client++)
-    {
-        g_InfectMotherStatus[client] &= ~MotherStatus_Last;
-    }
+	// Remove MotherStatus_Last flag from all players.
+	for(int client = 0; client <= MAXPLAYERS; client++)
+	{
+		g_InfectMotherStatus[client] &= ~MotherStatus_Last;
+	}
 
-    // Infect players.
-    for (new n = 0; n < mothercount; n++)
-    {
-        // Stop if there are no more candidates.
-        if (candidates <= 0)
-        {
-            break;
-        }
+	// Infect players.
+	for(new n = 0; n < mothercount; n++)
+	{
+		// Stop if there are no more candidates.
+		if (candidates <= 0)
+		{
+			break;
+		}
 
-        // Get a random array index.
-        new i = Math_GetRandomInt(0, candidates - 1);
+		// Get a random array index.
+		new i = Math_GetRandomInt(0, candidates - 1);
 
-        // Get the client stored in the random array index.
-        new client = GetArrayCell(aCandidates, i);
+		// Get the client stored in the random array index.
+		new client = GetArrayCell(aCandidates, i);
 
-        // Infect player.
-        InfectHumanToZombie(client, _, true);
+		// Infect player.
+		InfectHumanToZombie(client, _, true);
 
-        // Remove player from eligible client list.
-        RemoveFromArray(aCandidates, i);
-        candidates--;
-    }
+		// Remove player from eligible client list.
+		RemoveFromArray(aCandidates, i);
+		candidates--;
+	}
 
-    // Mother zombies have been infected.
-    g_bZombieSpawned = true;
+	// Mother zombies have been infected.
+	g_bZombieSpawned = true;
 
-    // Destroy client list.
-    CloseHandle(arrayEligibleClients);
-    CloseHandle(aCandidates);
+	// Destroy client list.
+	CloseHandle(arrayEligibleClients);
+	CloseHandle(aCandidates);
 }
 
 /**
@@ -684,23 +662,9 @@ public Action:InfectCountdown(Handle:timer)
 	}
 	
 	new counter_int = RoundToNearest(length - counter);
-	char sounddir[128];
-	Format(sounddir, 128, "sound/zr/countdown/%i.mp3", counter_int);
 	
-	if(FileExists(sounddir))
-	{
-		ReplaceString(sounddir, 128, "sound/", "");
-		
-		for (new x = 1; x < MaxClients; x++)
-		{
-			if (IsClientInGame(x))
-			{
-				if (zfCountdownVolume[x] > 0)
-					EmitSoundToClient(x, sounddir, _, _, SNDLEVEL_NORMAL, _, zfCountdownVolume[x]);
-			}
-		}
-	}
-	
+	// Api Contdown Sounds
+	APIOnCountDownTick(counter_int);
 	// Print the countdown text to the clients.
 	TranslationPrintCenterTextAll(false, "Infect countdown", counter_int);
 	
@@ -712,24 +676,6 @@ public Action:InfectCountdown(Handle:timer)
 	WritePackFloat(hInfectCountdownData, counter);
 	
 	return Plugin_Continue;
-}
-
-CountDown()
-{
-	int count = 1;
-	char sounddir[128];
-	Format(sounddir, 128, "sound/zr/countdown/%i.mp3", count);
-	
-	while(FileExists(sounddir))
-	{
-		AddFileToDownloadsTable(sounddir);
-		ReplaceString(sounddir, 128, "sound/", "");
-		
-		PrecacheSound(sounddir);
-		
-		count++;
-		Format(sounddir, 128, "sound/zr/countdown/%i.mp3", count);
-	}
 }
 
 /**
@@ -788,8 +734,6 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
 		// Consecutive infection protection is disabled. No immunity.
 		g_InfectMotherStatus[client] = MotherStatus_None;
 	}
-	
-	ZombieSoundsScream(client);
 	InfectFireEffects(client);
 	
 	// Stop coundown, if running.
@@ -861,7 +805,6 @@ InfectHumanToZombie(client, attacker = -1, bool:motherinfect = false, bool:respa
 	ClassOnClientInfected(client, motherinfect);
 	RoundEndOnClientInfected();
 	DamageOnClientInfected(client, motherinfect);
-	SEffectsOnClientInfected(client);
 	ZTeleOnClientInfected(client);
 	ZHPOnClientInfected(client);
 	APIOnClientInfected(client, attacker, motherinfect, respawnoverride, respawn);
@@ -926,7 +869,6 @@ InfectZombieToHuman(client, bool:respawn = false, bool:protect = false)
 	}
 	
 	// Forward event to modules.
-	SEffectsOnClientHuman(client);
 	APIOnClientHumanPost(client, respawn, protect);
 	ImmunityOnClientHuman(client);
 }

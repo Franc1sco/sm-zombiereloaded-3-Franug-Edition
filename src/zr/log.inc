@@ -103,10 +103,6 @@ LogGetModuleNameString(String:buffer[], maxlen, LogModules:module, bool:shortNam
 		{
 			return shortName ? strcopy(buffer, maxlen, "veffects") : strcopy(buffer, maxlen, "Visual Effects");
 		}
-		case LogModule_SEffects:
-		{
-			return shortName ? strcopy(buffer, maxlen, "seffects") : strcopy(buffer, maxlen, "Sound Effects");
-		}
 		case LogModule_Tools:
 		{
 			return shortName ? strcopy(buffer, maxlen, "tools") : strcopy(buffer, maxlen, "Tools");
@@ -193,10 +189,6 @@ LogModules:LogGetModule(const String:moduleName[])
 	else if (StrEqual(moduleName, "veffects", false))
 	{
 		return LogModule_VEffects;
-	}
-	else if (StrEqual(moduleName, "seffects", false))
-	{
-		return LogModule_SEffects;
 	}
 	else if (StrEqual(moduleName, "tools", false))
 	{

@@ -3,9 +3,9 @@
  *
  *  Zombie:Reloaded
  *
- *  File:		  commands.inc
+ *  File:		  menu.inc
  *  Type:		  Core
- *  Description:   Console command creation and hooking.
+ *  Description:   Base menu functions for the plugin.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
  *
@@ -26,33 +26,24 @@
  */
 
 /**
- * Commands are created/hooked.
+ * @section Some defined lengths of menu lines throughout the plugin.
  */
-CommandsInit()
+#define MENU_LINE_SMALL_LENGTH 32
+#define MENU_LINE_REG_LENGTH 64
+#define MENU_LINE_BIG_LENGTH 128
+#define MENU_LINE_HUGE_LENGTH 256
+
+#define MENU_LINE_TITLE_LENGTH MENU_LINE_BIG_LENGTH
+/**
+ * @endsection
+ */
+
+/**
+ * Return itemdraw flag for SM menus.
+ * 
+ * @param condition	 If this is true, item will be drawn normally.
+ */
+stock int MenuGetItemDraw(bool condition)
 {
-	// Forward event to modules. (create commands)
-	ConfigOnCommandsCreate();
-	LogOnCommandsCreate();
-	ClassOnCommandsCreate();
-	WeaponsOnCommandsCreate();
-	HitgroupsOnCommandsCreate();
-	InfectOnCommandsCreate();
-	MenuOnCommandsCreate();
-	ZAdminOnCommandsCreate();
-	AntiStickOnCommandsCreate();
-	ZCookiesOnCommandsCreate();
-	ZSpawnOnCommandsCreate();
-	ZTeleOnCommandsCreate();
-	ZHPOnCommandsCreate();
-	VolOnCommandsCreate();
-	ImmunityOnCommandsCreate();
-	
-	#if defined ADD_VERSION_INFO
-		VersionOnCommandsCreate();
-	#endif
-	
-	DebugOnCommandsCreate();
-	
-	// Forward event to modules. (hook commands)
-	ClassOnCommandsHook();
+	return condition ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
 }

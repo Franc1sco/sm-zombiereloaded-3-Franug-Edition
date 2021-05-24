@@ -3,9 +3,9 @@
  *
  *  Zombie:Reloaded
  *
- *  File:		  commands.inc
+ *  File:		  Sounds.api.inc
  *  Type:		  Core
- *  Description:   Console command creation and hooking.
+ *  Description:   Native handlers for the ZR API. (Sounds module)
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
  *
@@ -26,33 +26,31 @@
  */
 
 /**
- * Commands are created/hooked.
+ * @section Global forward handles.
  */
-CommandsInit()
+Handle g_hAPIFwdCountDownTickForward = INVALID_HANDLE;
+/**
+ * @endsection
+ */
+
+/**
+ * Initializes all natives and forwards related to infection.
+ */
+void APISoundsInit()
 {
-	// Forward event to modules. (create commands)
-	ConfigOnCommandsCreate();
-	LogOnCommandsCreate();
-	ClassOnCommandsCreate();
-	WeaponsOnCommandsCreate();
-	HitgroupsOnCommandsCreate();
-	InfectOnCommandsCreate();
-	MenuOnCommandsCreate();
-	ZAdminOnCommandsCreate();
-	AntiStickOnCommandsCreate();
-	ZCookiesOnCommandsCreate();
-	ZSpawnOnCommandsCreate();
-	ZTeleOnCommandsCreate();
-	ZHPOnCommandsCreate();
-	VolOnCommandsCreate();
-	ImmunityOnCommandsCreate();
 	
-	#if defined ADD_VERSION_INFO
-		VersionOnCommandsCreate();
-	#endif
+	// Forwards
+	g_hAPIFwdCountDownTickForward = CreateGlobalForward("ZR_OnContdownWarningTick", ET_Ignore, Param_Cell);
+}
+
+Action APIOnCountDownTick(int tick)
+{
+	// Start forward call.
+	Call_StartForward(g_hAPIFwdCountDownTickForward);
 	
-	DebugOnCommandsCreate();
+	// Push the parameters.
+	Call_PushCell(tick);
 	
-	// Forward event to modules. (hook commands)
-	ClassOnCommandsHook();
+	// Finish the call.
+	Call_Finish();
 }

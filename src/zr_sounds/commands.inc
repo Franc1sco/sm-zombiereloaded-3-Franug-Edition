@@ -28,31 +28,10 @@
 /**
  * Commands are created/hooked.
  */
-CommandsInit()
+void CommandsInit()
 {
 	// Forward event to modules. (create commands)
-	ConfigOnCommandsCreate();
-	LogOnCommandsCreate();
-	ClassOnCommandsCreate();
-	WeaponsOnCommandsCreate();
-	HitgroupsOnCommandsCreate();
-	InfectOnCommandsCreate();
-	MenuOnCommandsCreate();
-	ZAdminOnCommandsCreate();
-	AntiStickOnCommandsCreate();
-	ZCookiesOnCommandsCreate();
-	ZSpawnOnCommandsCreate();
-	ZTeleOnCommandsCreate();
-	ZHPOnCommandsCreate();
-	VolOnCommandsCreate();
-	ImmunityOnCommandsCreate();
-	
-	#if defined ADD_VERSION_INFO
-		VersionOnCommandsCreate();
-	#endif
-	
-	DebugOnCommandsCreate();
-	
-	// Forward event to modules. (hook commands)
-	ClassOnCommandsHook();
+
+	ZsoundsOnCommandsCreate();
+	ZombieSoundsOnCommandsCreate();
 }

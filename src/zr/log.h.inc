@@ -81,7 +81,6 @@ enum LogModules
 	bool:LogModule_Napalm,
 	bool:LogModule_Playerclasses,
 	bool:LogModule_VEffects,
-	bool:LogModule_SEffects,
 	bool:LogModule_Tools,
 	bool:LogModule_Volfeatures,
 	bool:LogModule_Weapons,

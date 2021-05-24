@@ -86,7 +86,6 @@ public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadc
 	RoundStartOnRoundStart();
 	RoundEndOnRoundStart();
 	InfectOnRoundStart();
-	SEffectsOnRoundStart();
 	ZSpawnOnRoundStart();
 	VolOnRoundStart();
 	
@@ -140,7 +139,6 @@ public Action:EventRoundEnd(Handle:event, const String:name[], bool:dontBroadcas
 	WeaponsOnRoundEnd();
 	RoundEndOnRoundEnd(winner);
 	InfectOnRoundEnd();
-	SEffectsOnRoundEnd();
 	RespawnOnRoundEnd();
 	ZSpawnOnRoundEnd();
 	VolOnRoundEnd();
@@ -187,7 +185,6 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
 	ClassOnClientSpawn(index);
 	WeaponsOnClientSpawn(index);
 	RoundStartOnClientSpawn(index);
-	SEffectsOnClientSpawn(index);
 	RespawnOnClientSpawn(index);
 	ZTeleOnClientSpawn(index);
 	ZHPOnClientSpawn(index);
@@ -216,7 +213,6 @@ public Action:EventPlayerSpawnPost(Handle:timer, any:client)
 	
 	// Forward event to modules.
 	WeaponsOnClientSpawnPost(client);
-	SEffectsOnClientSpawnPost(client);
 	ClassOnClientSpawnPost(client);
 	SpawnProtectOnClientSpawnPost(client);	// Must be executed after class attributes are applied.
 }
@@ -244,7 +240,6 @@ public Action:EventPlayerHurt(Handle:event, const String:name[], bool:dontBroadc
 	ClassAlphaUpdate(index);
 	InfectOnClientHurt(index, attacker, weapon);
 	AccountOnClientHurt(index, attacker, dmg_health);
-	SEffectsOnClientHurt(index);
 	KnockbackOnClientHurt(index, attacker, weapon, hitgroup, dmg_health);
 	NapalmOnClientHurt(index, attacker, weapon);
 	ZHPOnClientHurt(index);
@@ -286,7 +281,6 @@ public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroad
 	ClassOnClientDeath(index);
 	InfectOnClientDeath(index, attacker);
 	VEffectsOnClientDeath(index);
-	SEffectsOnClientDeath(index);
 	SpawnProtectOnClientDeath(index);
 	RespawnOnClientDeath(index, attacker, weapon);
 	NapalmOnClientDeath(index);
