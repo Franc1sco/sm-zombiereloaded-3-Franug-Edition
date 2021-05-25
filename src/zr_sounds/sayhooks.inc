@@ -3,9 +3,9 @@
  *
  *  Zombie:Reloaded
  *
- *  File:		  commands.inc
+ *  File:		  sayhooks.inc
  *  Type:		  Core
- *  Description:   Console command creation and hooking.
+ *  Description:   Hook plugin say commands and redirect to their handling module.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
  *
@@ -26,33 +26,24 @@
  */
 
 /**
- * Commands are created/hooked.
+ * @section SM core config info.
  */
-CommandsInit()
-{
-	// Forward event to modules. (create commands)
-	ConfigOnCommandsCreate();
-	LogOnCommandsCreate();
-	ClassOnCommandsCreate();
-	WeaponsOnCommandsCreate();
-	HitgroupsOnCommandsCreate();
-	InfectOnCommandsCreate();
-	MenuOnCommandsCreate();
-	ZAdminOnCommandsCreate();
-	AntiStickOnCommandsCreate();
-	ZCookiesOnCommandsCreate();
-	ZSpawnOnCommandsCreate();
-	ZTeleOnCommandsCreate();
-	ZHPOnCommandsCreate();
-	VolOnCommandsCreate();
-	ImmunityOnCommandsCreate();
-	
-	#if defined ADD_VERSION_INFO
-		VersionOnCommandsCreate();
-	#endif
-	
-	DebugOnCommandsCreate();
-	
-	// Forward event to modules. (hook commands)
-	ClassOnCommandsHook();
-}
+#define SAYHOOKS_CHAT_PUBLIC_DEFAULT "!"
+#define SAYHOOKS_CHAT_SILENT_DEFAULT "/"
+/**
+ * @endsection
+ */
+
+/**
+ * Max number of characters in a chat text string.
+ */
+#define SAYHOOKS_MAX_CHAT_LENGTH 192
+
+/**
+ * @section Say command key words.
+ */
+#define SAYHOOKS_KEYWORD_ZSOUNDS	  "zsounds"
+
+/**
+ * @endsection
+ */

@@ -3,9 +3,9 @@
  *
  *  Zombie:Reloaded
  *
- *  File:		  commands.inc
+ *  File:		  global.inc
  *  Type:		  Core
- *  Description:   Console command creation and hooking.
+ *  Description:   External API.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
  *
@@ -26,33 +26,15 @@
  */
 
 /**
- * Commands are created/hooked.
+ * Global variable that tells if sound cvar data was loaded successfully.
  */
-CommandsInit()
+
+
+/**
+ * All external API natives are created here.
+ */
+/*
+void CreateGlobals()
 {
-	// Forward event to modules. (create commands)
-	ConfigOnCommandsCreate();
-	LogOnCommandsCreate();
-	ClassOnCommandsCreate();
-	WeaponsOnCommandsCreate();
-	HitgroupsOnCommandsCreate();
-	InfectOnCommandsCreate();
-	MenuOnCommandsCreate();
-	ZAdminOnCommandsCreate();
-	AntiStickOnCommandsCreate();
-	ZCookiesOnCommandsCreate();
-	ZSpawnOnCommandsCreate();
-	ZTeleOnCommandsCreate();
-	ZHPOnCommandsCreate();
-	VolOnCommandsCreate();
-	ImmunityOnCommandsCreate();
-	
-	#if defined ADD_VERSION_INFO
-		VersionOnCommandsCreate();
-	#endif
-	
-	DebugOnCommandsCreate();
-	
-	// Forward event to modules. (hook commands)
-	ClassOnCommandsHook();
 }
+*/

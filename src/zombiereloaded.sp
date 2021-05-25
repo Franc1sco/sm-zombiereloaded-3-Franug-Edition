@@ -98,7 +98,6 @@ bool g_allweapons[MAXPLAYERS + 1];
 #include "zr/hitgroups"
 #include "zr/roundstart"
 #include "zr/roundend"
-#include "zr/soundeffects/volumecontrol"
 #include "zr/infect"
 #include "zr/immunityhandler"
 #include "zr/damage"
@@ -110,7 +109,6 @@ bool g_allweapons[MAXPLAYERS + 1];
 // Modules
 #include "zr/account"
 #include "zr/visualeffects/visualeffects"
-#include "zr/soundeffects/soundeffects"
 #include "zr/antistick"
 #include "zr/knockback"
 #include "zr/spawnprotect"
@@ -178,7 +176,6 @@ public OnPluginStart()
 	CommandsInit();
 	WeaponsInit();
 	EventInit();
-	VolumeOnCommandCreate();
 }
 
 /**
@@ -217,18 +214,13 @@ public OnMapStart()
 	ClassOnMapStart();
 	OverlaysOnMapStart();
 	RoundEndOnMapStart();
-	SEffectsOnMapStart();
 	ZSpawnOnMapStart();
 	VolInit();
-	
-	CountDown();
 	
 	// Fixed crashes on CS:GO
 	ModelsLoad();
 	DownloadsLoad();
-	InfectLoad();
 	VEffectsLoad();
-	SEffectsLoad();
 }
 
 /**
@@ -240,7 +232,6 @@ public OnMapEnd()
 	InfectOnMapEnd();
 	VolOnMapEnd();
 	VEffectsOnMapEnd();
-	ZombieSoundsOnMapEnd();
 	ImmunityOnMapEnd();
 }
 
@@ -295,7 +286,6 @@ public OnClientPutInServer(client)
 	WeaponsClientInit(client);
 	InfectClientInit(client);
 	DamageClientInit(client);
-	SEffectsClientInit(client);
 	AntiStickClientInit(client);
 	SpawnProtectClientInit(client);
 	RespawnClientInit(client);
@@ -321,7 +311,6 @@ public OnClientCookiesCached(client)
 	ClassOnCookiesCached(client);
 	WeaponsOnCookiesCached(client);
 	ZHPOnCookiesCached(client);
-	VolumeOnCookiesCached(client);
 }
 
 /**

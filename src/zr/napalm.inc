@@ -197,7 +197,7 @@ NapalmOnWeaponFire(client, const String:weapon[])
 	}
 	
 	// If weapon isn't a grenade, then stop.
-	if (!StrEqual(weapon, "hegrenade", false))
+	if (!StrEqual(weapon, "weapon_hegrenade", false))
 	{
 		return;
 	}

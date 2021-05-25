@@ -52,12 +52,12 @@
 /**
  * Load translations file here.
  */
-TranslationInit()
+void TranslationInit()
 {
 	// Load translations phrases used by plugin.
 	LoadTranslations("common.phrases.txt");
 	LoadTranslations("core.phrases.txt");
-	LoadTranslations("zombiereloaded.phrases.txt");
+	LoadTranslations("zombiereloaded_sounds.phrases.txt");
 }
 
 /**
@@ -68,7 +68,7 @@ TranslationInit()
  * @param maxlen		Maximum length of the translated string.
  * @param ...		   Translation formatting parameters.  
  */
-stock TranslationTranslatePhrase(client, String:translation[], maxlen, any:...)
+stock void TranslationTranslatePhrase(int client, char[] translation, int maxlen, any ...)
 {
 	// Set translation target to given target.
 	SetGlobalTransTarget(client);
@@ -83,7 +83,7 @@ stock TranslationTranslatePhrase(client, String:translation[], maxlen, any:...)
  * @param text	  Text to format.
  * @param maxlen	Maximum length of the formatted text.
  */
-stock TranslationPluginFormatString(String:text[], maxlen, bool:color = true)
+stock void TranslationPluginFormatString(char[] text, int maxlen, bool color = true)
 {
 	if (color)
 	{
@@ -108,13 +108,13 @@ stock TranslationPluginFormatString(String:text[], maxlen, bool:color = true)
  * @param client	The client index.
  * @param ...	   Translation formatting parameters.  
  */
-stock TranslationPrintToChat(client, any:...)
+stock void TranslationPrintToChat(int client, any ...)
 {
 	// Set translation target
 	SetGlobalTransTarget(client);
 	
 	// Translate phrase.
-	decl String:translation[TRANSLATION_MAX_LENGTH_CHAT];
+	char translation[TRANSLATION_MAX_LENGTH_CHAT];
 	VFormat(translation, sizeof(translation), "%t", 2);
 	
 	// Format string to create plugin style.
@@ -131,9 +131,9 @@ stock TranslationPrintToChat(client, any:...)
  * @param admin	 True to only print text to admins, false to print to everyone.
  * @param ...	   Translation formatting parameters.
  */
-stock TranslationPrintToChatAll(bool:server, bool:admin, any:...)
+stock void TranslationPrintToChatAll(bool server, bool admin, any ...)
 {
-	decl String:translation[TRANSLATION_MAX_LENGTH_CHAT];
+	char translation[TRANSLATION_MAX_LENGTH_CHAT];
 	
 	if (server)
 	{
@@ -151,7 +151,7 @@ stock TranslationPrintToChatAll(bool:server, bool:admin, any:...)
 	}
 	
 	// x = client index.
-	for (new x = 1; x <= MaxClients; x++)
+	for (int x = 1; x <= MaxClients; x++)
 	{
 		// If client isn't in-game, then stop.
 		if (!IsClientInGame(x))
@@ -185,13 +185,13 @@ stock TranslationPrintToChatAll(bool:server, bool:admin, any:...)
  * @param client	The client index.
  * @param ...	   Translation formatting parameters.  
  */
-stock TranslationPrintToConsole(client, any:...)
+stock void TranslationPrintToConsole(int client, any ...)
 {
 	// Set translation target
 	SetGlobalTransTarget(client);
 	
 	// Translate phrase.
-	decl String:translation[TRANSLATION_MAX_LENGTH_CONSOLE];
+	char translation[TRANSLATION_MAX_LENGTH_CONSOLE];
 	VFormat(translation, sizeof(translation), "%t", 2);
 	
 	// Format string to create plugin style.
@@ -207,9 +207,9 @@ stock TranslationPrintToConsole(client, any:...)
  * @param server	True to also print text to server console, false just to clients.
  * @param ...	   Translation formatting parameters.
  */
-stock TranslationPrintToConsoleAll(bool:server, bool:admin, any:...)
+stock void TranslationPrintToConsoleAll(bool server, bool admin, any ...)
 {
-	decl String:translation[TRANSLATION_MAX_LENGTH_CONSOLE];
+	char translation[TRANSLATION_MAX_LENGTH_CONSOLE];
 	
 	if (server)
 	{
@@ -227,7 +227,7 @@ stock TranslationPrintToConsoleAll(bool:server, bool:admin, any:...)
 	}
 	
 	// x = client index.
-	for (new x = 1; x <= MaxClients; x++)
+	for (int x = 1; x <= MaxClients; x++)
 	{
 		// If client isn't in-game, then stop.
 		if (!IsClientInGame(x))
@@ -261,13 +261,13 @@ stock TranslationPrintToConsoleAll(bool:server, bool:admin, any:...)
  * @param client	The client index.
  * @param ...	   Translation formatting parameters.  
  */
-stock TranslationPrintCenterText(client, any:...)
+stock void TranslationPrintCenterText(int client, any ...)
 {
 	// Set translation target
 	SetGlobalTransTarget(client);
 	
 	// Translate phrase.
-	decl String:translation[TRANSLATION_MAX_LENGTH_CHAT];
+	char translation[TRANSLATION_MAX_LENGTH_CHAT];
 	VFormat(translation, sizeof(translation), "%t", 2);
 	
 	// Print translated phrase to client.
@@ -280,9 +280,9 @@ stock TranslationPrintCenterText(client, any:...)
  * @param client	The client index.
  * @param ...	   Translation formatting parameters.  
  */
-stock TranslationPrintCenterTextAll(bool:admin, any:...)
+stock void TranslationPrintCenterTextAll(bool admin, any ...)
 {
-	for (new client = 1; client <= MaxClients; client++)
+	for (int client = 1; client <= MaxClients; client++)
 	{
 		// Skip clients not in game.
 		if (!IsClientInGame(client))
@@ -306,7 +306,7 @@ stock TranslationPrintCenterTextAll(bool:admin, any:...)
 		SetGlobalTransTarget(client);
 		
 		// Translate phrase.
-		decl String:translation[TRANSLATION_MAX_LENGTH_CHAT];
+		char translation[TRANSLATION_MAX_LENGTH_CHAT];
 		VFormat(translation, sizeof(translation), "%t", 2);
 		
 		// Print translated phrase to client.
@@ -320,13 +320,13 @@ stock TranslationPrintCenterTextAll(bool:admin, any:...)
  * @param client	The client index.
  * @param ...	   Translation formatting parameters.  
  */
-stock TranslationPrintHintText(client, any:...)
+stock void TranslationPrintHintText(int client, any ...)
 {
 	// Set translation target
 	SetGlobalTransTarget(client);
 	
 	// Translate phrase.
-	decl String:translation[TRANSLATION_MAX_LENGTH_CHAT];
+	char translation[TRANSLATION_MAX_LENGTH_CHAT];
 	VFormat(translation, sizeof(translation), "%t", 2);
 	
 	// Print translated phrase to client.
@@ -344,13 +344,13 @@ stock TranslationPrintHintText(client, any:...)
  * 
  * @param ...	   Translation formatting parameters.  
  */
-stock TranslationPrintToServer(any:...)
+stock void TranslationPrintToServer(any ...)
 {
 	// Set translation target
 	SetGlobalTransTarget(LANG_SERVER);
 	
 	// Translate phrase.
-	decl String:translation[TRANSLATION_MAX_LENGTH_CONSOLE];
+	char translation[TRANSLATION_MAX_LENGTH_CONSOLE];
 	VFormat(translation, sizeof(translation), "%t", 1);
 	
 	// Format string to create plugin style.
@@ -366,13 +366,13 @@ stock TranslationPrintToServer(any:...)
  * @param client	The client index.
  * @param ...	   Translation formatting parameters.  
  */
-stock TranslationReplyToCommand(client, any:...)
+stock void TranslationReplyToCommand(int client, any ...)
 {
 	// Set translation target
 	SetGlobalTransTarget(client);
 	
 	// Translate phrase.
-	decl String:translation[TRANSLATION_MAX_LENGTH_CONSOLE];
+	char translation[TRANSLATION_MAX_LENGTH_CONSOLE];
 	VFormat(translation, sizeof(translation), "%t", 2);
 	
 	if (ZRIsClientValid(client))

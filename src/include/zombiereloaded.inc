@@ -35,3 +35,4 @@
 #include <zr/respawn.zr>
 #include <zr/class.zr>
 #include <zr/weapons.zr>
+#include <zr/sounds.zr>
