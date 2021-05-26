@@ -28,7 +28,7 @@
 /**
  * Commands are created/hooked.
  */
-CommandsInit()
+void CommandsInit()
 {
 	// Forward event to modules. (create commands)
 	ConfigOnCommandsCreate();

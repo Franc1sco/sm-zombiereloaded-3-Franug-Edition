@@ -67,16 +67,16 @@ enum VolTypeAnticamp
 /**
  * Anti-camp data.
  */
-new AnticampData[ZR_VOLUMES_MAX][VolTypeAnticamp];
+int AnticampData[ZR_VOLUMES_MAX][VolTypeAnticamp];
 
 /**
  * Event callback. Enables a anticamp volume.
  *
  * @param volumeIndex   The volume index.	
  */
-VolAnticampEnable(volumeIndex)
+void VolAnticampEnable(int volumeIndex)
 {
-	new Float:interval;
+	float interval;
 	
 	// Validate index.
 	if (!VolIsValidIndex(volumeIndex))
@@ -85,7 +85,7 @@ VolAnticampEnable(volumeIndex)
 	}
 	
 	// Get data index.
-	new dataindex = Volumes[volumeIndex][Vol_DataIndex];
+	int dataindex = Volumes[volumeIndex][Vol_DataIndex];
 	
 	// Validate data index.
 	if (!VolAnticampValidateIndex(dataindex))
@@ -125,13 +125,13 @@ VolAnticampEnable(volumeIndex)
  *
  * TODO: Reuse code! This is almost duplicate of VolAnticampEnable.
  */
-stock VolAnticampEnableAll()
+stock void VolAnticampEnableAll()
 {
-	new Float:interval;
-	new dataindex;
+	float interval;
+	int dataindex;
 	
 	// Loop through all volumes.
-	for (new volumeindex = 0; volumeindex < ZR_VOLUMES_MAX; volumeindex++)
+	for (int volumeindex = 0; volumeindex < ZR_VOLUMES_MAX; volumeindex++)
 	{
 		// Check if unused.
 		if (!VolInUse(volumeindex))
@@ -174,9 +174,9 @@ stock VolAnticampEnableAll()
 /**
  * Event callback. Stops existing anticamp timer on a volume.
  */
-VolAnticampDisable(volumeIndex)
+void VolAnticampDisable(int volumeIndex)
 {
-	new Handle:timerbuffer;
+	Handle timerbuffer;
 	
 	// Validate index.
 	if (!VolIsValidIndex(volumeIndex))
@@ -185,7 +185,7 @@ VolAnticampDisable(volumeIndex)
 	}
 	
 	// Get data index.
-	new dataindex = Volumes[volumeIndex][Vol_DataIndex];
+	int dataindex = Volumes[volumeIndex][Vol_DataIndex];
 	
 	// Validate data index.
 	if (!VolAnticampValidateIndex(dataindex))
@@ -212,12 +212,12 @@ VolAnticampDisable(volumeIndex)
 /**
  * Stops all existing anticamp timers.
  */
-stock VolAnticampDisableAll()
+stock void VolAnticampDisableAll()
 {
-	new Handle:timerbuffer;
+	Handle timerbuffer;
 	
 	// Loop through all volumes.
-	for (new dataindex = 0; dataindex < ZR_VOLUMES_MAX; dataindex++)
+	for (int dataindex = 0; dataindex < ZR_VOLUMES_MAX; dataindex++)
 	{
 		// Check if in use.
 		if (AnticampData[dataindex][Anticamp_InUse])
@@ -238,7 +238,7 @@ stock VolAnticampDisableAll()
  *
  * @param dataIndex	 Local data index.
  */
-VolAnticampReset(dataIndex)
+void VolAnticampReset(int dataIndex)
 {
 	AnticampData[dataIndex][Anticamp_InUse] = false;
 	
@@ -253,16 +253,16 @@ VolAnticampReset(dataIndex)
 	AnticampData[dataIndex][Anticamp_Amount] = 5.0;
 	
 	AnticampData[dataIndex][Anticamp_Warning] = Anticamp_Chat;
-	Format(String:AnticampData[dataIndex][Anticamp_Message], 256, "");
+	Format(view_as<char>(AnticampData[dataIndex][Anticamp_Message]), 256, "");
 }
 
 /**
  * Initialization event for anticamp feature.
  */
-VolAnticampInit()
+void VolAnticampInit()
 {
 	// Set default attributes.
-	for (new dataindex = 0; dataindex < ZR_VOLUMES_MAX; dataindex++)
+	for (int dataindex = 0; dataindex < ZR_VOLUMES_MAX; dataindex++)
 	{
 		VolAnticampReset(dataindex);
 	}
@@ -274,9 +274,9 @@ VolAnticampInit()
  * @param client		The client index.
  * @param volumeIndex   Index of volume the player left.
  */
-VolAnticampOnPlayerLeave(client, volumeIndex)
+void VolAnticampOnPlayerLeave(int client, int volumeIndex)
 {
-	new dataindex = Volumes[volumeIndex][Vol_DataIndex];
+	int dataindex = Volumes[volumeIndex][Vol_DataIndex];
 	
 	switch (AnticampData[dataindex][Anticamp_Action])
 	{
@@ -294,10 +294,10 @@ VolAnticampOnPlayerLeave(client, volumeIndex)
 /**
  * Timer callback for anticamp volumes. Applies actions on players in volumes.
  */
-public Action:Event_VolAnticampTrigger(Handle:timer, any:volumeIndex)
+public Action Event_VolAnticampTrigger(Handle timer, any volumeIndex)
 {
 	// Loop through all players.
-	for (new client = 1; client <= MaxClients; client++)
+	for (int client = 1; client <= MaxClients; client++)
 	{
 		// Validate client's connection state.
 		if (!IsClientConnected(client) || !IsClientInGame(client) || !IsPlayerAlive(client))
@@ -337,15 +337,15 @@ public Action:Event_VolAnticampTrigger(Handle:timer, any:volumeIndex)
  * @param dataIndex	 Local data index.
  * @param volumeIndex   The volume index.
  */
-VolAnticampApplyAction(client, dataIndex, volumeIndex)
+void VolAnticampApplyAction(int client, int dataIndex, int volumeIndex)
 {
-	new Float:amount = AnticampData[dataIndex][Anticamp_Amount];
+	float amount = AnticampData[dataIndex][Anticamp_Amount];
 	
 	// Set client language.
 	SetGlobalTransTarget(client);
 	
 	// Get player name.
-	decl String:name[64];
+	char name[64];
 	GetClientName(client, name, sizeof(name));
 	
 	// Send warning message.
@@ -360,8 +360,8 @@ VolAnticampApplyAction(client, dataIndex, volumeIndex)
 		case Anticamp_Damage:
 		{
 			// Give damage to player. Kill if zero HP or below.
-			new damage = RoundToNearest(amount);
-			new health = GetClientHealth(client) - damage;
+			int damage = RoundToNearest(amount);
+			int health = GetClientHealth(client) - damage;
 			
 			if (health > 0)
 			{
@@ -412,10 +412,10 @@ VolAnticampApplyAction(client, dataIndex, volumeIndex)
  * @param client		The client index.
  * @param dataIndex	 Local data index.
  */
-VolAnticampWarnPlayer(client, dataIndex)
+void VolAnticampWarnPlayer(int client, int dataIndex)
 {
-	decl String:buffer[256];
-	new bool:custommessage = (strlen(AnticampData[dataIndex][Anticamp_Message]) > 0) ? true : false;
+	char buffer[256];
+	bool custommessage = (strlen(AnticampData[dataIndex][Anticamp_Message]) > 0) ? true : false;
 	
 	// Set language.
 	SetGlobalTransTarget(client);
@@ -452,7 +452,7 @@ VolAnticampWarnPlayer(client, dataIndex)
 		case Anticamp_Menu:
 		{
 			// Display the message in a menu panel.
-			new Handle:panel = CreatePanel();
+			Handle panel = CreatePanel();
 			
 			SetPanelTitle(panel, "Zombie:Reloaded");
 			DrawPanelItem(panel, "", ITEMDRAW_SPACER);
@@ -473,7 +473,7 @@ VolAnticampWarnPlayer(client, dataIndex)
 /**
  * Dummy handler for panel messages.
  */
-public Handler_AnitcampDummy(Handle:menu, MenuAction:action, param1, param2)
+public int Handler_AnitcampDummy(Handle menu, MenuAction action, int param1, int param2)
 {
 	// Do nothing.
 }
@@ -484,10 +484,10 @@ public Handler_AnitcampDummy(Handle:menu, MenuAction:action, param1, param2)
  * @return	  The first free anticamp data index if successful, or -1 if
  *			  there are no free volumes.
  */
-VolAnticampGetFreeIndex()
+int VolAnticampGetFreeIndex()
 {
 	// Loop through all indexes.
-	for (new dataindex = 0; dataindex < ZR_VOLUMES_MAX; dataindex++)
+	for (int dataindex = 0; dataindex < ZR_VOLUMES_MAX; dataindex++)
 	{
 		// Check if it's free.
 		if (!AnticampData[dataindex][Anticamp_InUse])
@@ -510,7 +510,7 @@ VolAnticampGetFreeIndex()
  * @param dataIndex	 Index to validate.
  * @return			  True if valid, false otherwise.
  */
-bool:VolAnticampValidateIndex(dataIndex)
+bool VolAnticampValidateIndex(int dataIndex)
 {
 	if (dataIndex >= 0 && dataIndex < ZR_VOLUMES_MAX)
 	{
@@ -530,12 +530,12 @@ bool:VolAnticampValidateIndex(dataIndex)
  * @param maxlen		Size of destination buffer.
  * @return			  Number of cells written.
  */
-VolAnticampDumpData(dataIndex, String:buffer[], maxlen)
+int VolAnticampDumpData(int dataIndex, char[] buffer, int maxlen)
 {
-	decl String:linebuffer[128];
-	decl String:valuebuffer[256];
-	new anticampcache[VolTypeAnticamp];
-	new cellswritten;
+	char linebuffer[128];
+	char valuebuffer[256];
+	int anticampcache[VolTypeAnticamp];
+	int cellswritten;
 	
 	// Validate index.
 	if (!VolAnticampValidateIndex(dataIndex))
@@ -587,7 +587,7 @@ VolAnticampDumpData(dataIndex, String:buffer[], maxlen)
  *					  Default is human readable (false).
  * @return			  Number of cells written.
  */
-VolAnticampActionToString(VolAnticampAction:actionType, String:buffer[], maxlen, bool:shortName = false)
+int VolAnticampActionToString(VolAnticampAction actionType, char[] buffer, int maxlen, bool shortName = false)
 {
 	switch (actionType)
 	{
@@ -622,7 +622,7 @@ VolAnticampActionToString(VolAnticampAction:actionType, String:buffer[], maxlen,
  * @param action	Action string type to convert.
  * @return		  Action type or Anticamp_NoAction if failed.
  */
-stock VolAnticampAction:VolAnticampStringToAction(const String:action[])
+stock VolAnticampAction VolAnticampStringToAction(const char[] action)
 {
 	// Check if empty.
 	if (strlen(action) == 0)
@@ -665,7 +665,7 @@ stock VolAnticampAction:VolAnticampStringToAction(const String:action[])
  *					  Default is human readable (false).
  * @return			  Number of cells written.
  */
-VolAnticampWarningToString(VolAnticampeWarningType:warningType, String:buffer[], maxlen, bool:shortName = false)
+int VolAnticampWarningToString(VolAnticampeWarningType warningType, char[] buffer, int maxlen, bool shortName = false)
 {
 	switch (warningType)
 	{
@@ -696,7 +696,7 @@ VolAnticampWarningToString(VolAnticampeWarningType:warningType, String:buffer[],
  * @param warning   Warning string type to convert.
  * @return		  Warning type, or Anticamp_NoWarning if failed.
  */
-stock VolAnticampeWarningType:VolAnticampStringToWarning(const String:warning[])
+stock VolAnticampeWarningType VolAnticampStringToWarning(const char[] warning)
 {
 	// Check if empty.
 	if (strlen(warning) == 0)
@@ -740,7 +740,7 @@ stock VolAnticampeWarningType:VolAnticampStringToWarning(const String:warning[])
  * @param attribVlue	Attribute value to set.
  * @return			  True if successfully set, false otherwise.
  */
-bool:VolAnticampSetAttribute(dataIndex, const String:attribName[], const String:attribValue[])
+bool VolAnticampSetAttribute(int dataIndex, const char[] attribName, const char[] attribValue)
 {
 	// Validate data index.
 	if (!VolAnticampValidateIndex(dataIndex))
@@ -794,9 +794,9 @@ bool:VolAnticampSetAttribute(dataIndex, const String:attribName[], const String:
  *					  string. 
  * @return			  True if successfully set, false otherwise.
  */
-bool:VolAnticampSetIntervalString(dataIndex, const String:interval[])
+bool VolAnticampSetIntervalString(int dataIndex, const char[] interval)
 {
-	new Float:anticampinterval;
+	float anticampinterval;
 	
 	// Check if string value is empty.
 	if (strlen(interval) == 0)
@@ -819,7 +819,7 @@ bool:VolAnticampSetIntervalString(dataIndex, const String:interval[])
  * @param action		Action type to set.
  * @return			  True if successfully set, false otherwise.
  */
-bool:VolAnticampSetActionString(dataIndex, const String:action[])
+bool VolAnticampSetActionString(int dataIndex, const char[] action)
 {
 	// Check if string value is empty.
 	if (strlen(action) == 0)
@@ -866,9 +866,9 @@ bool:VolAnticampSetActionString(dataIndex, const String:action[])
  *					  string. 
  * @return			  True if successfully set, false otherwise.
  */
-bool:VolAnticampSetAmountString(dataIndex, const String:amount[])
+bool VolAnticampSetAmountString(int dataIndex, const char[] amount)
 {
-	new Float:actionamount;
+	float actionamount;
 	
 	// Check if string value is empty.
 	if (strlen(amount) == 0)
@@ -891,7 +891,7 @@ bool:VolAnticampSetAmountString(dataIndex, const String:amount[])
  * @param warning	   warning type to set.
  * @return			  True if successfully set, false otherwise.
  */
-bool:VolAnticampSetWarningString(dataIndex, const String:warning[])
+bool VolAnticampSetWarningString(int dataIndex, const char[] warning)
 {
 	
 	// Check if string value is empty.

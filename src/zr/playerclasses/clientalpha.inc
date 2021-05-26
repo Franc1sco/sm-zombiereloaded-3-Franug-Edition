@@ -28,16 +28,16 @@
 /**
  * Updates the alpha value on a player.
  */
-ClassAlphaUpdate(client)
+void ClassAlphaUpdate(int client)
 {
-	new current_health = GetClientHealth(client);
-	new max_health	 = ClassGetHealth(client);
-	new max_damage	 = ClassGetAlphaDamage(client);
+	int current_health = GetClientHealth(client);
+	int max_health	 = ClassGetHealth(client);
+	int max_damage	 = ClassGetAlphaDamage(client);
 	
 	// Calculate if enough damage is done to change alpha.
 	if ((max_health - current_health) > max_damage)
 	{
-		new alpha_damaged = ClassGetAlphaDamaged(client);
+		int alpha_damaged = ClassGetAlphaDamaged(client);
 		ToolsSetClientAlpha(client, alpha_damaged);
 	}
 }

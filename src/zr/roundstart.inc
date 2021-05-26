@@ -35,7 +35,7 @@
  * 
  * @param client	The client index.
  */
-RoundStartOnClientSpawn(client)
+void RoundStartOnClientSpawn(int client)
 {
 	// If client hasn't spawned yet, then stop.
 	if (!IsPlayerAlive(client))
@@ -50,7 +50,7 @@ RoundStartOnClientSpawn(client)
 /**
  * The round is starting.
  */
-RoundStartOnRoundStart()
+void RoundStartOnRoundStart()
 {
 	// Print round objective to all clients.
 	TranslationPrintToChatAll(true, false, "General round objective");
@@ -62,15 +62,15 @@ RoundStartOnRoundStart()
 /**
  * Kills all objective entities.
  */
-stock RoundStartKillObjectives()
+stock void RoundStartKillObjectives()
 {
-	decl String:classname[64];
+	char classname[64];
 	
 	// Get max entity count.
-	new maxentities = GetMaxEntities();
+	int maxentities = GetMaxEntities();
 	
 	// x = entity index.
-	for (new x = 0; x <= maxentities; x++)
+	for (int x = 0; x <= maxentities; x++)
 	{
 		// If entity isn't valid, then stop.
 		if(!IsValidEdict(x))

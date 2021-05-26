@@ -179,14 +179,14 @@ enum CvarsList
 /**
  * Array to store cvar data in.
  */
-new g_hCvarsList[CvarsList];
+g_hCvarsList[CvarsList];
 
 /**
  * @section Global cvar handles.
  */
-new Handle:g_hAutoTeamBalance = INVALID_HANDLE;
-new Handle:g_hLimitTeams = INVALID_HANDLE;
-new Handle:g_hRestartGame = INVALID_HANDLE;
+Handle g_hAutoTeamBalance = INVALID_HANDLE;
+Handle g_hLimitTeams = INVALID_HANDLE;
+Handle g_hRestartGame = INVALID_HANDLE;
 /**
  * @endsection
  */
@@ -194,7 +194,7 @@ new Handle:g_hRestartGame = INVALID_HANDLE;
 /**
  * Cvars module init function.
  */
-CvarsInit()
+void CvarsInit()
 {
 	// Retrieve handles of CS:S cvars.
 	g_hAutoTeamBalance = FindConVar("mp_autoteambalance");
@@ -208,7 +208,7 @@ CvarsInit()
 	CvarsHook();
 	
 	// Create public cvar for tracking.
-	decl String:description[64];
+	char description[64];
 	Format(description, sizeof(description), "%s Current version of this plugin", TRANSLATION_PHRASE_PREFIX);
 	CreateConVar("gs_zombiereloaded_version", VERSION, description, FCVAR_SPONLY|FCVAR_UNLOGGED|FCVAR_DONTRECORD|FCVAR_REPLICATED|FCVAR_NOTIFY);
 	
@@ -223,7 +223,7 @@ CvarsInit()
 /**
  * Create all cvars for plugin.
  */
-CvarsCreate()
+void CvarsCreate()
 {
 	// ===========================
 	// Log (core)
@@ -501,7 +501,7 @@ CvarsCreate()
  * 
  * @param unhook	If true, cvars will be unhooked, false to hook cvars.
  */
-CvarsHook(bool:unhook = false)
+void CvarsHook(bool unhook = false)
 {
 	// If unhook is true, then continue.
 	if (unhook)
@@ -537,7 +537,7 @@ CvarsHook(bool:unhook = false)
  * @param oldvalue  The value before the attempted change.
  * @param newvalue  The new value.
  */
-public CvarsHookLocked(Handle:cvar, const String:oldvalue[], const String:newvalue[])
+public void CvarsHookLocked(Handle cvar, const char[] oldvalue, const char[] newvalue)
 {
 	// If cvar is mp_autoteambalance, then continue.
 	if (cvar == g_hAutoTeamBalance)
@@ -579,13 +579,13 @@ public CvarsHookLocked(Handle:cvar, const String:oldvalue[], const String:newval
  * @param oldvalue  The value before the attempted change.
  * @param newvalue  The new value.
  */
-public CvarsHookRestartGame(Handle:cvar, const String:oldvalue[], const String:newvalue[])
+public void CvarsHookRestartGame(Handle cvar, const char[] oldvalue, const char[] newvalue)
 {
 	// Prevent round restart.
 	SetConVarInt(cvar, 0);
 	
 	// If value was invalid or 0, then stop.
-	new Float:delay = StringToFloat(newvalue);
+	float delay = StringToFloat(newvalue);
 	if (delay <= 0)
 	{
 		return;

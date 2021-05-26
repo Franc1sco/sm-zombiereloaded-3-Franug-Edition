@@ -52,7 +52,7 @@ enum ClassSelectResult
  *
  * @return			  True if valid, false otherwise.
  */
-native bool:ZR_IsValidClassIndex(classIndex);
+native bool ZR_IsValidClassIndex(int classIndex);
 
 /**
  * Gets the currently active class index that the player is using.
@@ -61,7 +61,7 @@ native bool:ZR_IsValidClassIndex(classIndex);
  *
  * @return		  The active class index.
  */
-native bool:ZR_GetActiveClass(client);
+native bool ZR_GetActiveClass(int client);
 
 /**
  * Selects a class for a player.
@@ -81,7 +81,7 @@ native bool:ZR_GetActiveClass(client);
  *
  * @return				  Class selection result. See enum ClassSelectResult.
  */
-native ClassSelectResult:ZR_SelectClientClass(client, classIndex, bool:applyIfPossible = true, bool:saveIfEnabled = true);
+native ClassSelectResult ZR_SelectClientClass(int client, int classIndex, bool applyIfPossible = true, bool saveIfEnabled = true);
 
 /**
  * Gets the class index of the class with the specified name.
@@ -94,7 +94,7 @@ native ClassSelectResult:ZR_SelectClientClass(client, classIndex, bool:applyIfPo
  *
  * @return			  Class index, or -1 if none found.
  */
-native ZR_GetClassByName(const String:className[], cacheType = ZR_CLASS_CACHE_MODIFIED);
+native ZR_GetClassByName(const char[] className, int cacheType = ZR_CLASS_CACHE_MODIFIED);
 
 /**
  * Gets the class name displayed in the class menu.
@@ -106,4 +106,4 @@ native ZR_GetClassByName(const String:className[], cacheType = ZR_CLASS_CACHE_MO
  * @param cacheType	 Optional. Specifies which class cache to read from.
  * @return			  Number of cells written. -1 on error.
  */
-native ZR_GetClassDisplayName(index, String:buffer[], maxlen, cacheType = ZR_CLASS_CACHE_MODIFIED);
+native ZR_GetClassDisplayName(int index, char[] buffer, int maxlen, int cacheType = ZR_CLASS_CACHE_MODIFIED);

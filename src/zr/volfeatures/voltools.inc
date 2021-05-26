@@ -34,12 +34,12 @@
  * @return		  True if the position is within min and max values. False
  *				  otherwise.
  */
-bool:IsPointInLocation(Float:point[3], Float:min[3], Float:max[3])
+bool IsPointInLocation(float point[3], float min[3], float max[3])
 {
 	// Cache to avoid re-indexing arrays.
-	new Float:posX = point[0];
-	new Float:posY = point[1];
-	new Float:posZ = point[2];
+	float posX = point[0];
+	float posY = point[1];
+	float posZ = point[2];
 	
 	// Check if within x boundaries.
 	if ((posX >= min[0]) && (posX <= max[0]))
@@ -68,7 +68,7 @@ bool:IsPointInLocation(Float:point[3], Float:min[3], Float:max[3])
  * @param volumeIndex   The volume index.
  * @return			  True if in use, false otherwise.
  */
-bool:VolInUse(volumeIndex)
+bool VolInUse(int volumeIndex)
 {
 	return Volumes[volumeIndex][Vol_InUse];
 }
@@ -81,7 +81,7 @@ bool:VolInUse(volumeIndex)
  * @param volumeIndex   The volume index.
  * @return			  True if enabled, false otherwise.
  */
-bool:VolIsEnabled(volumeIndex)
+bool VolIsEnabled(int volumeIndex)
 {
 	return Volumes[volumeIndex][Vol_Enabled];
 }
@@ -92,7 +92,7 @@ bool:VolIsEnabled(volumeIndex)
  * @param volumeIndex   The volume index.
  * @return			  True if valid, false otherwise.
  */
-bool:VolIsValidIndex(volumeIndex)
+bool VolIsValidIndex(int volumeIndex)
 {
 	if (volumeIndex >= 0 && volumeIndex < ZR_VOLUMES_MAX)
 	{
@@ -110,10 +110,10 @@ bool:VolIsValidIndex(volumeIndex)
  * @return	  The first free volume index if successful, or -1 if there are
  *			  no free volumes.
  */
-VolGetFreeVolume()
+int VolGetFreeVolume()
 {
 	// Loop through all volumes.
-	for (new iVolumeIndex = 0; iVolumeIndex < ZR_VOLUMES_MAX; iVolumeIndex++)
+	for (int iVolumeIndex = 0; iVolumeIndex < ZR_VOLUMES_MAX; iVolumeIndex++)
 	{
 		// Check if it's free.
 		if (!VolInUse(iVolumeIndex))
@@ -132,7 +132,7 @@ VolGetFreeVolume()
  * @param volumeType	Volumetric feature type.
  * @return			  Data index, or -1 on error.
  */
-VolGetFreeDataIndex(VolumeFeatureTypes:volumeType)
+int VolGetFreeDataIndex(VolumeFeatureTypes volumeType)
 {
 	switch (volumeType)
 	{
@@ -158,9 +158,9 @@ VolGetFreeDataIndex(VolumeFeatureTypes:volumeType)
  * @param volumeIndex   The volume to check team filtering on.
  * @return			  True if client pass the team filtering, false otherwise.
  */
-bool:VolTeamFilterMatch(client, volumeIndex)
+bool VolTeamFilterMatch(int client, int volumeIndex)
 {
-	new VolumeTeamFilters:filter;
+	VolumeTeamFilters filter;
 	
 	// Chache filter value.
 	filter = Volumes[volumeIndex][Vol_TeamFilter];
@@ -195,7 +195,7 @@ bool:VolTeamFilterMatch(client, volumeIndex)
  * @param volType	   Type to match.
  * @return			  True if the types match, false otherwise.
  */
-bool:VolIsType(volumeIndex, VolumeFeatureTypes:volType)
+bool VolIsType(int volumeIndex, VolumeFeatureTypes volType)
 {
 	return Volumes[volumeIndex][Vol_Type] == volType;
 }
@@ -209,16 +209,16 @@ bool:VolIsType(volumeIndex, VolumeFeatureTypes:volType)
  * @param maxlen	Size of destination buffer.
  * @return		  Number of volumes the client is within.
  */
-VolGetPlayerStates(client, bool:buffer[], maxlen)
+int VolGetPlayerStates(int client, bool[] buffer, int maxlen)
 {
-	new volumeBuffer[VolumeAttributes];
-	new volCount;
+	int volumeBuffer[VolumeAttributes];
+	int volCount;
 	
-	new Float:volMinBuffer[3];
-	new Float:volMaxBuffer[3];
+	float volMinBuffer[3];
+	float volMaxBuffer[3];
 	
 	// Loop through all available volumes.
-	for (new iVolumeIndex = 0; iVolumeIndex < ZR_VOLUMES_MAX && iVolumeIndex < maxlen; iVolumeIndex++)
+	for (int iVolumeIndex = 0; iVolumeIndex < ZR_VOLUMES_MAX && iVolumeIndex < maxlen; iVolumeIndex++)
 	{
 		if (VolInUse(iVolumeIndex))
 		{
@@ -259,7 +259,7 @@ VolGetPlayerStates(client, bool:buffer[], maxlen)
  * @param volType   String to convert. Name of type.
  * @return		  Volumetric feature type or VolFeature_Invalid on error.
  */
-VolumeFeatureTypes:VolGetTypeFromString(const String:volType[])
+VolumeFeatureTypes VolGetTypeFromString(const char[] volType)
 {
 	// Check if empty.
 	if (strlen(volType) == 0)
@@ -291,7 +291,7 @@ VolumeFeatureTypes:VolGetTypeFromString(const String:volType[])
  *					  Default is human readable (false).
  * @return			  Number of cells written.
  */
-VolTypeToString(VolumeFeatureTypes:volType, String:buffer[], maxlen, bool:shortName = false)
+int VolTypeToString(VolumeFeatureTypes volType, char[] buffer, int maxlen, bool shortName = false)
 {
 	switch (volType)
 	{

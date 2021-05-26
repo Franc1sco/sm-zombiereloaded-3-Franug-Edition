@@ -33,7 +33,7 @@
  * @return					True if zombie, false if not.
  * @error				   Invalid client index, not connected or not alive.
  */
-native bool:ZR_IsClientZombie(client);
+native bool ZR_IsClientZombie(int client);
 
 /**
  * Returns true if the player is a human, false if not.
@@ -43,7 +43,7 @@ native bool:ZR_IsClientZombie(client);
  * @return					True if human, false if not.
  * @error				   Invalid client index, not connected or not alive.
  */
-native bool:ZR_IsClientHuman(client);
+native bool ZR_IsClientHuman(int client);
 
 /**
  * Infects a player.
@@ -58,7 +58,7 @@ native bool:ZR_IsClientHuman(client);
  *
  * @error				   Invalid client index, not connected or not alive.
  */
-native ZR_InfectClient(client, attacker = -1, bool:motherInfect = false, bool:respawnOverride = false, bool:respawn = false);
+native ZR_InfectClient(int client, int attacker = -1, bool motherInfect = false, bool respawnOverride = false, bool respawn = false);
 
 /**
  * Turns a zombie back into a human.
@@ -72,7 +72,7 @@ native ZR_InfectClient(client, attacker = -1, bool:motherInfect = false, bool:re
  *
  * @error				   Invalid client index, not connected or not alive.
  */
-native ZR_HumanClient(client, bool:respawn = false, bool:protect = false);
+native ZR_HumanClient(int client, bool respawn = false, bool protect = false);
 
 /**
  * Called when a player is about to become a zombie.
@@ -87,7 +87,7 @@ native ZR_HumanClient(client, bool:respawn = false, bool:protect = false);
  * @return				  Plugin_Handled to block infection. Anything else
  *						  (like Plugin_Continue) to allow infection.
  */
-forward Action:ZR_OnClientInfect(&client, &attacker, &bool:motherInfect, &bool:respawnOverride, &bool:respawn);
+forward Action ZR_OnClientInfect(int &client, int &attacker, bool &motherInfect, bool &respawnOverride, bool &respawn);
 
 /**
  * Called after a player has become a zombie.
@@ -98,7 +98,7 @@ forward Action:ZR_OnClientInfect(&client, &attacker, &bool:motherInfect, &bool:r
  * @param respawnOverride   True if the respawn cvar was overridden.
  * @param respawn		   The value that respawn was overridden with.
  */
-forward ZR_OnClientInfected(client, attacker, bool:motherInfect, bool:respawnOverride, bool:respawn);
+forward ZR_OnClientInfected(int client, int attacker, bool motherInfect, bool respawnOverride, bool respawn);
 
 /**
  * Called when a player is about to become a human. (Through an admin command).
@@ -111,7 +111,7 @@ forward ZR_OnClientInfected(client, attacker, bool:motherInfect, bool:respawnOve
  * @return				  Plugin_Handled to block infection. Anything else
  *						  (like Plugin_Continue) to allow acion.
  */
-forward Action:ZR_OnClientHuman(&client, &bool:respawn, &bool:protect);
+forward Action ZR_OnClientHuman(int &client, bool &respawn, bool &protect);
 
 /**
  * Called after a player has become a human. (Through an admin command.)
@@ -120,4 +120,4 @@ forward Action:ZR_OnClientHuman(&client, &bool:respawn, &bool:protect);
  * @param respawn		   Whether the client was respawned.
  * @param protect		   Whether the client has spawn protection.
  */
-forward ZR_OnClientHumanPost(client, bool:respawn, bool:protect);
+forward ZR_OnClientHumanPost(int client, bool respawn, bool protect);

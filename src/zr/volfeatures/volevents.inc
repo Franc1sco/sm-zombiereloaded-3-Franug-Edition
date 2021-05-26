@@ -31,7 +31,7 @@
  * @param client		The client index.
  * @param volumeIndex   The volume index.
  */
-VolOnPlayerEnter(client, volumeIndex)
+void VolOnPlayerEnter(int client, int volumeIndex)
 {
 	// Check if volumetric features is enabled.
 	if (!VolEnabled)
@@ -43,7 +43,7 @@ VolOnPlayerEnter(client, volumeIndex)
 	LogEvent(_, LogType_Normal, LOG_DEBUG, LogModule_Volfeatures, "Event", "Player %N entered volume %d.", client, volumeIndex);
 	
 	// Forward event to features.
-	new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
+	VolumeFeatureTypes voltype = Volumes[volumeIndex][Vol_Type];
 	switch (voltype)
 	{
 		case VolFeature_ClassEdit:
@@ -59,7 +59,7 @@ VolOnPlayerEnter(client, volumeIndex)
  * @param client		The client index.
  * @param volumeIndex   The volume index.
  */
-VolOnPlayerLeave(client, volumeIndex)
+void VolOnPlayerLeave(int client, int volumeIndex)
 {
 	// Check if volumetric features is enabled.
 	if (!VolEnabled)
@@ -71,7 +71,7 @@ VolOnPlayerLeave(client, volumeIndex)
 	LogEvent(_, LogType_Normal, LOG_DEBUG, LogModule_Volfeatures, "Event", "Player %N left volume %d.", client, volumeIndex);
 	
 	// Forward event to features.
-	new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
+	VolumeFeatureTypes voltype = Volumes[volumeIndex][Vol_Type];
 	switch (voltype)
 	{
 		case VolFeature_Anticamp:
@@ -90,7 +90,7 @@ VolOnPlayerLeave(client, volumeIndex)
  *
  * @param client	The client index.
  */
-VolOnPlayerSpawn(client)
+void VolOnPlayerSpawn(int client)
 {
 	// Check if volumetric features is enabled.
 	if (!VolEnabled)
@@ -108,10 +108,10 @@ VolOnPlayerSpawn(client)
  *
  * @param client	The client index.
  */
-VolOnPlayerDeath(client)
+void VolOnPlayerDeath(int client)
 {
 	// Send player left volume event to all volumes the player was in.
-	for (new volindex = 0; volindex < ZR_VOLUMES_MAX; volindex++)
+	for (int volindex = 0; volindex < ZR_VOLUMES_MAX; volindex++)
 	{
 		// Check if volume is unused.
 		if (!Volumes[volindex][Vol_InUse])
@@ -140,7 +140,7 @@ VolOnPlayerDeath(client)
  *
  * @param client	The client index.
  */
-VolOnPlayerDisconnect(client)
+void VolOnPlayerDisconnect(int client)
 {
 	// Disable trigger delay counters.
 	VolResetCountDown(client);
@@ -152,7 +152,7 @@ VolOnPlayerDisconnect(client)
 /**
  * Called when the round starts. Main enable event for volumetric features.
  */
-VolOnRoundStart()
+void VolOnRoundStart()
 {
 	// Check if volumetric features is enabled.
 	if (!VolEnabled)
@@ -171,7 +171,7 @@ VolOnRoundStart()
 /**
  * Called when the round ends. Main disable event for volumetric features.
  */
-VolOnRoundEnd()
+void VolOnRoundEnd()
 {
 	// Stop main timer.
 	VolStopUpdateTimer();
@@ -183,7 +183,7 @@ VolOnRoundEnd()
 /**
  * Called right before the map ends.
  */
-VolOnMapEnd()
+void VolOnMapEnd()
 {
 	// Make sure timers and volumes are stopped. Foreward event.
 	VolOnRoundEnd();
@@ -193,7 +193,7 @@ VolOnMapEnd()
  * Called when a volume is disabled.
  * @param volumeIndex   The volume index.
  */
-VolOnDisabled(volumeIndex)
+void VolOnDisabled(int volumeIndex)
 {
 	// Check if volumetric features is enabled.
 	if (!VolEnabled)
@@ -202,7 +202,7 @@ VolOnDisabled(volumeIndex)
 		return;
 	}
 	
-	new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
+	VolumeFeatureTypes voltype = Volumes[volumeIndex][Vol_Type];
 	
 	// Forward stop event to features.
 	switch (voltype)
@@ -222,7 +222,7 @@ VolOnDisabled(volumeIndex)
  * Called when a volume is enabled.
  * @param volumeIndex   The volume index.
  */
-VolOnEnabled(volumeIndex)
+void VolOnEnabled(int volumeIndex)
 {
 	// Check if volumetric features is enabled.
 	if (!VolEnabled)
@@ -231,7 +231,7 @@ VolOnEnabled(volumeIndex)
 		return;
 	}
 	
-	new VolumeFeatureTypes:voltype = Volumes[volumeIndex][Vol_Type];
+	VolumeFeatureTypes voltype = Volumes[volumeIndex][Vol_Type];
 	
 	// Forward enable event to features.
 	switch (voltype)

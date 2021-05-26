@@ -25,16 +25,16 @@
  * ============================================================================
  */
 
-new ClientHealthRegenAmount[MAXPLAYERS + 1];
-new ClientHealthRegenMax[MAXPLAYERS + 1];
-new Handle:tHealthRegen[MAXPLAYERS + 1];
+int ClientHealthRegenAmount[MAXPLAYERS + 1];
+int ClientHealthRegenMax[MAXPLAYERS + 1];
+Handle tHealthRegen[MAXPLAYERS + 1];
 
 /**
  * Resets all timer handles. (called from classevents)
  */
-ClassHealthRegenInit()
+void ClassHealthRegenInit()
 {
-	for (new client = 0; client < MAXPLAYERS + 1; client++)
+	for (int client = 0; client < MAXPLAYERS + 1; client++)
 	{
 		tHealthRegen[client] = INVALID_HANDLE;
 	}
@@ -49,7 +49,7 @@ ClassHealthRegenInit()
  * @param max		   Regeneration limit. Don't give HP if player HP is above
  *					  this value.
  */
-ClassHealthRegenInitClient(client, Float:interval, amount, max)
+void ClassHealthRegenInitClient(int client, float interval, int amount, int max)
 {
 	ClientHealthRegenAmount[client] = amount;
 	ClientHealthRegenMax[client] = max;
@@ -62,7 +62,7 @@ ClassHealthRegenInitClient(client, Float:interval, amount, max)
  * @param client		The client index.
  * @param interval	  Regeneration interval.
  */
-ClassHealthRegenStart(client, Float:interval)
+void ClassHealthRegenStart(int client, float interval)
 {
 	// Stop timer if it already exist.
 	ClassHealthRegenStop(client);
@@ -76,7 +76,7 @@ ClassHealthRegenStart(client, Float:interval)
  *
  * @param client	The client index.
  */
-ClassHealthRegenStop(client)
+void ClassHealthRegenStop(int client)
 {
 	// Kill the timer if it exist.
 	if (tHealthRegen[client] != INVALID_HANDLE)
@@ -89,7 +89,7 @@ ClassHealthRegenStop(client)
 /**
  * Timer callback for HP regeneration.
  */
-public Action:ClassHealthRegenTimer(Handle:timer, any:client)
+public Action ClassHealthRegenTimer(Handle timer, any client)
 {
 	// Kill the timer if the player is dead or not in game.
 	if (!IsClientConnected(client) || !IsClientInGame(client) || !IsPlayerAlive(client))
@@ -98,7 +98,7 @@ public Action:ClassHealthRegenTimer(Handle:timer, any:client)
 		return Plugin_Stop;
 	}
 	
-	new health = GetClientHealth(client);	
+	int health = GetClientHealth(client);	
 	health += ClientHealthRegenAmount[client];
 	
 	// Check if the health points is below the limit.

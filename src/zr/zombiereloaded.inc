@@ -52,7 +52,7 @@ enum EligibleCondition
 /**
  * Global variable set to true when the first zombie(s) is/are spawned.
  */
-new bool:g_bZombieSpawned;
+bool g_bZombieSpawned;
 
 /**
  * Supported games.
@@ -67,15 +67,15 @@ enum Game
 /**
  * Current game.
  */
-new Game:g_Game = Game_Unknown;
+Game g_Game = Game_Unknown;
 #pragma unused g_Game
 
 /**
  * Updates g_game. Will log a warning if a unsupported game is detected.
  */
-UpdateGameFolder()
+void UpdateGameFolder()
 {
-	new String:gameFolder[PLATFORM_MAX_PATH];
+	char gameFolder[PLATFORM_MAX_PATH];
 	GetGameFolderName(gameFolder, sizeof(gameFolder));
 	
 	if (StrEqual(gameFolder, "cstrike", false))
@@ -102,7 +102,7 @@ UpdateGameFolder()
  * @param conversion	The conversion factor to multiply by. (See defines above)
  * @return			  The converted number.
  */
-Float:ZRConvertUnitsFloat(Float:number, Float:conversion)
+float ZRConvertUnitsFloat(float number, float conversion)
 {
 	return number / conversion;
 }
@@ -117,14 +117,14 @@ Float:ZRConvertUnitsFloat(Float:number, Float:conversion)
  * @param human				 Client is only eligible if human.
  * @param immunity			  True to ignore clients immune from mother infect, false to count them.
  */  
-stock ZRCreateEligibleClientList(&Handle:arrayEligibleClients, bool:team = false, bool:alive = false, bool:human = false)
+stock int ZRCreateEligibleClientList(Handle &arrayEligibleClients, bool team = false, bool alive = false, bool human = false)
 {
 	// Create array.
 	arrayEligibleClients = CreateArray();
 	
 	// Populate list with eligible clients.
 	// x = client index.
-	for (new x = 1; x <= MaxClients; x++)
+	for (int x = 1; x <= MaxClients; x++)
 	{
 		// If client isn't in-game, then stop.
 		if (!IsClientInGame(x))
@@ -162,7 +162,7 @@ stock ZRCreateEligibleClientList(&Handle:arrayEligibleClients, bool:team = false
  * 
  * @param timer	 The timer handle.
  */
-stock bool:ZRIsTimerRunning(Handle:timer)
+stock bool ZRIsTimerRunning(Handle timer)
 {
 	// Return true if the handle isn't empty.
 	return (timer != INVALID_HANDLE);
@@ -178,7 +178,7 @@ stock bool:ZRIsTimerRunning(Handle:timer)
  * 
  * @return		  True if the handle wasn't INVALID_HANDLE, false if the handle wasn't valid.
  */
-stock bool:ZREndTimer(&Handle:timer, bool:kill = true)
+stock bool ZREndTimer(Handle &timer, bool kill = true)
 {
 	// If the timer is running, then kill it.
 	if (ZRIsTimerRunning(timer))
@@ -208,7 +208,7 @@ stock bool:ZREndTimer(&Handle:timer, bool:kill = true)
  * @param console   True to include console (index 0), false if not.
  * @return		  True if client is valid, false otherwise. 
  */	
-stock bool:ZRIsClientValid(client, bool:console = false)
+stock bool ZRIsClientValid(int client, bool console = false)
 {
 	// If index is greater than max number of clients, then return false.
 	if (client > MaxClients)
@@ -227,7 +227,7 @@ stock bool:ZRIsClientValid(client, bool:console = false)
  * @param console   True to include console (index 0), false if not.
  * @return		  True if client is valid, false otherwise. 
  */	
-stock bool:ZRIsConsole(index)
+stock bool ZRIsConsole(int index)
 {
 	// Return true if index is equal to console's index.
 	return (index == ZR_CONSOLE_INDEX);
@@ -241,7 +241,7 @@ stock bool:ZRIsConsole(index)
  * @param alive	 If true it will only count live players, false will count alive and dead.
  * @return		  True if successful (zombie has spawned), false otherwise.
  */
-stock bool:ZRCountValidClients(&zombiecount = 0, &humancount = 0, bool:alive = true, bool:ignorezombiespawned = false)
+stock bool ZRCountValidClients(int &zombiecount = 0, int &humancount = 0, bool alive = true, bool ignorezombiespawned = false)
 {
 	// If zombie hasn't spawned and were not only counting humans, then stop.
 	if (!g_bZombieSpawned && !ignorezombiespawned)
@@ -250,7 +250,7 @@ stock bool:ZRCountValidClients(&zombiecount = 0, &humancount = 0, bool:alive = t
 	}
 	
 	// x = client index.
-	for (new x = 1; x <= MaxClients; x++)
+	for (int x = 1; x <= MaxClients; x++)
 	{
 		// If client isn't in-game, then stop.
 		if (!IsClientInGame(x))
@@ -292,7 +292,7 @@ stock bool:ZRCountValidClients(&zombiecount = 0, &humancount = 0, bool:alive = t
  * @param team	  Team to check if player is on, -1 to check both. 
  * @return		  True if client is on a team, false otherwise. 
  */	
-stock bool:ZRIsClientOnTeam(client, team = -1)
+stock bool ZRIsClientOnTeam(int client, int team = -1)
 {
 	// If index is invalid, then stop.
 	if (!ZRIsClientValid(client))
@@ -301,7 +301,7 @@ stock bool:ZRIsClientOnTeam(client, team = -1)
 	}
 	
 	// Get client team.
-	new clientteam = GetClientTeam(client);
+	int clientteam = GetClientTeam(client);
 	
 	if (team == -1)
 	{
@@ -316,7 +316,7 @@ stock bool:ZRIsClientOnTeam(client, team = -1)
  * 
  * @param team	  (Optional) Team to check if there are clients on.
  */
-stock bool:ZRTeamHasClients(team = -1)
+stock bool ZRTeamHasClients(int team = -1)
 {
 	// If team is
 	if (team == -1)
@@ -326,7 +326,7 @@ stock bool:ZRTeamHasClients(team = -1)
 	}
 	
 	// Return true if given team has at least 1 client.
-	return bool:GetTeamClientCount(team);
+	return view_as<bool>(GetTeamClientCount(team));
 }
 
 /**
@@ -336,7 +336,7 @@ stock bool:ZRTeamHasClients(team = -1)
  * @param flag	  Optional. Flag to check. Default is generic admin flag.
  * @return		  True if generic admin, false otherwise.
  */
-stock bool:ZRIsClientAdmin(client, AdminFlag:flag = Admin_Generic)
+stock bool ZRIsClientAdmin(int client, AdminFlag flag = Admin_Generic)
 {
 	// If index is invalid, then stop.
 	if (!ZRIsClientValid(client))
@@ -363,7 +363,7 @@ stock bool:ZRIsClientAdmin(client, AdminFlag:flag = Admin_Generic)
  * @param client		Client index, or 0 for server.
  * @param reason		COMMAND_TARGET reason.
  */
-stock ZRReplyToTargetError(client, reason)
+stock void ZRReplyToTargetError(int client, int reason)
 {
 	switch (reason)
 	{
@@ -413,7 +413,7 @@ stock ZRReplyToTargetError(client, reason)
  * @param splitsize	 Optional. Sets the split size. 1022 is default.
  *					  Allowed range: 128 to 1022.
  */
-stock ZRPrintToConsoleLong(client, const String:text[], splitsize = 1022)
+stock int ZRPrintToConsoleLong(int client, const char[] text, int splitsize = 1022)
 {
 	// Validate split size.
 	if (splitsize < 128 || splitsize > 1022)
@@ -421,9 +421,9 @@ stock ZRPrintToConsoleLong(client, const String:text[], splitsize = 1022)
 		return;
 	}
 	
-	decl String:partbuffer[splitsize];
-	new pos;
-	new cellswritten = 1;		   // Initialize for the loop.
+	char partbuffer[splitsize];
+	int pos;
+	int cellswritten = 1;		   // Initialize for the loop.
 
 	while (cellswritten)
 	{
@@ -440,7 +440,7 @@ stock ZRPrintToConsoleLong(client, const String:text[], splitsize = 1022)
  * @param output	The converted string.
  * @param maxlen	The maximum length of the string.
  */
-ZRBoolToString(bool:value, String:output[], maxlen)
+void ZRBoolToString(bool value, char[] output, int maxlen)
 {
 	// If the value is true, then set string to "1".
 	if (value)
@@ -467,9 +467,9 @@ ZRBoolToString(bool:value, String:output[], maxlen)
  * @return				Random Integer number between min and max
  */
 #define SIZE_OF_INT		2147483647		// without 0
-stock Math_GetRandomInt(min, max)
+stock int Math_GetRandomInt(int min, int max)
 {
-	new random = GetURandomInt();
+	int random = GetURandomInt();
 	
 	if (random == 0) {
 		random++;
@@ -485,7 +485,7 @@ stock Math_GetRandomInt(min, max)
  * @param entity		Entity Index.
  * @return				Entity Index of the parent.
  */
-stock Entity_GetParent(entity)
+stock int Entity_GetParent(int entity)
 {
 	return GetEntPropEnt(entity, Prop_Data, "m_pParent");
 }
@@ -497,19 +497,19 @@ stock Entity_GetParent(entity)
  *
  * @return			  True if entity has children, false otherwise.
  */
-stock bool:Entity_HasChildren(entity)
+stock bool Entity_HasChildren(int entity)
 {
-	new maxEntities = GetMaxEntities();
+	int maxEntities = GetMaxEntities();
 	
 	// Loop through all entity indexes, after players.
-	for (new loopEntity = MAXPLAYERS + 1; loopEntity < maxEntities; loopEntity++)
+	for (int loopEntity = MAXPLAYERS + 1; loopEntity < maxEntities; loopEntity++)
 	{
 		if (!IsValidEntity(loopEntity))
 		{
 			continue;
 		}
 		
-		new parentEntity = Entity_GetParent(loopEntity);
+		int parentEntity = Entity_GetParent(loopEntity);
 		if (parentEntity == entity)
 		{
 			return true;

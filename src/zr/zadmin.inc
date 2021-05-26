@@ -28,7 +28,7 @@
 /**
  * Create commands specific to ZAdmin.
  */
-ZAdminOnCommandsCreate()
+void ZAdminOnCommandsCreate()
 {
 	// Register ZAdmin command.
 	RegConsoleCmd(SAYHOOKS_KEYWORD_ZADMIN, ZAdminCommand, "Opens ZR admin menu.");
@@ -41,7 +41,7 @@ ZAdminOnCommandsCreate()
  * @param client	The client index.
  * @param argc	  Argument count.
  */
-public Action:ZAdminCommand(client, argc)
+public Action ZAdminCommand(int client, int argc)
 {
 	// If client is console, then stop and tell them this feature is for players only.
 	if (ZRIsConsole(client))
@@ -62,7 +62,7 @@ public Action:ZAdminCommand(client, argc)
  * 
  * @param client	The client index.
  */
-bool:ZAdminMenu(client)
+bool ZAdminMenu(int client)
 {
 	// If client isn't an generic admin, then stop.
 	if (!ZRIsClientAdmin(client))
@@ -72,21 +72,21 @@ bool:ZAdminMenu(client)
 	}
 	
 	// Boolean that tell if client is allowed to do configuration.
-	new bool:configallowed = ZRIsClientPrivileged(client, OperationType_Configuration);
+	bool configallowed = ZRIsClientPrivileged(client, OperationType_Configuration);
 	
 	// Create menu handle.
-	new Handle:menu_zadmin = CreateMenu(ZAdminMenuHandle);
+	Handle menu_zadmin = CreateMenu(ZAdminMenuHandle);
 	
 	// Set translation target as the client.
 	SetGlobalTransTarget(client);
 	
-	decl String:title[MENU_LINE_TITLE_LENGTH];
-	decl String:classmultipliers[MENU_LINE_REG_LENGTH];
-	decl String:weapons[MENU_LINE_REG_LENGTH];
-	decl String:hitgroups[MENU_LINE_REG_LENGTH];
-	decl String:infect[MENU_LINE_REG_LENGTH];
-	decl String:zspawn[MENU_LINE_REG_LENGTH];
-	decl String:ztele[MENU_LINE_REG_LENGTH];
+	char title[MENU_LINE_TITLE_LENGTH];
+	char classmultipliers[MENU_LINE_REG_LENGTH];
+	char weapons[MENU_LINE_REG_LENGTH];
+	char hitgroups[MENU_LINE_REG_LENGTH];
+	char infect[MENU_LINE_REG_LENGTH];
+	char zspawn[MENU_LINE_REG_LENGTH];
+	char ztele[MENU_LINE_REG_LENGTH];
 	
 	Format(title, sizeof(title), "%t\n ", "ZAdmin main title");
 	Format(classmultipliers, sizeof(classmultipliers), "%t", "ZAdmin main class multipliers");
@@ -97,9 +97,9 @@ bool:ZAdminMenu(client)
 	Format(ztele, sizeof(ztele), "%t", "ZAdmin main force ztele");
 	
 	// Get conditions for options.
-	new configdraw = MenuGetItemDraw(configallowed);
-	new moderatordraw = MenuGetItemDraw(ZRIsClientPrivileged(client, OperationType_Generic));
-	new hitgroupdraw = MenuGetItemDraw(GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]) && configallowed);
+	int configdraw = MenuGetItemDraw(configallowed);
+	int moderatordraw = MenuGetItemDraw(ZRIsClientPrivileged(client, OperationType_Generic));
+	int hitgroupdraw = MenuGetItemDraw(GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]) && configallowed);
 	
 	// Add items to menu.
 	SetMenuTitle(menu_zadmin, title);
@@ -128,12 +128,12 @@ bool:ZAdminMenu(client)
  * @param client	The client index.
  * @param slot	  The menu slot selected. (starting from 0)
  */
-public ZAdminMenuHandle(Handle:menu_zadmin, MenuAction:action, client, slot)
+public int ZAdminMenuHandle(Handle menu_zadmin, MenuAction action, int client, int slot)
 {
 	if (action == MenuAction_Select)
 	{
 		// Create variable to possible resend menu later.
-		new bool:resend = true;
+		bool resend = true;
 		
 		switch(slot)
 		{

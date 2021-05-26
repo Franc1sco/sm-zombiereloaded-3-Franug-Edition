@@ -59,7 +59,7 @@ public Plugin myinfo =
 	author = "Anúbis",
 	description = "Sounds for Zombie:Reloaded-Anubis Edition.",
 	version = VERSION,
-	url = "https://github.com/Stewart-Anubis/Sm-Zombiereloaded-3-Franug-Anubis-Edition"
+	url = "https://github.com/Stewart-Anubis"
 };
 
 /**

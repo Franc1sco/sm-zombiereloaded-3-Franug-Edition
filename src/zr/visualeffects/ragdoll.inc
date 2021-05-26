@@ -41,12 +41,12 @@
 /**
  * Variable to store ragdoll offset value.
  */
-new g_iToolsRagdoll;
+int g_iToolsRagdoll;
 
 /**
  * Find VAmbience-specific offsets here.
  */
-RagdollOnOffsetsFound()
+void RagdollOnOffsetsFound()
 {
 	// If offset "m_iAccount" can't be found, then stop the plugin.
 	g_iToolsRagdoll = FindSendPropInfo("CCSPlayer", "m_hRagdoll");
@@ -61,16 +61,16 @@ RagdollOnOffsetsFound()
  * 
  * @param client	The client index.
  */
-RagdollOnClientDeath(client)
+void RagdollOnClientDeath(int client)
 {
 	// If ragdoll removal is disabled, then stop.
-	new bool:ragdollremove = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_REMOVE]);
+	bool ragdollremove = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_REMOVE]);
 	if (!ragdollremove)
 	{
 		return;
 	}
 	
-	new ragdoll = RagdollGetClientRagdoll(client);
+	int ragdoll = RagdollGetClientRagdoll(client);
 	
 	// If the ragdoll is invalid, then stop.
 	if (ragdoll == -1)
@@ -79,7 +79,7 @@ RagdollOnClientDeath(client)
 	}
 	
 	// Get the delay.
-	new Float:dissolvedelay = GetConVarFloat(g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_DELAY]);
+	float dissolvedelay = GetConVarFloat(g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_DELAY]);
 	
 	// If the delay is 0 or less, then remove right now.
 	if (dissolvedelay <= 0)
@@ -97,10 +97,10 @@ RagdollOnClientDeath(client)
  * 
  * @param ragdoll   The ragdoll index.
  */
-RagdollRemove(ragdoll)
+void RagdollRemove(int ragdoll)
 {
 	// Get the dissolve type.
-	new dissolve = GetConVarInt(g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_DISSOLVE]);
+	int dissolve = GetConVarInt(g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_DISSOLVE]);
 	
 	if (dissolve == VEFFECTS_RAGDOLL_DISSOLVE_EFFECTLESS)
 	{
@@ -116,18 +116,18 @@ RagdollRemove(ragdoll)
 	}
 	
 	// Prep the ragdoll for dissolving.
-	decl String:targetname[64];
+	char targetname[64];
 	Format(targetname, sizeof(targetname), "zr_dissolve_%d", ragdoll);
 	DispatchKeyValue(ragdoll, "targetname", targetname);
 	
 	// Prep the dissolve entity.
-	new dissolver = CreateEntityByName("env_entity_dissolver");
+	int dissolver = CreateEntityByName("env_entity_dissolver");
 	
 	// Set the target to the ragdoll.
 	DispatchKeyValue(dissolver, "target", targetname);
 	
 	// Set the dissolve type.
-	decl String:dissolvetype[16];
+	char dissolvetype[16];
 	Format(dissolvetype, sizeof(dissolvetype), "%d", dissolve);
 	DispatchKeyValue(dissolver, "dissolvetype", dissolvetype);
 	
@@ -144,10 +144,10 @@ RagdollRemove(ragdoll)
  * @param timer	 The timer handle. 
  * @param ragdoll   The ragdoll index.
  */
-public Action:RagdollTimer(Handle:timer, any:ragdoll)
+public Action RagdollTimer(Handle timer, any ragdoll)
 {
 	// If ragdoll removal is disabled, then stop.
-	new bool:ragdollremove = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_REMOVE]);
+	bool ragdollremove = GetConVarBool(g_hCvarsList[CVAR_VEFFECTS_RAGDOLL_REMOVE]);
 	if (!ragdollremove)
 	{
 		return;
@@ -160,7 +160,7 @@ public Action:RagdollTimer(Handle:timer, any:ragdoll)
 	}
 	
 	// Make sure this edict is still a ragdoll and not become a new valid entity.
-	decl String:classname[64];
+	char classname[64];
 	GetEdictClassname(ragdoll, classname, sizeof(classname));
 	if (!StrEqual(classname, "cs_ragdoll"))
 	{
@@ -175,7 +175,7 @@ public Action:RagdollTimer(Handle:timer, any:ragdoll)
  * @param client	The client index.
  * @return		  The entity index of the client's ragdoll, -1 if none exists.
  */
-RagdollGetClientRagdoll(client)
+int RagdollGetClientRagdoll(int client)
 {
 	return GetEntDataEnt2(client, g_iToolsRagdoll);
 }
@@ -184,7 +184,7 @@ RagdollGetClientRagdoll(client)
  * Removes the ragdoll entity of a client.
  * @param client	The client index.
  */
-RagdollResetClientRagdoll(client)
+void RagdollResetClientRagdoll(int client)
 {
 	SetEntDataEnt2(client, g_iToolsRagdoll, -1);
 }

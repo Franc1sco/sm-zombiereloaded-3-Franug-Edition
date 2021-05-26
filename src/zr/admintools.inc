@@ -53,7 +53,7 @@ enum OperationTypes
  * @param operationType	 The operation category.
  * @return				  True if allowed, false otherwise.
  */
-stock bool:ZRIsClientPrivileged(client, OperationTypes:operationType = OperationType_Generic)
+stock bool ZRIsClientPrivileged(int client, OperationTypes operationType = OperationType_Generic)
 {
 	// Check if console.
 	if (client == 0)
@@ -69,7 +69,7 @@ stock bool:ZRIsClientPrivileged(client, OperationTypes:operationType = Operation
 	}
 	
 	// Check if group authentication is used.
-	new bool:groupauth = GetConVarBool(g_hCvarsList[CVAR_PERMISSIONS_USE_GROUPS]);
+	bool groupauth = GetConVarBool(g_hCvarsList[CVAR_PERMISSIONS_USE_GROUPS]);
 	if (groupauth)
 	{
 		/**********************************
@@ -108,7 +108,7 @@ stock bool:ZRIsClientPrivileged(client, OperationTypes:operationType = Operation
 		 *							   *
 		 *********************************/
 		
-		new AdminFlag:flag;
+		AdminFlag flag;
 		
 		// Check operation type.
 		switch (operationType)
@@ -139,9 +139,9 @@ stock bool:ZRIsClientPrivileged(client, OperationTypes:operationType = Operation
  * @param groupName	 SourceMod group name to check.
  * @return			  True if in the group, false otherwise.
  */
-stock bool:ZRIsClientInGroup(client, const String:groupName[])
+stock bool ZRIsClientInGroup(int client, const char[] groupName)
 {
-	new AdminId:id = GetUserAdmin(client);
+	AdminId id = GetUserAdmin(client);
 	
 	// Validate id.
 	if (id == INVALID_ADMIN_ID)
@@ -150,14 +150,14 @@ stock bool:ZRIsClientInGroup(client, const String:groupName[])
 	}
 	
 	// Get number of groups.
-	new groupnum = GetAdminGroupCount(id);
-	decl String:groupname[64];
+	int groupnum = GetAdminGroupCount(id);
+	char groupname[64];
 	
 	// Validate number of groups.
 	if (groupnum > 0)
 	{
 		// Loop through each group.
-		for (new group = 0; group < groupnum; group++)
+		for (int group = 0; group < groupnum; group++)
 		{
 			// Get group name.
 			GetAdminGroup(id, group, groupname, sizeof(groupname));

@@ -33,9 +33,9 @@
  *					  and "zombies".
  * @return			  True if successfully set, false otherwise.
  */
-stock bool:VolSetTeamString(volumeIndex, const String:team[])
+stock bool VolSetTeamString(int volumeIndex, const char[] team)
 {
-	new VolumeTeamFilters:teamfilter;
+	VolumeTeamFilters teamfilter;
 	
 	// Check if string value is empty.
 	if (strlen(team) == 0)
@@ -69,7 +69,7 @@ stock bool:VolSetTeamString(volumeIndex, const String:team[])
  * @param volumeIndex   The volume index to apply to.
  * @param team		  The team filter value.
  */
-stock VolSetTeam(volumeIndex, VolumeTeamFilters:team[])
+stock void VolSetTeam(int volumeIndex, VolumeTeamFilters[] team)
 {
 	Volumes[volumeIndex][Vol_TeamFilter] = team;
 }
@@ -84,7 +84,7 @@ stock VolSetTeam(volumeIndex, VolumeTeamFilters:team[])
  *					  Default is human readable (false).
  * @return			  Number of cells written.
  */
-stock VolTeamToString(VolumeTeamFilters:team, String:buffer[], maxlen, bool:shortName = false)
+stock int VolTeamToString(VolumeTeamFilters team, char[] buffer, int maxlen, bool shortName = false)
 {
 	switch (team)
 	{
@@ -113,9 +113,9 @@ stock VolTeamToString(VolumeTeamFilters:team, String:buffer[], maxlen, bool:shor
  *					  as a string. 
  * @return			  True if successfully set, false otherwise.
  */
-stock bool:VolSetDelayString(volumeIndex, const String:delay[])
+stock bool VolSetDelayString(int volumeIndex, const char[] delay)
 {
-	new Float:triggerdelay;
+	float triggerdelay;
 	
 	// Check if string value is empty.
 	if (strlen(delay) == 0)
@@ -137,7 +137,7 @@ stock bool:VolSetDelayString(volumeIndex, const String:delay[])
  * @param volumeIndex   The volume index to apply to.
  * @param delay		 The trigger delay, in seconds.
  */
-stock VolSetDelay(volumeIndex, Float:delay)
+stock void VolSetDelay(int volumeIndex, float delay)
 {
 	Volumes[volumeIndex][Vol_TriggerDelay] = delay;
 }
@@ -150,7 +150,7 @@ stock VolSetDelay(volumeIndex, Float:delay)
  *					  enumeration, exclude prefix.
  * @return			  True if successfully set, false otherwise.
  */
-stock bool:VolSetEffectString(volumeIndex, const String:effect[])
+stock bool VolSetEffectString(int volumeIndex, const char[] effect)
 {
 	// Check if string value is empty.
 	if (strlen(effect) == 0)
@@ -185,7 +185,7 @@ stock bool:VolSetEffectString(volumeIndex, const String:effect[])
  * @param volumeIndex   The volume index to apply to.
  * @param effect		Specifies what effect to apply on the volume.
  */
-stock VolSetEffect(volumeIndex, VolumeEffects:effect)
+stock void VolSetEffect(int volumeIndex, VolumeEffects effect)
 {
 	Volumes[volumeIndex][Vol_Effect] = effect;
 }
@@ -200,7 +200,7 @@ stock VolSetEffect(volumeIndex, VolumeEffects:effect)
  *					  Default is human readable (false).
  * @return			  Number of cells written.
  */
-stock VolEffectToString(VolumeEffects:effect, String:buffer[], maxlen, bool:shortName = false)
+stock int VolEffectToString(VolumeEffects effect, char[] buffer, int maxlen, bool shortName = false)
 {
 	switch (effect)
 	{
@@ -229,10 +229,10 @@ stock VolEffectToString(VolumeEffects:effect, String:buffer[], maxlen, bool:shor
  *					  (0-255): "red,green,blue".
  * @return			  True if successfully set, false otherwise.
  */
-stock bool:VolSetEffectColorString(volumeIndex, const String:effect_color[])
+stock bool VolSetEffectColorString(int volumeIndex, const char[] effect_color)
 {
-	new String:colors[3][3];
-	new red, green, blue;
+	char colors[3][3];
+	int red, green, blue;
 	
 	// Check if string value is empty.
 	if (strlen(effect_color) == 0)
@@ -263,7 +263,7 @@ stock bool:VolSetEffectColorString(volumeIndex, const String:effect_color[])
  * @param green		 Amount of green color. 0 to 255.
  * @param blue		  Amount of blue color. 0 to 255.
  */
-stock VolSetEffectColor(volumeIndex, red, green, blue)
+stock void VolSetEffectColor(int volumeIndex, int red, int green, int blue)
 {
 	Volumes[volumeIndex][vol_effect_color][0] = red;
 	Volumes[volumeIndex][vol_effect_color][1] = green;
@@ -278,7 +278,7 @@ stock VolSetEffectColor(volumeIndex, red, green, blue)
  *					  evaluates to true or false, "yes" or "no".
  * @return			  True if successfully set, false otherwise.
  */
-stock bool:VolSetEnabledString(volumeIndex, const String:enabled[])
+stock bool VolSetEnabledString(int volumeIndex, const char[] enabled)
 {
 	// Check if string value is empty.
 	if (strlen(enabled) == 0)
@@ -286,7 +286,7 @@ stock bool:VolSetEnabledString(volumeIndex, const String:enabled[])
 		return false;
 	}
 	
-	new bool:val = bool:StringToInt(enabled);
+	bool val = view_as<bool>(StringToInt(enabled));
 	
 	// Check yes or no values first.
 	if (StrEqual(enabled, "yes", false))
@@ -323,7 +323,7 @@ stock bool:VolSetEnabledString(volumeIndex, const String:enabled[])
  * @param volumeIndex   The volume index to apply to.
  * @param enabled	   Specifies if the volume should be enabled or not.
  */
-stock VolSetEnabled(volumeIndex, bool:enabled)
+stock void VolSetEnabled(int volumeIndex, bool enabled)
 {
 	// Check if the new value is different from the current.
 	if (Volumes[volumeIndex][Vol_Enabled] != enabled)

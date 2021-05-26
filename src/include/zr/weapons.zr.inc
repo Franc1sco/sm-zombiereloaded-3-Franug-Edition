@@ -31,4 +31,4 @@
  * @param classIndex	Client index.
  * @param state		true or false.
  */
-native ZR_NoWeaponRestrictions(client, bool state);
+native ZR_NoWeaponRestrictions(int client, bool state);

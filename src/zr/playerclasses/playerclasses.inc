@@ -405,79 +405,79 @@ enum ClassSelectResult
 /**
  * Empty filter structure.
  */
-new ClassNoFilter[ClassFilter];
+int ClassNoFilter[ClassFilter];
 
 /**
  * Filter structure for excluding special classes.
  */
-new ClassNoSpecialClasses[ClassFilter] = {false, 0, ZR_CLASS_SPECIALFLAGS, -1};
+int ClassNoSpecialClasses[ClassFilter] = {false, 0, ZR_CLASS_SPECIALFLAGS, -1};
 
 /**
  * The original class data. This array is only changed when class data is
  * loaded. ZR_CLASS_CACHE_ORIGINAL is the cache type to this array.
  */
-new ClassData[ZR_CLASS_MAX][ClassAttributes];
+int ClassData[ZR_CLASS_MAX][ClassAttributes];
 
 /**
  * The class data cache that can be modified. ZR_CLASS_CACHE_MODIFIED is the
  * cache type to this array.
  */
-new ClassDataCache[ZR_CLASS_MAX][ClassAttributes];
+int ClassDataCache[ZR_CLASS_MAX][ClassAttributes];
 
 /**
  * Cache for player attributes. Makes it possible for one or more players to
  * have custom attributes. ZR_CLASS_CACHE_PLAYER is the cache type to this
  * array.
  */
-new ClassPlayerCache[MAXPLAYERS + 1][ClassAttributes];
+int ClassPlayerCache[MAXPLAYERS + 1][ClassAttributes];
 
 /**
  * Cache for storing global multipliers, per team and per attribute when
  * possible. Only attributes that support multipliers will be used, others are
  * ignored.
  */
-new Float:ClassMultiplierCache[ZR_CLASS_TEAMCOUNT][ClassMultipliers];
+float ClassMultiplierCache[ZR_CLASS_TEAMCOUNT][ClassMultipliers];
 
 /**
  * Number of classes loaded.
  */
-new ClassCount;
+int ClassCount;
 
 /**
  * Specifies whether the class team requirements and attributes are valid or not.
  * Used to block events that happend before the module is done loading.
  */
-new bool:ClassValidated;
+bool ClassValidated;
 
 /**
  * Stores what class the player has selected, for each team.
  */
-new ClassSelected[MAXPLAYERS + 1][ZR_CLASS_TEAMCOUNT];
+int ClassSelected[MAXPLAYERS + 1][ZR_CLASS_TEAMCOUNT];
 
 /**
  * Stores what class to be restored on next spawn, if available.
  */
-new ClassSelectedNext[MAXPLAYERS + 1][ZR_CLASS_TEAMCOUNT];
+int ClassSelectedNext[MAXPLAYERS + 1][ZR_CLASS_TEAMCOUNT];
 
 /**
  * Cache for the currently selected team (admin menus).
  */
-new ClassAdminTeamSelected[MAXPLAYERS + 1];
+int ClassAdminTeamSelected[MAXPLAYERS + 1];
 
 /**
  * Cookies for storing class indexes.
  */
-new Handle:g_hClassCookieClassSelected[ZR_CLASS_TEAMCOUNT];
+Handle g_hClassCookieClassSelected[ZR_CLASS_TEAMCOUNT];
 
 /**
  * Cache for the currently selected attribute multiplier (admin menus).
  */
-new ClassMultipliers:ClassAdminAttributeSelected[MAXPLAYERS + 1];
+ClassMultipliers ClassAdminAttributeSelected[MAXPLAYERS + 1];
 
 /**
  * Specifies whether a player is currently in admin mode.
  */
-new bool:ClassPlayerInAdminMode[MAXPLAYERS + 1];
+bool ClassPlayerInAdminMode[MAXPLAYERS + 1];
 
 /**
  * Specifies whether a player is allowed to change class with instant effect.
@@ -486,23 +486,23 @@ new bool:ClassPlayerInAdminMode[MAXPLAYERS + 1];
  * The class menu will automatically check this setting and apply attributes if
  * set to true.
  */
-new bool:ClassAllowInstantChange[MAXPLAYERS + 1];
+bool ClassAllowInstantChange[MAXPLAYERS + 1];
 
 /**
  * Cache for storing original model path before applying custom models. Used
  * when restoring to old model.
  */
-new String:ClassOriginalPlayerModel[MAXPLAYERS + 1][PLATFORM_MAX_PATH];
+char ClassOriginalPlayerModel[MAXPLAYERS + 1][PLATFORM_MAX_PATH];
 
 /**
  * Specifies whether a player has spawned.
  */
-new bool:ClassPlayerSpawned[MAXPLAYERS + 1];
+bool ClassPlayerSpawned[MAXPLAYERS + 1];
 
 /**
  * What method used to apply speed on players.
  */
-new ClassSpeedMethods:ClassSpeedMethod = ClassSpeed_Prop;
+ClassSpeedMethods ClassSpeedMethod = ClassSpeed_Prop;
 
 #include "zr/playerclasses/filtertools"
 #include "zr/playerclasses/attributes"
@@ -521,19 +521,19 @@ new ClassSpeedMethods:ClassSpeedMethod = ClassSpeed_Prop;
  * @param keepMultipliers   Optional. Don't reset multipliers. Default is
  *						  false.
  */
-ClassLoad()
+void ClassLoad()
 {
 	// Register config file.
 	ConfigRegisterConfig(File_Classes, Structure_Keyvalue, CONFIG_FILE_ALIAS_CLASSES);
 	
-	new Handle:kvClassData;
+	Handle kvClassData;
 	
 	// Make sure kvClassData is ready to use.
 	kvClassData = CreateKeyValues(CONFIG_FILE_ALIAS_CLASSES);
 	
 	// Get weapons config path.
-	decl String:pathclasses[PLATFORM_MAX_PATH];
-	new bool:exists = ConfigGetCvarFilePath(CVAR_CONFIG_PATH_CLASSES, pathclasses);
+	char pathclasses[PLATFORM_MAX_PATH];
+	bool exists = ConfigGetCvarFilePath(CVAR_CONFIG_PATH_CLASSES, pathclasses);
 	
 	// If file doesn't exist, then log and stop.
 	if (!exists)
@@ -560,17 +560,17 @@ ClassLoad()
 		LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Can't find any classes in \"%s\"", pathclasses);
 	}
 	
-	new String:name[64];
-	new String:group[64];
-	new String:sm_flags[64];
-	new String:description[256];
-	new String:model_path[PLATFORM_MAX_PATH];
-	new String:immunity_mode[32];
-	new String:overlay_path[PLATFORM_MAX_PATH];
+	char name[64];
+	char group[64];
+	char sm_flags[64];
+	char description[256];
+	char model_path[PLATFORM_MAX_PATH];
+	char immunity_mode[32];
+	char overlay_path[PLATFORM_MAX_PATH];
 	
 	ClassCount = 0;
-	new failedcount;
-	new ClassErrorFlags;
+	int failedcount;
+	int ClassErrorFlags;
 	
 	// Loop through all classes and store attributes in the ClassData array.
 	do
@@ -701,7 +701,7 @@ ClassLoad()
  * 
  * @param config	The config being reloaded. (only if 'all' is false)
  */
-public ClassOnConfigReload(ConfigFile:config)
+public void ClassOnConfigReload(ConfigFile config)
 {
 	// Reload class config.
 	ClassLoad();
@@ -712,9 +712,9 @@ public ClassOnConfigReload(ConfigFile:config)
  *
  * @return  Speed method, or ClassSpeed_Invalid on error.
  */
-ClassSpeedMethods:ClassGetSpeedMethod()
+ClassSpeedMethods ClassGetSpeedMethod()
 {
-	decl String:speedMethod[16];
+	char speedMethod[16];
 	speedMethod[0] = 0;
 	
 	GetConVarString(g_hCvarsList[CVAR_CLASSES_SPEED_METHOD], speedMethod, sizeof(speedMethod));
@@ -736,7 +736,7 @@ ClassSpeedMethods:ClassGetSpeedMethod()
  *
  * @return	  True on success, false otherwise.
  */
-bool:ClassReloadDataCache()
+bool ClassReloadDataCache()
 {
 	// Check if there are no classes.
 	if (ClassCount == 0)
@@ -745,7 +745,7 @@ bool:ClassReloadDataCache()
 	}
 	
 	// Loop through all classes.
-	for (new classindex = 0; classindex < ClassCount; classindex++)
+	for (int classindex = 0; classindex < ClassCount; classindex++)
 	{
 		/* General */
 		ClassDataCache[classindex][Class_Enabled] = ClassData[classindex][Class_Enabled];
@@ -803,7 +803,7 @@ bool:ClassReloadDataCache()
  *					  data).
  * @return	  True if successful, false otherwise.
  */
-bool:ClassReloadPlayerCache(client, classindex, cachetype = ZR_CLASS_CACHE_MODIFIED)
+bool ClassReloadPlayerCache(int client, int classindex, int cachetype = ZR_CLASS_CACHE_MODIFIED)
 {
 	// Validate indexes.
 	if (!ClassValidateIndex(classindex) || !ZRIsClientValid(client))
@@ -915,9 +915,9 @@ bool:ClassReloadPlayerCache(client, classindex, cachetype = ZR_CLASS_CACHE_MODIF
  * @param client		The client index.
  * @return			  True if successful, false otherwise.
  */
-bool:ClassReloadPlayer(client)
+bool ClassReloadPlayer(int client)
 {
-	new activeclass;
+	int activeclass;
 	
 	// Get active class index.
 	activeclass = ClassGetActiveIndex(client);
@@ -939,10 +939,10 @@ bool:ClassReloadPlayer(client)
 /**
  * Reset all class attribute multipliers to 1.0.
  */
-ClassResetMultiplierCache()
+void ClassResetMultiplierCache()
 {
 	// Loop through all teams.
-	for (new teamid = 0; teamid < ZR_CLASS_TEAMCOUNT; teamid++)
+	for (int teamid = 0; teamid < ZR_CLASS_TEAMCOUNT; teamid++)
 	{
 		ClassMultiplierCache[teamid][ClassM_NapalmTime] = 1.0;
 		ClassMultiplierCache[teamid][ClassM_Health] = 1.0;
@@ -961,9 +961,9 @@ ClassResetMultiplierCache()
  *
  * @param client	Optional. Specify client to reset. Default is all.
  */
-ClassResetNextIndexes(client = -1)
+void ClassResetNextIndexes(int client = -1)
 {
-	new teamid;
+	int teamid;
 	
 	if (client > 0)
 	{
@@ -991,12 +991,12 @@ ClassResetNextIndexes(client = -1)
  * @param client		The client index.
  * @param excludeTeam   Optional. Do not restore the specified team.
  */
-ClassRestoreNextIndexes(client, excludeTeam = -1)
+void ClassRestoreNextIndexes(int client, int excludeTeam = -1)
 {
 	// Get next class indexes.
-	new zombie = ClassSelectedNext[client][ZR_CLASS_TEAM_ZOMBIES];
-	new human = ClassSelectedNext[client][ZR_CLASS_TEAM_HUMANS];
-	new admin = ClassSelectedNext[client][ZR_CLASS_TEAM_ADMINS];
+	int zombie = ClassSelectedNext[client][ZR_CLASS_TEAM_ZOMBIES];
+	int human = ClassSelectedNext[client][ZR_CLASS_TEAM_HUMANS];
+	int admin = ClassSelectedNext[client][ZR_CLASS_TEAM_ADMINS];
 	
 	// Check if the zombie team should be excluded.
 	if (excludeTeam != ZR_CLASS_TEAM_ZOMBIES)
@@ -1047,19 +1047,19 @@ ClassRestoreNextIndexes(client, excludeTeam = -1)
  *
  * @param client	Optional. The client index. If specified, cookies are used.
  */
-ClassClientSetDefaultIndexes(client = -1)
+void ClassClientSetDefaultIndexes(int client = -1)
 {
-	new bool:clientvalid = ZRIsClientValid(client);
-	new filter[ClassFilter];
-	new bool:saveclasses = GetConVarBool(g_hCvarsList[CVAR_CLASSES_SAVE]);
+	bool clientvalid = ZRIsClientValid(client);
+	int filter[ClassFilter];
+	bool saveclasses = GetConVarBool(g_hCvarsList[CVAR_CLASSES_SAVE]);
 	
-	new zombieindex;
-	new humanindex;
-	new adminindex;
+	int zombieindex;
+	int humanindex;
+	int adminindex;
 	
-	new bool:haszombie;
-	new bool:hashuman;
-	new bool:hasadmin;
+	bool haszombie;
+	bool hashuman;
+	bool hasadmin;
 	
 	
 	/*
@@ -1225,7 +1225,7 @@ ClassClientSetDefaultIndexes(client = -1)
 	else
 	{
 		// No client specified. Loop through all players.
-		for (new clientindex = 1; clientindex <= MaxClients; clientindex++)
+		for (int clientindex = 1; clientindex <= MaxClients; clientindex++)
 		{
 			// Set selected class idexes.
 			ClassSelected[clientindex][ZR_CLASS_TEAM_ZOMBIES] = zombieindex;
@@ -1256,11 +1256,11 @@ ClassClientSetDefaultIndexes(client = -1)
  *
  * @return				  Class selection result. See enum ClassSelectResult.
  */
-ClassSelectResult:ClassSelectClientClass(client, classIndex, bool:applyIfPossible = true, bool:saveIfEnabled = true)
+ClassSelectResult ClassSelectClientClass(int client, int classIndex, bool applyIfPossible = true, bool saveIfEnabled = true)
 {
-	new bool:iszombie = InfectIsClientInfected(client);
-	new teamid = ClassGetTeamID(classIndex, ZR_CLASS_CACHE_MODIFIED);
-	new ClassSelectResult:selectResult = ClassSelected_NoChange;
+	bool iszombie = InfectIsClientInfected(client);
+	int teamid = ClassGetTeamID(classIndex, ZR_CLASS_CACHE_MODIFIED);
+	ClassSelectResult selectResult = ClassSelected_NoChange;
 	
 	// Allow instant class change if enabled and both class and player is human.
 	if (applyIfPossible &&
@@ -1332,11 +1332,11 @@ ClassSelectResult:ClassSelectClientClass(client, classIndex, bool:applyIfPossibl
  *				  index will be used as a client index.
  * @return		  Number of cells written.
  */
-ClassDumpData(index, cachetype, String:buffer[], maxlen)
+int ClassDumpData(int index, int cachetype, char[] buffer, int maxlen)
 {
-	new cellcount;
-	decl String:attribute[320];
-	decl String:format_buffer[256];
+	int cellcount;
+	char attribute[320];
+	char format_buffer[256];
 	
 	if (maxlen == 0)
 	{
@@ -1459,9 +1459,9 @@ ClassDumpData(index, cachetype, String:buffer[], maxlen)
  * @param maxlen		Size of buffer.
  * @return			  Number of cells written.
  */
-ClassMultiplierToString(client, ClassMultipliers:attribute, String:buffer[], maxlen)
+int ClassMultiplierToString(int client, ClassMultipliers attribute, char[] buffer, int maxlen)
 {
-	decl String:phrase[48];
+	char phrase[48];
 	
 	SetGlobalTransTarget(client);
 	switch (attribute)

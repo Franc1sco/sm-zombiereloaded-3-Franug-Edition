@@ -44,7 +44,7 @@ enum ZR_RespawnCondition
  *						  ZR settings. See ZR_RespawnCondition for details.
  * @error				   Invalid client index, not connected or already alive.
  */
-native ZR_RespawnClient(client, ZR_RespawnCondition:condition = ZR_Repsawn_Default);
+native ZR_RespawnClient(int client, ZR_RespawnCondition condition = ZR_Repsawn_Default);
 
 /**
  * Called right before ZR is about to respawn a player.
@@ -56,7 +56,7 @@ native ZR_RespawnClient(client, ZR_RespawnCondition:condition = ZR_Repsawn_Defau
  *
  * @return	  Plugin_Handled to block respawn.
  */
-forward Action:ZR_OnClientRespawn(&client, &ZR_RespawnCondition:condition);
+forward Action ZR_OnClientRespawn(int &client, ZR_RespawnCondition &condition);
 
 /**
  * Called after ZR respawned a player.
@@ -65,7 +65,7 @@ forward Action:ZR_OnClientRespawn(&client, &ZR_RespawnCondition:condition);
  * @param condition		 Current condition of the respawned player. See
  *						  ZR_RespawnCondition for details.
  */
-forward ZR_OnClientRespawned(client, ZR_RespawnCondition:condition);
+forward ZR_OnClientRespawned(int client, ZR_RespawnCondition condition);
 
 /**
  * Set if a player died by a suicide or world damage.
@@ -79,7 +79,7 @@ forward ZR_OnClientRespawned(client, ZR_RespawnCondition:condition);
  *
  * @error		   Invalid client index or not connected.
  */
-native ZR_SetKilledByWorld(client, bool:suicide);
+native ZR_SetKilledByWorld(int client, bool suicide);
 
 /**
  * Get whether the player died by a suicide or world damage.
@@ -92,4 +92,4 @@ native ZR_SetKilledByWorld(client, bool:suicide);
  *				  another player.
  * @error		   Invalid client index or not connected.
  */
-native bool:ZR_GetKilledByWorld(client);
+native bool ZR_GetKilledByWorld(int client);

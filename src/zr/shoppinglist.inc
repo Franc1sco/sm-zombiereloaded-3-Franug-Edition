@@ -72,19 +72,19 @@
  * @param out_token		 What to separate each item with in the shopping list.  Ex: Token: "\n"  List: "Apple\nOrange"
  * @param quantityformat	How to show the quantity of an item for multi-listed items.  ## is the number.  Ex: "Apples x2" quantityformat: " x##"
  */
-stock ShoppingListConstruct(const String:list[], String:shoppinglist[], slist_maxlen, const String:in_token[] = ",", const String:out_token[] = ",", const String:quantityformat[] = " x##")
+stock void ShoppingListConstruct(const char[] list, char[] shoppinglist, int slist_maxlen, const char[] in_token = ",", const char[] out_token = ",", const char[] quantityformat = " x##")
 {
 	// Put each item in a list.
-	new String:items[SHOPPINGLIST_MAXITEMS][SHOPPINGLIST_MAXLEN];
+	char items[SHOPPINGLIST_MAXITEMS][SHOPPINGLIST_MAXLEN];
 	ExplodeString(list, in_token, items, SHOPPINGLIST_MAXITEMS, SHOPPINGLIST_MAXLEN);
 	
 	// Put each item in a trie where we count each item.
-	new Handle:trieItems = CreateTrie();
-	new item_count;
-	new validstrings;
+	Handle trieItems = CreateTrie();
+	int item_count;
+	int validstrings;
 	
 	// x = Array index.
-	for (new x = 0; x < SHOPPINGLIST_MAXITEMS; x++)
+	for (int x = 0; x < SHOPPINGLIST_MAXITEMS; x++)
 	{
 		// Trim off any whitespace.
 		TrimString(items[x]);
@@ -104,11 +104,11 @@ stock ShoppingListConstruct(const String:list[], String:shoppinglist[], slist_ma
 	// Initialize 'shoppinglist'.
 	strcopy(shoppinglist, slist_maxlen, "");
 	
-	decl String:item_formatted[SHOPPINGLIST_MAXLEN];
-	decl String:strQuantity[8];
+	char item_formatted[SHOPPINGLIST_MAXLEN];
+	char strQuantity[8];
 	
 	// x = Array index.
-	for (new x = 0; x < validstrings; x++)
+	for (int x = 0; x < validstrings; x++)
 	{
 		// Get quantity count, in string and int.
 		GetTrieValue(trieItems, items[x], item_count);
@@ -156,16 +156,16 @@ stock ShoppingListConstruct(const String:list[], String:shoppinglist[], slist_ma
  * @param token		 The token to remove with the item. 
  * @return			  True if the item was found and removed, false if not found. 
  */
-public bool:ShoppingListRemove(String:list[], maxlen, const String:item[], const String:token[])
+public bool ShoppingListRemove(char[] list, int maxlen, const char[] item, const char[] token)
 {
 	// Explode the items into an array.
-	new String:items[SHOPPINGLIST_MAXITEMS][SHOPPINGLIST_MAXLEN];
+	char items[SHOPPINGLIST_MAXITEMS][SHOPPINGLIST_MAXLEN];
 	ExplodeString(list, token, items, SHOPPINGLIST_MAXITEMS, SHOPPINGLIST_MAXLEN);
 	
-	new validstrings;
+	int validstrings;
 	
 	// x = Array index.
-	for (new x = SHOPPINGLIST_MAXITEMS - 1; x >= 0; x--)
+	for (int x = SHOPPINGLIST_MAXITEMS - 1; x >= 0; x--)
 	{
 		// Trim off any whitespace.
 		TrimString(items[x]);
@@ -176,7 +176,7 @@ public bool:ShoppingListRemove(String:list[], maxlen, const String:item[], const
 			items[x][0] = 0;
 			
 			// Re-copy each index after the matching string to overwrite it. 
-			for (new y = x; y < SHOPPINGLIST_MAXITEMS - 1; y++)
+			for (int y = x; y < SHOPPINGLIST_MAXITEMS - 1; y++)
 				items[y] = items[y + 1];
 			
 			// Implode the array of strings back together into a full string.
@@ -213,11 +213,11 @@ public bool:ShoppingListRemove(String:list[], maxlen, const String:item[], const
  * @param token		 The token to remove with the item. 
  * @return			  True if the item was found and removed, false if not found. 
  */
-/*stock bool:ShoppingListRemove(String:list[], maxlen, const String:item[], const String:token[])
+/*stock bool ShoppingListRemove(char[] list, int maxlen, const char[] item, const char[] token)
 {
-	new itemindex = -1;
-	new itemindex2 = -1;
-	new pos;
+	int itemindex = -1;
+	int itemindex2 = -1;
+	int pos;
 	while (itemindex == itemindex2)
 	{
 		itemindex2 = pos = StrContains(list[pos], item, false);
@@ -252,17 +252,17 @@ public bool:ShoppingListRemove(String:list[], maxlen, const String:item[], const
  * @param token		 The token to remove with the item. 
  * @return			  True if the item was found and removed, false if not found. 
  */
-/*stock bool:ShoppingListRemove(String:list[], maxlen, maxitems, maxitemlen, const String:item[], const String:token[])
+/*stock bool ShoppingListRemove(char list[], int maxlen, int maxitems, int maxitemlen, const char[] item, const char[] token)
 {
 	// Default initialized value = false.
-	new bool:success;
+	bool success;
 	
 	// Put each item in a list.
-	new String:items[maxitems][maxitemlen];
+	char items[maxitems][maxitemlen];
 	ExplodeString(list, token, items, maxitems, maxitemlen);
 	
 	// x = List index.
-	for (new x = maxitems - 1; x >= 0; x--)
+	for (int x = maxitems - 1; x >= 0; x--)
 	{
 		PrintToServer("%d %s", x, items[x]);
 		if (StrEqual(items[x], item, false))
@@ -273,11 +273,11 @@ public bool:ShoppingListRemove(String:list[], maxlen, const String:item[], const
 		}
 	}
 	
-	new String:items_after[maxitems][maxitemlen];
-	new count;
+	char items_after[maxitems][maxitemlen];
+	int count;
 	
 	// x = List index.
-	for (new x = 0; x < maxitems; x++)
+	for (int x = 0; x < maxitems; x++)
 	{
 		PrintToServer("%d \"%s\"", x, items[x]);
 		

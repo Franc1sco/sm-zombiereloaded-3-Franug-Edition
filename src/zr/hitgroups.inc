@@ -60,12 +60,12 @@ enum HitgroupsData
 /**
  * Array handle to store hitgroups data.
  */
-new Handle:arrayHitgroups = INVALID_HANDLE;
+Handle arrayHitgroups = INVALID_HANDLE;
 
 /**
  * Create commands related to config here.
  */
-HitgroupsOnCommandsCreate()
+void HitgroupsOnCommandsCreate()
 {
 	// Create config admin commands.
 	RegConsoleCmd("zr_hitgroup", HitgroupsCommand, "Toggles or sets if a zombie's hitgroup can be damaged. Usage: zr_hitgroup <hitgroup name> [1/0]");
@@ -76,21 +76,21 @@ HitgroupsOnCommandsCreate()
 /**
  * Loads hitgroup data from file.
  */ 
-HitgroupsLoad()
+void HitgroupsLoad()
 {
 	// Register config file.
 	ConfigRegisterConfig(File_Hitgroups, Structure_Keyvalue, CONFIG_FILE_ALIAS_HITGROUPS);
 	
 	// If module is disabled, then stop.
-	new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
+	bool hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
 	if (!hitgroups)
 	{
 		return;
 	}
 	
 	// Get hitgroups config path.
-	decl String:pathhitgroups[PLATFORM_MAX_PATH];
-	new bool:exists = ConfigGetCvarFilePath(CVAR_CONFIG_PATH_HITGROUPS, pathhitgroups);
+	char pathhitgroups[PLATFORM_MAX_PATH];
+	bool exists = ConfigGetCvarFilePath(CVAR_CONFIG_PATH_HITGROUPS, pathhitgroups);
 	
 	// If file doesn't exist, then log and stop.
 	if (!exists)
@@ -105,7 +105,7 @@ HitgroupsLoad()
 	ConfigSetConfigPath(File_Hitgroups, pathhitgroups);
 	
 	// Load config from file and create array structure.
-	new bool:success = ConfigLoadConfig(File_Hitgroups, arrayHitgroups);
+	bool success = ConfigLoadConfig(File_Hitgroups, arrayHitgroups);
 	
 	// Unexpected error, stop plugin.
 	if (!success)
@@ -116,7 +116,7 @@ HitgroupsLoad()
 	}
 	
 	// Validate hitgroups config.
-	new size = GetArraySize(arrayHitgroups);
+	int size = GetArraySize(arrayHitgroups);
 	if (!size)
 	{
 		LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Hitgroups, "Config Validation", "No usable data found in hitgroups config file: %s", pathhitgroups);
@@ -135,25 +135,25 @@ HitgroupsLoad()
  * Caches hitgroup data from file into arrays.
  * Make sure the file is loaded before (ConfigLoadConfig) to prep array structure.
  */
-HitgroupsCacheData()
+void HitgroupsCacheData()
 {
 	// Get config's file path.
-	decl String:pathhitgroups[PLATFORM_MAX_PATH];
+	char pathhitgroups[PLATFORM_MAX_PATH];
 	ConfigGetConfigPath(File_Hitgroups, pathhitgroups, sizeof(pathhitgroups));
 	
-	new Handle:kvHitgroups;
-	new bool:success = ConfigOpenConfigFile(File_Hitgroups, kvHitgroups);
+	Handle kvHitgroups;
+	bool success = ConfigOpenConfigFile(File_Hitgroups, kvHitgroups);
 	
 	if (!success)
 	{
 		LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModule_Hitgroups, "Config Validation", "Unexpected error caching data from hitgroups config file: %s", pathhitgroups);
 	}
 	
-	decl String:hitgroupname[HITGROUPS_MAX_LENGTH];
+	char hitgroupname[HITGROUPS_MAX_LENGTH];
 	
 	// x = array index
-	new size = GetArraySize(arrayHitgroups);
-	for (new x = 0; x < size; x++)
+	int size = GetArraySize(arrayHitgroups);
+	for (int x = 0; x < size; x++)
 	{
 		HitgroupsGetName(x, hitgroupname, sizeof(hitgroupname));
 		
@@ -165,15 +165,15 @@ HitgroupsCacheData()
 		}
 		
 		// General
-		new index = KvGetNum(kvHitgroups, "index", -1);
+		int index = KvGetNum(kvHitgroups, "index", -1);
 		
 		// Damage
-		new bool:damage = ConfigKvGetStringBool(kvHitgroups, "damage", "yes");
+		bool damage = ConfigKvGetStringBool(kvHitgroups, "damage", "yes");
 		
 		// Knockback (module)
-		new Float:knockback = KvGetFloat(kvHitgroups, "knockback", 1.0);
+		float knockback = KvGetFloat(kvHitgroups, "knockback", 1.0);
 		
-		new Handle:arrayHitgroup = GetArrayCell(arrayHitgroups, x);
+		Handle arrayHitgroup = GetArrayCell(arrayHitgroups, x);
 		
 		// Push data into array.
 		PushArrayCell(arrayHitgroup, index);		// Index: 1
@@ -190,7 +190,7 @@ HitgroupsCacheData()
  * 
  * @param config	The config being reloaded. (only if 'all' is false)
  */
-public HitgroupsOnConfigReload(ConfigFile:config)
+public void HitgroupsOnConfigReload(ConfigFile config)
 {
 	// Reload hitgroups config.
 	HitgroupsLoad();
@@ -204,13 +204,13 @@ public HitgroupsOnConfigReload(ConfigFile:config)
  * @param overwritename (Optional) If true, the hitgroup given will be overwritten with the name from the config.
  * @return		  The array index containing the given hitgroup name.
  */
-stock HitgroupsNameToIndex(String:hitgroup[], maxlen = 0, bool:overwritename = false)
+stock int HitgroupsNameToIndex(char[] hitgroup, int maxlen = 0, bool overwritename = false)
 {
-	decl String:hitgroupname[HITGROUPS_MAX_LENGTH];
+	char hitgroupname[HITGROUPS_MAX_LENGTH];
 	
 	// x = Array index.
-	new size = GetArraySize(arrayHitgroups);
-	for (new x = 0; x < size; x++)
+	int size = GetArraySize(arrayHitgroups);
+	for (int x = 0; x < size; x++)
 	{
 		HitgroupsGetName(x, hitgroupname, sizeof(hitgroupname));
 		
@@ -239,14 +239,14 @@ stock HitgroupsNameToIndex(String:hitgroup[], maxlen = 0, bool:overwritename = f
  * @param hitgroup  The hitgroup index to search for.
  * @return		  The array index that contains the given hitgroup index.
  */
-stock HitgroupToIndex(hitgroup)
+stock int HitgroupToIndex(int hitgroup)
 {
 	// x = Array index.
-	new size = GetArraySize(arrayHitgroups);
-	for (new x = 0; x < size; x++)
+	int size = GetArraySize(arrayHitgroups);
+	for (int x = 0; x < size; x++)
 	{
 		// Get hitgroup index at this array index.
-		new index = HitgroupsGetIndex(x);
+		int index = HitgroupsGetIndex(x);
 		
 		// If hitgroup indexes match, then return array index.
 		if (hitgroup == index)
@@ -265,13 +265,13 @@ stock HitgroupToIndex(hitgroup)
  * @param hitgroup  The string to return name in.
  * @param maxlen	The max length of the string.
  */
-stock HitgroupsGetName(index, String:hitgroup[], maxlen)
+stock void HitgroupsGetName(int index, char[] hitgroup, int maxlen)
 {
 	// Get array handle of hitgroup at given index.
-	new Handle:arrayHitgroup = GetArrayCell(arrayHitgroups, index);
+	Handle arrayHitgroup = GetArrayCell(arrayHitgroups, index);
 	
 	// Get hitgroup name.
-	GetArrayString(arrayHitgroup, _:HITGROUPS_DATA_NAME, hitgroup, maxlen);
+	GetArrayString(arrayHitgroup, view_as<int>(HITGROUPS_DATA_NAME), hitgroup, maxlen);
 }
 
 /**
@@ -280,13 +280,13 @@ stock HitgroupsGetName(index, String:hitgroup[], maxlen)
  * @param index	 The array index.
  * @return		  The hitgroup index.
  */
-stock HitgroupsGetIndex(index)
+stock int HitgroupsGetIndex(int index)
 {
 	// Get array handle of hitgroup at given index.
-	new Handle:arrayHitgroup = GetArrayCell(arrayHitgroups, index);
+	Handle arrayHitgroup = GetArrayCell(arrayHitgroups, index);
 	
 	// Return hitgroup index of the hitgroup.
-	return GetArrayCell(arrayHitgroup, _:HITGROUPS_DATA_INDEX);
+	return GetArrayCell(arrayHitgroup, view_as<int>(HITGROUPS_DATA_INDEX));
 }
 
 /**
@@ -295,13 +295,13 @@ stock HitgroupsGetIndex(index)
  * @param index	 The array index.
  * @param candamage True to allow damage to hitgroup, false to block damage.
  */
-stock HitgroupsSetDamage(index, bool:candamage)
+stock void HitgroupsSetDamage(int index, bool candamage)
 {
 	// Get array handle of hitgroup at given index.
-	new Handle:arrayHitgroup = GetArrayCell(arrayHitgroups, index);
+	Handle arrayHitgroup = GetArrayCell(arrayHitgroups, index);
 	
 	// Return true if hitgroup can be damaged, false if not.
-	SetArrayCell(arrayHitgroup, _:HITGROUPS_DATA_DAMAGE, candamage);
+	SetArrayCell(arrayHitgroup, view_as<int>(HITGROUPS_DATA_DAMAGE), candamage);
 }
 
 /**
@@ -310,13 +310,13 @@ stock HitgroupsSetDamage(index, bool:candamage)
  * @param index	 The array index.
  * @return		  True if hitgroup can be damaged, false if not.
  */
-stock bool:HitgroupsCanDamage(index)
+stock bool HitgroupsCanDamage(int index)
 {
 	// Get array handle of hitgroup at given index.
-	new Handle:arrayHitgroup = GetArrayCell(arrayHitgroups, index);
+	Handle arrayHitgroup = GetArrayCell(arrayHitgroups, index);
 	
 	// Return true if hitgroup can be damaged, false if not.
-	return bool:GetArrayCell(arrayHitgroup, _:HITGROUPS_DATA_DAMAGE);
+	return view_as<bool>(GetArrayCell(arrayHitgroup, view_as<int>(HITGROUPS_DATA_DAMAGE)));
 }
 
 /**
@@ -325,10 +325,10 @@ stock bool:HitgroupsCanDamage(index)
  * @param index	 The array index.
  * @param knockback The knockback multiplier for the hitgroup.
  */
-stock HitgroupsSetKnockback(index, Float:knockback)
+stock void HitgroupsSetKnockback(int index, float knockback)
 {
 	// Get array handle of hitgroup at given index.
-	new Handle:arrayHitgroup = GetArrayCell(arrayHitgroups, index);
+	Handle arrayHitgroup = GetArrayCell(arrayHitgroups, index);
 	
 	// Return the knockback multiplier for the hitgroup.
 	SetArrayCell(arrayHitgroup, _:HITGROUPS_DATA_KNOCKBACK, knockback);
@@ -340,13 +340,13 @@ stock HitgroupsSetKnockback(index, Float:knockback)
  * @param index	 The array index.
  * @return		  The knockback multiplier of the hitgroup.
  */
-stock Float:HitgroupsGetKnockback(index)
+stock float HitgroupsGetKnockback(int index)
 {
 	// Get array handle of hitgroup at given index.
-	new Handle:arrayHitgroup = GetArrayCell(arrayHitgroups, index);
+	Handle arrayHitgroup = GetArrayCell(arrayHitgroups, index);
 	
 	// Return the knockback multiplier for the hitgroup.
-	return Float:GetArrayCell(arrayHitgroup, _:HITGROUPS_DATA_KNOCKBACK);
+	return view_as<float>(GetArrayCell(arrayHitgroup, view_as<int>(HITGROUPS_DATA_KNOCKBACK)));
 }
 
 /**
@@ -355,24 +355,24 @@ stock Float:HitgroupsGetKnockback(index)
  * @param client	The client index.
  * @return		  True if sent successfully, false if not.
  */
-bool:HitgroupsMenuHitgroups(client)
+bool HitgroupsMenuHitgroups(int client)
 {
 	// If hitgroups is disabled, then stop.
-	new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
+	bool hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
 	if (!hitgroups)
 	{
 		return false;
 	}
 	
 	// Create menu handle.
-	new Handle:menu_hitgroups = CreateMenu(HitgroupsMenuHitgroupsHandle);
+	Handle menu_hitgroups = CreateMenu(HitgroupsMenuHitgroupsHandle);
 	
 	// Set client as translation target.
 	SetGlobalTransTarget(client);
 	
-	decl String:title[MENU_LINE_HUGE_LENGTH];
-	decl String:enableall[MENU_LINE_REG_LENGTH];
-	decl String:headshotsonly[MENU_LINE_REG_LENGTH];
+	char title[MENU_LINE_HUGE_LENGTH];
+	char enableall[MENU_LINE_REG_LENGTH];
+	char headshotsonly[MENU_LINE_REG_LENGTH];
 	
 	// Format menu options.
 	Format(title, sizeof(title), "%t\n ", "Hitgroups menu hitgroups title");
@@ -384,13 +384,13 @@ bool:HitgroupsMenuHitgroups(client)
 	AddMenuItem(menu_hitgroups, "Enable All", enableall);
 	AddMenuItem(menu_hitgroups, "Headshots Only", headshotsonly);
 	
-	decl String:hitgroupoption[MENU_LINE_REG_LENGTH];
-	decl String:hitgroupcandamage[MENU_LINE_SMALL_LENGTH];
-	decl String:hitgroupid[4];
+	char hitgroupoption[MENU_LINE_REG_LENGTH];
+	char hitgroupcandamage[MENU_LINE_SMALL_LENGTH];
+	char hitgroupid[4];
 	
 	// x = Hitgroup index.
-	new size = GetArraySize(arrayHitgroups);
-	for (new x = 0; x < size; x++)
+	int size = GetArraySize(arrayHitgroups);
+	for (int x = 0; x < size; x++)
 	{
 		// Get hitgroup name.
 		HitgroupsGetName(x, hitgroupoption, sizeof(hitgroupoption));
@@ -422,7 +422,7 @@ bool:HitgroupsMenuHitgroups(client)
  * @param client				The client index.
  * @param slot				  The slot index selected (starting from 0).
  */ 
-public HitgroupsMenuHitgroupsHandle(Handle:menu_hitgroups, MenuAction:action, client, slot)
+public int HitgroupsMenuHitgroupsHandle(Handle menu_hitgroups, MenuAction action, int client, int slot)
 {
 	// Client selected an option.
 	if (action == MenuAction_Select)
@@ -433,8 +433,8 @@ public HitgroupsMenuHitgroupsHandle(Handle:menu_hitgroups, MenuAction:action, cl
 			case 0:
 			{
 				// x = Hitgroup index.
-				new size = GetArraySize(arrayHitgroups);
-				for (new x = 0; x < size; x++)
+				int size = GetArraySize(arrayHitgroups);
+				for (int x = 0; x < size; x++)
 				{
 					// Enable hitgroup.
 					HitgroupsSetDamage(x, true);
@@ -447,8 +447,8 @@ public HitgroupsMenuHitgroupsHandle(Handle:menu_hitgroups, MenuAction:action, cl
 			case 1:
 			{
 				// x = Hitgroup index.
-				new size = GetArraySize(arrayHitgroups);
-				for (new x = 0; x < size; x++)
+				int size = GetArraySize(arrayHitgroups);
+				for (int x = 0; x < size; x++)
 				{
 					if (HitgroupsGetIndex(x) == HITGROUP_HEAD)
 					{
@@ -468,12 +468,12 @@ public HitgroupsMenuHitgroupsHandle(Handle:menu_hitgroups, MenuAction:action, cl
 			default:
 			{
 				// Get selected hitgroup index.
-				decl String:hitgroupid[4];
+				char hitgroupid[4];
 				GetMenuItem(menu_hitgroups, slot, hitgroupid, sizeof(hitgroupid));
-				new hitgroup = StringToInt(hitgroupid);
+				int hitgroup = StringToInt(hitgroupid);
 				
 				// Toggle value.
-				new bool:hitgroupcandamage = HitgroupsCanDamage(hitgroup);
+				bool hitgroupcandamage = HitgroupsCanDamage(hitgroup);
 				HitgroupsSetDamage(hitgroup, !hitgroupcandamage);
 			}
 		}
@@ -505,7 +505,7 @@ public HitgroupsMenuHitgroupsHandle(Handle:menu_hitgroups, MenuAction:action, cl
  * @param client	The client index.
  * @param argc	  Argument count.
  */
-public Action:HitgroupsCommand(client, argc)
+public Action HitgroupsCommand(int client, int argc)
 {
 	// Check if privileged.
 	if (!ZRIsClientPrivileged(client, OperationType_Configuration))
@@ -515,7 +515,7 @@ public Action:HitgroupsCommand(client, argc)
 	}
 	
 	// If module is disabled, then stop.
-	new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
+	bool hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
 	if (!hitgroups)
 	{
 		TranslationReplyToCommand(client, "Feature is disabled");
@@ -530,11 +530,11 @@ public Action:HitgroupsCommand(client, argc)
 		TranslationPrintToConsole(client, "Hitgroups command syntax names");
 		
 		// Print all the hitgroup names in the client's console.
-		decl String:hitgroupname[HITGROUPS_MAX_LENGTH];
+		char hitgroupname[HITGROUPS_MAX_LENGTH];
 		
 		// x = Hitgroup index.
-		new size = GetArraySize(arrayHitgroups);
-		for (new x = 0; x < size; x++)
+		int size = GetArraySize(arrayHitgroups);
+		for (int x = 0; x < size; x++)
 		{
 			// Get the hitgroups name and print in console.
 			HitgroupsGetName(x, hitgroupname, sizeof(hitgroupname));
@@ -545,21 +545,21 @@ public Action:HitgroupsCommand(client, argc)
 	}
 	
 	// Get hitgroup alias given.
-	decl String:target[HITGROUPS_MAX_LENGTH];
+	char target[HITGROUPS_MAX_LENGTH];
 	GetCmdArg(1, target, sizeof(target));
 	
 	// If the hitgroup is invalid, then stop and tell client.
-	new hitgroup = HitgroupsNameToIndex(target, sizeof(target), true);
+	int hitgroup = HitgroupsNameToIndex(target, sizeof(target), true);
 	if (hitgroup == -1)
 	{
 		TranslationReplyToCommand(client, "Hitgroups command invalid hitgroup", target);
 		return Plugin_Handled;
 	}
 	
-	new bool:hitgroupdamage;
+	bool hitgroupdamage;
 	
 	// Check if value was given
-	decl String:value[4];
+	char value[4];
 	GetCmdArg(2, value, sizeof(value));
 	if (!value[0])
 	{
@@ -569,7 +569,7 @@ public Action:HitgroupsCommand(client, argc)
 	else
 	{
 		// Cast the given value to a bool.
-		hitgroupdamage = bool:StringToInt(value);
+		hitgroupdamage = view_as<bool>(StringToInt(value));
 	}
 	
 	// Set new value in the hitgroup data cache.
@@ -598,7 +598,7 @@ public Action:HitgroupsCommand(client, argc)
  * @param client	The client index.
  * @param argc	  Argument count.
  */
-public Action:HitgroupsEnableAllCommand(client, argc)
+public Action HitgroupsEnableAllCommand(int client, int argc)
 {
 	// Check if privileged.
 	if (!ZRIsClientPrivileged(client, OperationType_Configuration))
@@ -608,7 +608,7 @@ public Action:HitgroupsEnableAllCommand(client, argc)
 	}
 	
 	// If module is disabled, then stop.
-	new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
+	bool hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
 	if (!hitgroups)
 	{
 		TranslationReplyToCommand(client, "Feature is disabled");
@@ -616,8 +616,8 @@ public Action:HitgroupsEnableAllCommand(client, argc)
 	}
 	
 	// x = Hitgroup index.
-	new size = GetArraySize(arrayHitgroups);
-	for (new x = 0; x < size; x++)
+	int size = GetArraySize(arrayHitgroups);
+	for (int x = 0; x < size; x++)
 	{
 		// Set that hitgroup index to true for damage.
 		HitgroupsSetDamage(x, true);
@@ -639,7 +639,7 @@ public Action:HitgroupsEnableAllCommand(client, argc)
  * @param client	The client index.
  * @param argc	  Argument count.
  */
-public Action:HitgroupsHeadshotsOnlyCommand(client, argc)
+public Action HitgroupsHeadshotsOnlyCommand(int client, int argc)
 {
 	// Check if privileged.
 	if (!ZRIsClientPrivileged(client, OperationType_Configuration))
@@ -649,7 +649,7 @@ public Action:HitgroupsHeadshotsOnlyCommand(client, argc)
 	}
 	
 	// If module is disabled, then stop.
-	new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
+	bool hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
 	if (!hitgroups)
 	{
 		TranslationReplyToCommand(client, "Feature is disabled");
@@ -657,8 +657,8 @@ public Action:HitgroupsHeadshotsOnlyCommand(client, argc)
 	}
 	
 	// x = Hitgroup index.
-	new size = GetArraySize(arrayHitgroups);
-	for (new x = 0; x < size; x++)
+	int size = GetArraySize(arrayHitgroups);
+	for (int x = 0; x < size; x++)
 	{
 		// If this hitgroup is the head, then enable it and stop.
 		if (HitgroupsGetIndex(x) == HITGROUP_HEAD)

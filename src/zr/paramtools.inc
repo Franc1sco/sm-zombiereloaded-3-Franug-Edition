@@ -32,12 +32,12 @@
 /**
  * Counts number of parameters in a string.
  */
-stock GetParameterCount(const String:rawString[])
+stock int GetParameterCount(const char[] rawString)
 {
-	new lenRawString = strlen(rawString);
-	new paramCount;
-	new searchPos;
-	new splitPos;
+	int lenRawString = strlen(rawString);
+	int paramCount;
+	int searchPos;
+	int splitPos;
 	
 	// Check if the raw string is empty.
 	if (lenRawString == 0)
@@ -89,14 +89,14 @@ stock GetParameterCount(const String:rawString[])
  * @return			  Number of cells written. -1 if the parameter wasn't
  *					  found.
  */
-stock GetParameterValue(String:buffer[], maxlen, const String:rawString[], const String:parameter[])
+stock int GetParameterValue(char[] buffer, int maxlen, const char[] rawString, const char[] parameter)
 {
-	new paramPos;
-	new paramLen;
-	new valuePos;
-	new valueLen;
-	new nextPos;
-	new splitPos;
+	int paramPos;
+	int paramLen;
+	int valuePos;
+	int valueLen;
+	int nextPos;
+	int splitPos;
 	
 	// Get the position of parameter.
 	paramPos = StrContains(rawString, parameter, false);
@@ -153,12 +153,12 @@ stock GetParameterValue(String:buffer[], maxlen, const String:rawString[], const
  *
  * @return	  Number of cells written. -1 if failed.
  */
-stock GetParameterName(String:buffer[], maxlen, const String:rawString[], parameterIndex)
+stock int GetParameterName(char[] buffer, int maxlen, const char[] rawString, int parameterIndex)
 {
-	new paramPos;
-	new valuePos;
-	new nextValuePos;
-	new splitPos;
+	int paramPos;
+	int valuePos;
+	int nextValuePos;
+	int splitPos;
 	
 	// Check if the raw string is empty.
 	if (strlen(rawString) == 0)
@@ -169,7 +169,7 @@ stock GetParameterName(String:buffer[], maxlen, const String:rawString[], parame
 	if (parameterIndex > 0)
 	{
 		// Get the value starting position for the previous index.
-		for (new index = 0; index < parameterIndex - 1; index++)
+		for (int index = 0; index < parameterIndex - 1; index++)
 		{
 			valuePos = StrContains(rawString[splitPos], "=");
 			splitPos += valuePos;
