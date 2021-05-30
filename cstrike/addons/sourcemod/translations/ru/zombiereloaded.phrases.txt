@@ -290,17 +290,17 @@
 
 	"Classes Attrib Regen Interval"
 	{
-		"ru"		"Интервал восполнения ОЗ"
+		"ru"		"Интервал восполнения HP"
 	}
 
 	"Classes Attrib Regen Amount"
 	{
-		"ru"		"Кол-во восполняемых ОЗ"
+		"ru"		"Кол-во восполняемого HP"
 	}
 
 	"Classes Attrib Infect Gain"
 	{
-		"ru"		"Бонусные ОЗ при инфекции"
+		"ru"		"Бонус HP при инфекции"
 	}
 
 	"Classes Attrib Speed"
@@ -334,17 +334,17 @@
 
 	"Immunity Shield Not Available"
 	{
-		"ru"		"У вас нет щита."
+		"en"		"You don't have a shield."
 	}
 
 	"Immunity Shield Cooldown"
 	{
-		"ru"		"{1} сек., пока не станет доступен щит."
+		"en"		"{1} seconds until shield is available."
 	}
 
 	"Immunity Shield Time Left"
 	{
-		"ru"		"Время щита: {1}"
+		"en"		"Shield time left: {1}"
 	}
 
 	// ===========================
@@ -353,7 +353,7 @@
 
 	"Overlays not supported"
 	{
-		"ru"		"Оверлей отключен - обнаружен DX{1} (необходим DX{2})"
+		"ru"		"Оверлей отключен - обнаржуен DX{1} (необходим DX{2})"
 	}
 
 	// ===========================
@@ -381,7 +381,7 @@
 
 	"Infect countdown"
 	{
-		"ru"		"Первое заражение через {1} сек."
+		"ru"		"До начала заражения {1} секунд."
 	}
 
 	// Menu
@@ -473,6 +473,11 @@
 		"ru"		"ZTele - Телепорт к респавну"
 	}
 
+	"Menu main zsounds"
+	{
+		"ru"		"ZSounds - Управляйте звуками ZR."
+	}
+
 	"Menu main zhp"
 	{
 		"ru"		"ZHP - Показ здоровья"
@@ -508,12 +513,12 @@
 
 	"Restrict weapon stopped"
 	{
-		"ru"		"Оружие @green\"{1}\"@default уже является запрещённым."
+		"ru"		"Оружие @green\"{1}\"@default уже является запрещенным."
 	}
 
 	"Unrestrict weapon stopped"
 	{
-		"ru"		"Оружие @green\"{1}\"@default не является запрещённым."
+		"ru"		"Оружие @green\"{1}\"@default не является запрещенным."
 	}
 
 	"Restrict weapon type"
@@ -528,12 +533,12 @@
 
 	"Restrict weapon type stopped"
 	{
-		"ru"		"Оружие типа @green\"{1}\"@default уже является запрещённым."
+		"ru"		"Оружие типа @green\"{1}\"@default уже является запрещенным."
 	}
 
 	"Unrestrict weapon type stopped"
 	{
-		"ru"		"Оружие типа @green\"{1}\"@default не является запрещённым."
+		"ru"		"Оружие типа @green\"{1}\"@default не является запрещенным."
 	}
 
 	"Restrict weapon untoggleable"
@@ -560,7 +565,7 @@
 
 	"Weapons zmarket purchase"
 	{
-		"ru"		"Вы приобрели оружие @green{1}@default. Выберите его ещё раз для покупки боеприпасов."
+		"ru"		"Вы приобрели оружие @green{1}@default. Выберите его еще раз для покупки патрон."
 	}
 
 	"Weapons zmarket purchase max"
@@ -575,17 +580,17 @@
 
 	"Weapons zmarket auto-rebuy toggle on"
 	{
-		"ru"		"Автопокупка была включена, ваша амуниция будет автоматически закупаться при каждом возрождении."
+		"ru"		"Авто-покупка была включена, ваша амуниция будет автоматически закупаться при каждом респавне."
 	}
 
 	"Weapons zmarket auto-rebuy toggle off"
 	{
-		"ru"		"Автопокупка была отключена."
+		"ru"		"Авто-покупка была отключена."
 	}
 
 	"Weapons zmarket updated loadout"
 	{
-		"ru"		"В данный момент вы не можете получить данное оружие, но ваш заказ был сохранён."
+		"ru"		"В данный момент вы не можете получить данное оружие, но ваш заказ был сохранен."
 	}
 
 	"Weapons zmarket get current loadout"
@@ -666,7 +671,7 @@
 
 	"Weapons menu zmarket main view loadout"
 	{
-		"ru"		"Просмотр текущей амуниции"
+		"ru"		"Просмотр текущй амуниции"
 	}
 
 	"Weapons menu zmarket main rebuy"
@@ -676,7 +681,7 @@
 
 	"Weapons menu zmarket main auto-rebuy"
 	{
-		"ru"		"Автопокупка: {1}"
+		"ru"		"Авто-покупка: {1}"
 	}
 
 	"Weapons menu zmarket main weapons list"
@@ -686,7 +691,7 @@
 
 	"Weapons menu zmarket loadout title"
 	{
-		"ru"		"ZMarket\nМоя текущая амуниция:\nВыберите слот для очистки.\nПримечание: Автопокупка использует данный список."
+		"ru"		"ZMarket\nМоя текущая амуниция:\nВыберите слот для очистки.\nПримечаие: Авто-покупка использует данный список."
 	}
 
 	"Weapons menu zmarket loadout primary"
@@ -741,7 +746,7 @@
 
 	"Weapons menu zmarket types weapon ammo"
 	{
-		"ru"		"Боеприпасы"
+		"ru"		"Патроны"
 	}
 
 	// ===========================
@@ -869,7 +874,7 @@
 
 	"AntiStick command set width successful"
 	{
-		"ru"		"Границы модели \"{1}\" были изменены на \"{2}.\""
+		"ru"		"Граниы модели \"{1}\" были изменены на \"{2}.\""
 	}
 
 	"AntiStick command set width invalid model"
@@ -916,7 +921,7 @@
 
 	"ZCookies menu main auto-rebuy"
 	{
-		"ru"		"Автопокупка: {1}"
+		"ru"		"Авто-покупка: {1}"
 	}
 
 	"ZCookies menu main zhp"
@@ -947,7 +952,7 @@
 
 	"ZSpawn timelimit"
 	{
-		"ru"		"Лимит времени ({1} секунд) на использование ZSpawn уже истёк."
+		"ru"		"Лимит времени ({1} секунд) на использование ZSpawn уже истек."
 	}
 
 	// Menu
@@ -967,12 +972,12 @@
 
 	"ZSpawn command force successful"
 	{
-		"ru"		"Игрок {1} был успешно воскрешён."
+		"ru"		"Игрок {1} был успешно воскрешен."
 	}
 
 	"ZSpawn command force unsuccessful"
 	{
-		"ru"		"Игрок {1} не может быть воскрешён."
+		"ru"		"Игрок {1} не может быть воскрешен."
 	}
 
 	// ===========================
@@ -983,12 +988,12 @@
 
 	"ZTele restricted human"
 	{
-		"ru"		"В данный момент ZTele разрешён только людям."
+		"ru"		"В данный момент ZTele разрешен только людям."
 	}
 
 	"ZTele max"
 	{
-		"ru"		"Вы достигли лимита использования {1} телепортов за раунд."
+		"ru"		"Вы достигли лимита использование в {1} телепортов за раунд."
 	}
 
 	"ZTele in progress"
@@ -1005,7 +1010,7 @@
 
 	"ZTele countdown"
 	{
-		"ru"		"Телепорт к точке возрождения через: {1} сек."
+		"ru"		"Телепорт к респавну через: {1} секунд."
 	}
 
 	"ZTele autocancel centertext"
@@ -1063,7 +1068,7 @@
 
 	"Display HP"
 	{
-		"ru"		"ОЗ: {1}"
+		"ru"		"HP: {1}"
 	}
 
 	// ===========================
@@ -1072,16 +1077,16 @@
 
 	"Vol Anticamp Message"
 	{
-		"ru"		"Данная зона является запрещённой. Пожалуйста, покиньте её."
+		"ru"		"Данная зона является запрещенной. Пожалуйста, покиньте ее."
 	}
 
 	"Vol Slay"
 	{
-		"ru"		"Игрок убит \"{1}\" за отсидку в запрещённой зоне (ID: {2})."
+		"ru"		"Игрок убит \"{1}\" за отсидку в запрещенной зоне (ID: {2})."
 	}
 
 	"Vol Ignite"
 	{
-		"ru"		"Игрок подожжён \"{1}\" за отсидку в запрещённой зоне (ID: {2})."
+		"ru"		"Игрок подожжен \"{1}\" за отсидку в запрещенной зоне (ID: {2})."
 	}
 }

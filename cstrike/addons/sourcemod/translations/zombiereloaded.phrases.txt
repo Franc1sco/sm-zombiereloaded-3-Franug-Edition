@@ -496,6 +496,11 @@
 		"en"		"ZTele - Stuck?  Teleport back to spawn"
 	}
 
+	"Menu main zsounds"
+	{
+		"en"		"ZSounds - Sound Control."
+	}
+
 	"Menu main zhp"
 	{
 		"en"		"ZHP - Shows real HP as zombie"
@@ -504,6 +509,11 @@
 	"Menu main zmarket"
 	{
 		"en"		"ZMarket - Customize loadouts here"
+	}
+
+	"Menu main zvolume"
+	{
+		"en"		"ZVolume - Adjust Zombie Volume"
 	}
 
 	// ===========================
@@ -1137,7 +1147,7 @@
 		"#format"	"{1:d}"
 		"en"		"HP: {1}"
 	}
-
+	
 	// ===========================
 	// Volumetric features (module)
 	// ===========================
@@ -1157,5 +1167,10 @@
 	{
 		"#format"	"{1:s},{2:d}"
 		"en"		"Ignited player \"{1}\" for camping in a restricted area (ID: {2})."
+	}
+
+	"Mother zombie infect cycle reset"
+	{
+		"en"		"Mother zombie infect cycle has been reset"
 	}
 }
