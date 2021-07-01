@@ -33,7 +33,11 @@ Handle g_CountDownCookie = INVALID_HANDLE;
 Handle g_ZrSoundsCookie = INVALID_HANDLE;
 Handle g_ZombiesECookie = INVALID_HANDLE;
 Handle g_ZRoundEndCookie = INVALID_HANDLE;
-float g_fClientVol[MAXPLAYERS + 1];
+
+int g_iCountDownCookie[MAXPLAYERS+1];
+float g_fZrSoundsCookie[MAXPLAYERS+1];
+bool g_bZombiesECookie[MAXPLAYERS+1];
+bool g_bZRoundEndCookie[MAXPLAYERS+1];
 
 void ZsoundsOnCommandsCreate()
 {
@@ -80,44 +84,40 @@ void ZrSoundsOnCookiesCreate()
 
 void ZrSoundsOnCookiesCached(int client)
 {
-	// Get VOICECOUNT enabled cookie value.
-	char voiceselect[8];
-	char zombisounde[8];
-	char zroundende[8];
-	char volumevalue[11];
-	GetClientCookie(client, g_CountDownCookie, voiceselect, sizeof(voiceselect));
-	GetClientCookie(client, g_ZombiesECookie, zombisounde, sizeof(zombisounde));
-	GetClientCookie(client, g_ZRoundEndCookie, zroundende, sizeof(zroundende));
-	GetClientCookie(client, g_ZrSoundsCookie, volumevalue, sizeof(volumevalue));
+	char scookie[11];
 
 	// If the cookie is empty, then set the default value.
-	if (!voiceselect[0])
+	GetClientCookie(client, g_CountDownCookie, scookie, sizeof(scookie));
+	if(!StrEqual(scookie, ""))
 	{
-		// Set cookie to default value from cvar.
-		CookiesSetInt(client, g_CountDownCookie, g_hCvarsList.g_iCVAR_VOICECOUNT_DEFAULT);
+		g_iCountDownCookie[client] = view_as<int>(StringToInt(scookie));
 	}
-	if(!zombisounde[0])
-		{
-		// Set cookie to default value from cvar.
-		CookiesSetClientCookieBool(client, g_ZombiesECookie, g_hCvarsList.g_bCVAR_ZOMBIES_SOUNDS_DEFAULT);
-	}
-	if(!zroundende[0])
-		{
-		// Set cookie to default value from cvar.
-		CookiesSetClientCookieBool(client, g_ZRoundEndCookie, g_hCvarsList.g_bCVAR_ROUNDEND_SOUNDS_DEFAULT);
-	}
-	if(!volumevalue[0])
+	else	g_iCountDownCookie[client] = g_hCvarsList.g_iCVAR_VOICECOUNT_DEFAULT;
+
+	GetClientCookie(client, g_ZrSoundsCookie, scookie, sizeof(scookie));
+	if(!StrEqual(scookie, ""))
 	{
-		// Set cookie to default value from cvar.
-		CookiesSetFloat(client, g_ZrSoundsCookie, g_hCvarsList.g_fCVAR_VOLUME_DEFAULT);
+		g_fZrSoundsCookie[client] = view_as<float>(StringToFloat(scookie));
 	}
+	else	g_fZrSoundsCookie[client] = g_hCvarsList.g_fCVAR_VOLUME_DEFAULT;
+
+	GetClientCookie(client, g_ZombiesECookie, scookie, sizeof(scookie));
+	if(!StrEqual(scookie, ""))
+	{
+		g_bZombiesECookie[client] = view_as<bool>(StringToInt(scookie));
+	}
+	else	g_bZombiesECookie[client] = g_hCvarsList.g_bCVAR_ZOMBIES_SOUNDS_DEFAULT;
+
+	GetClientCookie(client, g_ZRoundEndCookie, scookie, sizeof(scookie));
+	if(!StrEqual(scookie, ""))
+	{
+		g_bZRoundEndCookie[client] = view_as<bool>(StringToInt(scookie));
+	}
+	else	g_bZRoundEndCookie[client] = g_hCvarsList.g_bCVAR_ZOMBIES_SOUNDS_DEFAULT;
 }
 
 void ZSoundsMenuMain(int client)
 {
-	float Vol = CookiesGetFloat(client, g_ZrSoundsCookie);
-	g_fClientVol[client] = Vol;
-	
 	// Create menu handle.
 	Handle zsounds_menu_main = CreateMenu(ZrSoundsMenuHandler);
 	
@@ -133,28 +133,25 @@ void ZSoundsMenuMain(int client)
 	char zrvolume[MENU_LINE_HUGE_LENGTH];
 	
 	// Get the current toggle state of the cookies.
-	ConfigBoolToSetting(CookiesGetClientCookieBool(client, g_ZombiesECookie), zombisounde, sizeof(zombisounde), false, client);
-	ConfigBoolToSetting(CookiesGetClientCookieBool(client, g_ZRoundEndCookie), zroundende, sizeof(zroundende), false, client);
+	ConfigBoolToSetting(g_bZombiesECookie[client], zombisounde, sizeof(zombisounde), false, client);
+	ConfigBoolToSetting(g_bZRoundEndCookie[client], zroundende, sizeof(zroundende), false, client);
 	
 	// Translate each line into client's language.
 	Format(title, sizeof(title), "%t\n ", "zr sounds");
 	Format(soundzombi, sizeof(soundzombi), "%t", "Zombies_Sounds", zombisounde);
 	Format(soundrend, sizeof(soundrend), "%t", "RoundEnd_Sounds", zroundende);
-	Format(zrvolume, sizeof(zrvolume), "%t %i%", "zr_volume", RoundFloat(g_fClientVol[client] * 100));
-	
-	// Get conditional values for each option.
-	int cookievalue = CookiesGetInt(client, g_CountDownCookie);
+	Format(zrvolume, sizeof(zrvolume), "%t %i%", "zr_volume", RoundFloat(g_fZrSoundsCookie[client] * 100));
 	
 	//Menu Variavel
-	if(cookievalue == 1)
+	if(g_iCountDownCookie[client] == 1)
 	{
 		Format(coundsound, sizeof(coundsound), "%t %t", "Select Countdown", "voz_1"); //mem
 	}
-	if(cookievalue == 2)
+	if(g_iCountDownCookie[client] == 2)
 	{
 		Format(coundsound, sizeof(coundsound), "%t %t", "Select Countdown", "voz_2"); //woman
 	}
-	if(cookievalue == 0)
+	if(g_iCountDownCookie[client] == 0)
 	{
 		Format(coundsound, sizeof(coundsound), "%t %t", "Select Countdown", "voz_3"); //disabled
 	}
@@ -232,10 +229,6 @@ public int ZrSoundsMenuHandler(Handle menu, MenuAction action, int client, int s
 
 void ZSoundsVolumeMenuMain(int client)
 {
-	// Get Client Vol.
-	float Vol = CookiesGetFloat(client, g_ZrSoundsCookie);
-	g_fClientVol[client] = Vol;
-	
 	// Create menu handle.
 	Handle Volume_Menu_Main = CreateMenu(VolumeMenuHandler);
 	
@@ -252,7 +245,7 @@ void ZSoundsVolumeMenuMain(int client)
 	
 		
 	// Translate each line into client's language.
-	Format(volumemenutitle, sizeof(volumemenutitle), "%t\n%t\n ", "Volume Menu Title", "Volume Current", RoundFloat(g_fClientVol[client] * 100));
+	Format(volumemenutitle, sizeof(volumemenutitle), "%t\n%t\n ", "Volume Menu Title", "Volume Current", RoundFloat(g_fZrSoundsCookie[client] * 100));
 	Format(v100, sizeof(v100), "%t", "v100");
 	Format(v75, sizeof(v75), "%t", "v75");
 	Format(v50, sizeof(v50), "%t", "v50");
@@ -285,44 +278,44 @@ public int VolumeMenuHandler(Handle menu, MenuAction action, int client, int slo
 		{
 			case 0:
 			{
-				g_fClientVol[client] = 1.0;
-				CookiesSetFloat(client, g_ZrSoundsCookie, g_fClientVol[client]);
-				TranslationPrintCenterText(client, "Volume set to", RoundFloat(g_fClientVol[client] * 100));
+				g_fZrSoundsCookie[client] = 1.0;
+				CookiesSetFloat(client, g_ZrSoundsCookie, g_fZrSoundsCookie[client]);
+				TranslationPrintCenterText(client, "Volume set to", RoundFloat(g_fZrSoundsCookie[client] * 100));
 				TranslationPrintToChat(client, "Volume updated");
 			} 
 			case 1:
 			{
-				g_fClientVol[client] = 0.75;
-				CookiesSetFloat(client, g_ZrSoundsCookie, g_fClientVol[client]);
-				TranslationPrintCenterText(client, "Volume set to", RoundFloat(g_fClientVol[client] * 100));
+				g_fZrSoundsCookie[client] = 0.75;
+				CookiesSetFloat(client, g_ZrSoundsCookie, g_fZrSoundsCookie[client]);
+				TranslationPrintCenterText(client, "Volume set to", RoundFloat(g_fZrSoundsCookie[client] * 100));
 				TranslationPrintToChat(client, "Volume updated");
 			}
 			case 2:
 			{
-				g_fClientVol[client] = 0.5;
-				CookiesSetFloat(client, g_ZrSoundsCookie, g_fClientVol[client]);
-				TranslationPrintCenterText(client, "Volume set to", RoundFloat(g_fClientVol[client] * 100));
+				g_fZrSoundsCookie[client] = 0.5;
+				CookiesSetFloat(client, g_ZrSoundsCookie, g_fZrSoundsCookie[client]);
+				TranslationPrintCenterText(client, "Volume set to", RoundFloat(g_fZrSoundsCookie[client] * 100));
 				TranslationPrintToChat(client, "Volume updated");
 			}
 			case 3:
 			{
-				g_fClientVol[client] = 0.25;
-				CookiesSetFloat(client, g_ZrSoundsCookie, g_fClientVol[client]);
-				TranslationPrintCenterText(client, "Volume set to", RoundFloat(g_fClientVol[client] * 100));
+				g_fZrSoundsCookie[client] = 0.25;
+				CookiesSetFloat(client, g_ZrSoundsCookie, g_fZrSoundsCookie[client]);
+				TranslationPrintCenterText(client, "Volume set to", RoundFloat(g_fZrSoundsCookie[client] * 100));
 				TranslationPrintToChat(client, "Volume updated");
 			}
 			case 4:
 			{
-				g_fClientVol[client] = 0.1;
-				CookiesSetFloat(client, g_ZrSoundsCookie, g_fClientVol[client]);
-				TranslationPrintCenterText(client, "Volume set to", RoundFloat(g_fClientVol[client] * 100));
+				g_fZrSoundsCookie[client] = 0.1;
+				CookiesSetFloat(client, g_ZrSoundsCookie, g_fZrSoundsCookie[client]);
+				TranslationPrintCenterText(client, "Volume set to", RoundFloat(g_fZrSoundsCookie[client] * 100));
 				TranslationPrintToChat(client, "Volume updated");
 			}
 			case 5:
 			{
-				g_fClientVol[client] = 0.05;
-				CookiesSetFloat(client, g_ZrSoundsCookie, g_fClientVol[client]);
-				TranslationPrintCenterText(client, "Volume set to", RoundFloat(g_fClientVol[client] * 100));
+				g_fZrSoundsCookie[client] = 0.05;
+				CookiesSetFloat(client, g_ZrSoundsCookie, g_fZrSoundsCookie[client]);
+				TranslationPrintCenterText(client, "Volume set to", RoundFloat(g_fZrSoundsCookie[client] * 100));
 				TranslationPrintToChat(client, "Volume updated");
 			}
 		}
@@ -360,34 +353,35 @@ int CounToggle(int client)
 		return false;
 	}
 
-	// Get the cookie value.
-	int Cdstate = CookiesGetInt(client, g_CountDownCookie);
-
-	if (Cdstate == 1)
+	if (g_iCountDownCookie[client] == 1)
 	{
 	// Toggle the value.
 		TranslationPrintCenterText(client, "CountDown select 2");
 		TranslationPrintToChat(client, "CountDown select 2");
 		CookiesSetInt(client, g_CountDownCookie, 2);
+		g_iCountDownCookie[client] = 2;
 		return true;
 	}	
-	if (Cdstate == 2)
+	else if (g_iCountDownCookie[client] == 2)
 	{
 	// Toggle the value.
 		TranslationPrintCenterText(client, "CountDown select 0");
 		TranslationPrintToChat(client, "CountDown select 0");
 		CookiesSetInt(client, g_CountDownCookie, 0);
+		g_iCountDownCookie[client] = 0;
 		return true;
 	}	
-	else
+	else if (g_iCountDownCookie[client] == 0)
 	{
 	// Toggle the value.
 		TranslationPrintCenterText(client, "CountDown select 1");
 		TranslationPrintToChat(client, "CountDown select 1");
 		CookiesSetInt(client, g_CountDownCookie, 1);
+		g_iCountDownCookie[client] = 1;
+		return true;
 	}
-	
-	return true;
+
+	return false;
 }
 
 //Toggle Zombis sounds.
@@ -400,27 +394,27 @@ bool ZSEToggle(int client)
 
 		return false;
 	}
-	
-	// Get the cookie value.
-	bool zsestate = CookiesGetClientCookieBool(client, g_ZombiesECookie);
-	
-	// Toggle the value.
-	CookiesSetClientCookieBool(client, g_ZombiesECookie, !zsestate);
-	
+
 	// If ZHP was enabled, then tell client it has been disabled.
-	if (zsestate)
+	if (g_bZombiesECookie[client])
 	{
 		TranslationPrintToChat(client, "Zombis sounds disable");
 		TranslationPrintCenterText(client, "Zombis sounds disable");
+		CookiesSetClientCookieBool(client, g_ZombiesECookie, false);
+		g_bZombiesECookie[client] = false;
+		return true;
 	}
 	// If ZHP was disabled, then tell client it has been enabled.
-	else
+	else if (!g_bZombiesECookie[client])
 	{
 		TranslationPrintToChat(client, "Zombis sounds enable");
 		TranslationPrintCenterText(client, "Zombis sounds enable");
+		CookiesSetClientCookieBool(client, g_ZombiesECookie, true);
+		g_bZombiesECookie[client] = true;
+		return true;
 	}
-	
-	return true;
+
+	return false;
 }
 
 //Toggle RoundEnd sounds.
@@ -433,25 +427,25 @@ bool ZREToggle(int client)
 		
 		return false;
 	}
-	
-	// Get the cookie value.
-	bool zrestate = CookiesGetClientCookieBool(client, g_ZRoundEndCookie);
-	
-	// Toggle the value.
-	CookiesSetClientCookieBool(client, g_ZRoundEndCookie, !zrestate);
-	
+
 	// If RoundEnd sounds was enabled, then tell client it has been disabled.
-	if (zrestate)
+	if (g_bZRoundEndCookie[client])
 	{
 		TranslationPrintToChat(client, "RoundEnd sounds disable");
 		TranslationPrintCenterText(client, "RoundEnd sounds disable");
+		CookiesSetClientCookieBool(client, g_ZRoundEndCookie, false);
+		g_bZRoundEndCookie[client] = false;
+		return true;
 	}
 	// If RoundEnd sounds was disabled, then tell client it has been enabled.
-	else
+	else if (!g_bZRoundEndCookie[client])
 	{
 		TranslationPrintToChat(client, "RoundEnd sounds enable");
 		TranslationPrintCenterText(client, "RoundEnd sounds enable");
+		CookiesSetClientCookieBool(client, g_ZRoundEndCookie, true);
+		g_bZRoundEndCookie[client] = true;
+		return true;
 	}
-	
-	return true;
+
+	return false;
 }

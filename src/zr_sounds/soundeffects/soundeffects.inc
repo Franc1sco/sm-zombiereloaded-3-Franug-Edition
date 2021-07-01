@@ -223,18 +223,8 @@ void SEffectsEmitSoundFromClient(int client, const char[] sound)
 	{
 		if (IsClientInGame(i) && !IsFakeClient(i))
 		{
-			// If sound cvar level.
-			float level = CookiesGetFloat(i, g_ZrSoundsCookie);
-			
-			// If sound cvar is disabled, then stop.
-			bool mutezombie = CookiesGetClientCookieBool(i, g_ZombiesECookie);
-			
-			if (!mutezombie)
-			{
-				return;
-			}
 			// Emit sound from client.
-			EmitSoundToClient(i, sound, client, SNDCHAN_AUTO, _, _, level); // Sound Zumbie
+			if (g_bZombiesECookie[i]) EmitSoundToClient(i, sound, client, SNDCHAN_AUTO, _, _, g_fZrSoundsCookie[i]);
 		}
 	}
 }

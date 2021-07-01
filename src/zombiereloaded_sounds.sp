@@ -35,7 +35,7 @@
 
 #pragma newdecls required
 
-#define VERSION "3.7.1 Anubis edition"
+#define VERSION "3.7.2 Anubis edition"
 
 #include "zr_sounds/zombiereloaded"
 

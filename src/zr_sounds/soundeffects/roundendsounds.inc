@@ -151,13 +151,7 @@ void RoundEndSoundsSoundFromClient(int client, const char[] soundre, float level
 {
 	if (IsClientInGame(client) && !IsFakeClient(client))
 	{
-		// Get Client Zrsounds
-		bool zrestate = CookiesGetClientCookieBool(client, g_ZRoundEndCookie);
-		// If client is disabled Sound, then stop.
-		if (zrestate)
-		{
-			// Emit sound from client.
-			EmitSoundToClient(client, soundre, _, SNDCHAN_AUTO, _, _, level);
-		}
+		// Emit sound from client.
+		if (g_bZRoundEndCookie[client]) EmitSoundToClient(client, soundre, _, SNDCHAN_AUTO, _, _, level);
 	}
 }

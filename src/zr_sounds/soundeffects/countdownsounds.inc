@@ -41,20 +41,8 @@ public int ZR_OnContdownWarningTick(int tick)
 			if (IsClientInGame(i) && !IsFakeClient(i))
 			{
 				
-				// Select Voice Client CountDown
-				int selectedVoice = CookiesGetInt(i, g_CountDownCookie);
-				
-				// Select Volume Client CountDown
-				float selectedVolume = CookiesGetFloat(i, g_ZrSoundsCookie);
-				
-				if(selectedVoice == 1)
-				{
-					EmitSoundToClient(i, ContMamPath, SOUND_FROM_PLAYER, SNDCHAN_AUTO, _, _, selectedVolume);
-				}
-				if(selectedVoice == 2)
-				{
-					EmitSoundToClient(i, ContWomPath, SOUND_FROM_PLAYER, SNDCHAN_AUTO, _, _, selectedVolume);
-				}
+				if(g_iCountDownCookie[i] == 1) EmitSoundToClient(i, ContMamPath, SOUND_FROM_PLAYER, SNDCHAN_AUTO, _, _, g_fZrSoundsCookie[i]);
+				if(g_iCountDownCookie[i] == 2) EmitSoundToClient(i, ContWomPath, SOUND_FROM_PLAYER, SNDCHAN_AUTO, _, _, g_fZrSoundsCookie[i]);
 			}
 		}
 	}
