@@ -106,33 +106,33 @@ enum VolumeConflictActions
 /**
  * Volumes.
  */
-new Volumes[ZR_VOLUMES_MAX][VolumeAttributes];
+int Volumes[ZR_VOLUMES_MAX][VolumeAttributes];
 
 /**
  * Total number of volumes.
  */
-new VolumeCount;
+int VolumeCount;
 
 /**
  * List of player locations. Updated by a timer.
  */
-new Float:VolPlayerLoc[MAXPLAYERS + 1][3];
+float VolPlayerLoc[MAXPLAYERS + 1][3];
 
 /**
  * Cache that specifies if a player is in a volume or not.
  */
-new bool:VolPlayerInVolume[MAXPLAYERS + 1][ZR_VOLUMES_MAX];
+bool VolPlayerInVolume[MAXPLAYERS + 1][ZR_VOLUMES_MAX];
 
 /**
  * Specifies whether the volumetric features module is enabled or not. Synced
  * with zr_vol CVAR.
  */
-new bool:VolEnabled;
+bool VolEnabled;
 
 /**
  * Counter for trigger delay.
  */
-new Float:VolPlayerCountDown[MAXPLAYERS + 1][ZR_VOLUMES_MAX];
+float VolPlayerCountDown[MAXPLAYERS + 1][ZR_VOLUMES_MAX];
 
 /**
  * The handle for a timer that updates player locations. This is the main timer
@@ -140,17 +140,17 @@ new Float:VolPlayerCountDown[MAXPLAYERS + 1][ZR_VOLUMES_MAX];
  *
  * Note: Some features may have its own timer for actions on players.
  */
-new Handle:hVolUpdateTimer = INVALID_HANDLE;
+Handle hVolUpdateTimer = INVALID_HANDLE;
 
 /**
  * The handle for a timer that do count down on trigger delays.
  */
-new Handle:hVolTriggerTimer = INVALID_HANDLE;
+Handle hVolTriggerTimer = INVALID_HANDLE;
 
 /**
  * Cached interval value for trigger timer.
  */
-new Float:VolTriggerInterval;
+float VolTriggerInterval;
 
 #include "zr/volfeatures/voltools"
 #include "zr/volfeatures/volevents"
@@ -165,7 +165,7 @@ new Float:VolTriggerInterval;
 /**
  * Initialize volumetric features.
  */
-VolInit()
+void VolInit()
 {
 	// Clear all volumes.
 	VolClearAll();
@@ -178,7 +178,7 @@ VolInit()
 /**
  * Initialize volumetric feature settings.
  */
-VolLoad()
+void VolLoad()
 {
 	// Cache CVAR value.
 	VolEnabled = GetConVarBool(g_hCvarsList[CVAR_VOL]);
@@ -187,7 +187,7 @@ VolLoad()
 /**
  * Function alias for fully stopping volumetric features.
  */
-VolDisable()
+void VolDisable()
 {
 	VolEnabled = false;
 	VolStopUpdateTimer();
@@ -199,7 +199,7 @@ VolDisable()
 /**
  * Function alias for starting volumetric features.
  */
-VolEnable()
+void VolEnable()
 {
 	VolEnabled = true;
 	VolStartUpdateTimer();
@@ -211,10 +211,10 @@ VolEnable()
 /**
  * Disables all enabled volumes.
  */
-VolDisableVolumes()
+void VolDisableVolumes()
 {
 	// Trigger disable event on all enabled volumes in use.
-	for (new volindex = 0; volindex < ZR_VOLUMES_MAX; volindex++)
+	for (int volindex = 0; volindex < ZR_VOLUMES_MAX; volindex++)
 	{
 		if (Volumes[volindex][Vol_InUse] && Volumes[volindex][Vol_Enabled])
 		{
@@ -222,7 +222,7 @@ VolDisableVolumes()
 			Volumes[volindex][Vol_Enabled] = false;
 			
 			// Trigger player left volume event if inside a volume.
-			for (new client = 1; client <= MaxClients; client++)
+			for (int client = 1; client <= MaxClients; client++)
 			{
 				// Validate client's connection state.
 				if (!IsClientConnected(client) || !IsClientInGame(client))
@@ -248,10 +248,10 @@ VolDisableVolumes()
 /**
  * Enables all disabled volumes.
  */
-VolEnableVolumes()
+void VolEnableVolumes()
 {
 	// Trigger enable event on all volumes in use.
-	for (new volindex = 0; volindex < ZR_VOLUMES_MAX; volindex++)
+	for (int volindex = 0; volindex < ZR_VOLUMES_MAX; volindex++)
 	{
 		if (Volumes[volindex][Vol_InUse] && !Volumes[volindex][Vol_Enabled])
 		{
@@ -266,7 +266,7 @@ VolEnableVolumes()
  *
  * @return	  True if timer is started, false otherwise.
  */
-bool:VolStartUpdateTimer()
+bool VolStartUpdateTimer()
 {
 	// Check if volumetric features is enabled.
 	if (!VolEnabled)
@@ -279,7 +279,7 @@ bool:VolStartUpdateTimer()
 	VolStopUpdateTimer();
 	
 	// Get update interval.
-	new Float:interval = GetConVarFloat(g_hCvarsList[CVAR_VOL_UPDATE_INTERVAL]);
+	float interval = GetConVarFloat(g_hCvarsList[CVAR_VOL_UPDATE_INTERVAL]);
 	
 	// Validate interval.
 	if (interval > 0.0)
@@ -304,7 +304,7 @@ bool:VolStartUpdateTimer()
 /**
  * Kills the update timer if it exists.
  */
-VolStopUpdateTimer()
+void VolStopUpdateTimer()
 {
 	// Kill the timer if it's running.
 	if (hVolUpdateTimer != INVALID_HANDLE)
@@ -325,7 +325,7 @@ VolStopUpdateTimer()
  *
  * @return	  True if timer is started, false otherwise.
  */
-bool:VolStartTriggerTimer()
+bool VolStartTriggerTimer()
 {
 	// Make sure existing timer is killed.
 	VolStopTriggerTimer();
@@ -353,7 +353,7 @@ bool:VolStartTriggerTimer()
 /**
  * Kills the trigger delay timer if it exists.
  */
-VolStopTriggerTimer()
+void VolStopTriggerTimer()
 {
 	// Kill the timer if it's running.
 	if (hVolTriggerTimer != INVALID_HANDLE)
@@ -369,13 +369,13 @@ VolStopTriggerTimer()
  * @param client	Optional. Specifies a single player to reset. Default is
  *				  -1, all players.
  */
-VolResetCountDown(client = -1)
+void VolResetCountDown(int client = -1)
 {
 	// Check if a client is specified.
 	if (client > -1)
 	{
 		// Reset volume counters.
-		for (new iVolumeIndex = 0; iVolumeIndex < ZR_VOLUMES_MAX; iVolumeIndex++)
+		for (int iVolumeIndex = 0; iVolumeIndex < ZR_VOLUMES_MAX; iVolumeIndex++)
 		{
 			VolPlayerCountDown[client][iVolumeIndex] = -1.0;
 		}
@@ -383,9 +383,9 @@ VolResetCountDown(client = -1)
 	else
 	{
 		// Reset all volume counters.
-		for (new clientIndex = 0; clientIndex < MAXPLAYERS + 1; clientIndex++)
+		for (int clientIndex = 0; clientIndex < MAXPLAYERS + 1; clientIndex++)
 		{
-			for (new iVolumeIndex = 0; iVolumeIndex < ZR_VOLUMES_MAX; iVolumeIndex++)
+			for (int iVolumeIndex = 0; iVolumeIndex < ZR_VOLUMES_MAX; iVolumeIndex++)
 			{
 				VolPlayerCountDown[clientIndex][iVolumeIndex] = -1.0;
 			}
@@ -402,7 +402,7 @@ VolResetCountDown(client = -1)
  * @param client	Optional. Specify single client to be updated. Default is
  *				  -1.
  */
-VolUpdatePlayerLocation(client = -1)
+void VolUpdatePlayerLocation(int client = -1)
 {
 	if (client > 0)
 	{
@@ -429,18 +429,18 @@ VolUpdatePlayerLocation(client = -1)
  * Updates player locations and trigger events for each player that enter or
  * leave a volume.
  */
-VolUpdatePlayerChanges()
+void VolUpdatePlayerChanges()
 {
-	new bool:volumeStates[ZR_VOLUMES_MAX];
-	new bool:volumeNewStates[ZR_VOLUMES_MAX];
+	bool volumeStates[ZR_VOLUMES_MAX];
+	bool volumeNewStates[ZR_VOLUMES_MAX];
 	
-	new bool:newState;
-	new bool:oldState;
+	bool newState;
+	bool oldState;
 	
-	new Float:trigger_delay;
+	float trigger_delay;
 	
 	// Loop through all players.
-	for (new client = 1; client <= MaxClients; client++)
+	for (int client = 1; client <= MaxClients; client++)
 	{
 		// Validate client's connection state.
 		if (!IsClientConnected(client) || !IsClientInGame(client) || !IsPlayerAlive(client))
@@ -459,7 +459,7 @@ VolUpdatePlayerChanges()
 		VolGetPlayerStates(client, volumeNewStates, sizeof(volumeNewStates));
 		
 		// Loop through each volume and compare states.
-		for (new iVolumeIndex = 0; iVolumeIndex < ZR_VOLUMES_MAX; iVolumeIndex++)
+		for (int iVolumeIndex = 0; iVolumeIndex < ZR_VOLUMES_MAX; iVolumeIndex++)
 		{
 			// Check if the volume is disabled and unused.
 			if (!VolInUse(iVolumeIndex) || !VolIsEnabled(iVolumeIndex))
@@ -532,7 +532,7 @@ VolUpdatePlayerChanges()
 /**
  * Callback for update timer. This is the main timer in volumetric features.
  */
-public Action:Event_VolUpdateTimer(Handle:timer)
+public Action Event_VolUpdateTimer(Handle timer)
 {
 	VolUpdatePlayerChanges();
 }
@@ -540,15 +540,15 @@ public Action:Event_VolUpdateTimer(Handle:timer)
 /**
  * Callback for trigger delay timer.
  */
-public Action:Event_VolTriggerTimer(Handle:timer)
+public Action Event_VolTriggerTimer(Handle timer)
 {
-	new Float:countDown;
+	float countDown;
 	
 	// Loop through all players.
-	for (new client = 1; client <= MaxClients; client++)
+	for (int client = 1; client <= MaxClients; client++)
 	{
 		// Loop through all volumes.
-		for (new iVolumeIndex = 0; iVolumeIndex < ZR_VOLUMES_MAX; iVolumeIndex++)
+		for (int iVolumeIndex = 0; iVolumeIndex < ZR_VOLUMES_MAX; iVolumeIndex++)
 		{
 			// Check if volume is in use and enabled.
 			if (!VolInUse(iVolumeIndex) || !VolIsEnabled(iVolumeIndex))
@@ -589,9 +589,9 @@ public Action:Event_VolTriggerTimer(Handle:timer)
 /**
  * Called when zr_vol CVAR is changed.
  */
-public VolEnabledChanged(Handle:cvar, const String:oldvalue[], const String:newvalue[])
+public void VolEnabledChanged(Handle cvar, const char[] oldvalue, const char[] newvalue)
 {
-	new bool:isEnabled = bool:StringToInt(newvalue);
+	bool isEnabled = view_as<bool>(StringToInt(newvalue));
 	
 	if (isEnabled)
 	{

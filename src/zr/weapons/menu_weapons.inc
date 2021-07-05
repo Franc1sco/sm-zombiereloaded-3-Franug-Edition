@@ -28,30 +28,30 @@
 /**
  * Array to store the client's current weapon type within menu.
  */
-new g_iWeaponsCurType[MAXPLAYERS + 1];
+int g_iWeaponsCurType[MAXPLAYERS + 1];
 
 /**
  * Sends main weapon menu to client.
  *  
  * @param client	The client index.
  */
-bool:WeaponsMenuMain(client)
+bool WeaponsMenuMain(int client)
 {
 	// If weapons module is disabled, then stop.
-	new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
+	bool weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
 	if (!weapons)
 	{
 		return false;
 	}
 	
 	// Create menu handle.
-	new Handle:menu_weapons_main = CreateMenu(WeaponsMenuMainHandle);
+	Handle menu_weapons_main = CreateMenu(WeaponsMenuMainHandle);
 	
 	SetGlobalTransTarget(client);
 	
-	decl String:title[MENU_LINE_TITLE_LENGTH];
-	decl String:restrict[MENU_LINE_SMALL_LENGTH];
-	decl String:zmarket[MENU_LINE_SMALL_LENGTH];
+	char title[MENU_LINE_TITLE_LENGTH];
+	char restrict[MENU_LINE_SMALL_LENGTH];
+	char zmarket[MENU_LINE_SMALL_LENGTH];
 	
 	Format(title, sizeof(title), "%t\n ", "Weapons menu restrict main title");
 	Format(restrict, sizeof(restrict), "%t", "Weapons menu restrict main restrict");
@@ -79,7 +79,7 @@ bool:WeaponsMenuMain(client)
  * @param client				The client index.
  * @param slot				  The slot index selected (starting from 0).
  */ 
-public WeaponsMenuMainHandle(Handle:menu_weapons_main, MenuAction:action, client, slot)
+public int WeaponsMenuMainHandle(Handle menu_weapons_main, MenuAction action, int client, int slot)
 {
 	// Client selected an option.
 	if (action == MenuAction_Select)
@@ -120,22 +120,22 @@ public WeaponsMenuMainHandle(Handle:menu_weapons_main, MenuAction:action, client
  *  
  * @param client	The client index.
  */
-WeaponsMenuTypes(client)
+void WeaponsMenuTypes(int client)
 {
 	// Create menu handle.
-	new Handle:menu_weapons_types = CreateMenu(WeaponsMenuTypesHandle);
+	Handle menu_weapons_types = CreateMenu(WeaponsMenuTypesHandle);
 	
 	SetGlobalTransTarget(client);
 	
-	decl String:title[MENU_LINE_TITLE_LENGTH];
+	char title[MENU_LINE_TITLE_LENGTH];
 	Format(title, sizeof(title), "%t\n ", "Weapons menu restrict types title");
 	SetMenuTitle(menu_weapons_types, title);
 	
-	decl String:typename[WEAPONS_MAX_LENGTH];
+	char typename[WEAPONS_MAX_LENGTH];
 	
 	// x = Array index.
-	new size = GetArraySize(arrayWeaponTypes);
-	for (new x = 0; x < size; x++)
+	int size = GetArraySize(arrayWeaponTypes);
+	for (int x = 0; x < size; x++)
 	{
 		// Get name of type.
 		RestrictWeaponTypeGetName(x, typename, sizeof(typename));
@@ -149,7 +149,7 @@ WeaponsMenuTypes(client)
 	{
 		SetGlobalTransTarget(client);
 		
-		decl String:empty[MENU_LINE_SMALL_LENGTH];
+		char empty[MENU_LINE_SMALL_LENGTH];
 		Format(empty, sizeof(empty), "%t", "Menu empty");
 		
 		AddMenuItem(menu_weapons_types, "empty", empty, ITEMDRAW_DISABLED);
@@ -169,7 +169,7 @@ WeaponsMenuTypes(client)
  * @param client				The client index.
  * @param slot				  The slot index selected (starting from 0).
  */ 
-public WeaponsMenuTypesHandle(Handle:menu_weapons_types, MenuAction:action, client, slot)
+public int WeaponsMenuTypesHandle(Handle menu_weapons_types, MenuAction action, int client, int slot)
 {
 	// Client selected an option.
 	if (action == MenuAction_Select)
@@ -201,20 +201,20 @@ public WeaponsMenuTypesHandle(Handle:menu_weapons_types, MenuAction:action, clie
  *  
  * @param client	The client index.
  */
-WeaponsMenuTypeWeapons(client)
+void WeaponsMenuTypeWeapons(int client)
 {
 	// Create menu handle.
-	new Handle:menu_weapons_typeweapons = CreateMenu(WeaponsMenuTypeWeaponsHandle);
+	Handle menu_weapons_typeweapons = CreateMenu(WeaponsMenuTypeWeaponsHandle);
 	
-	decl String:typename[WEAPONS_MAX_LENGTH];
+	char typename[WEAPONS_MAX_LENGTH];
 	RestrictWeaponTypeGetName(g_iWeaponsCurType[client], typename, sizeof(typename));
 	
 	// Set translation language.
 	SetGlobalTransTarget(client);
 	
-	decl String:title[MENU_LINE_TITLE_LENGTH];
-	decl String:restrictall[MENU_LINE_REG_LENGTH];
-	decl String:unrestrictall[MENU_LINE_REG_LENGTH];
+	char title[MENU_LINE_TITLE_LENGTH];
+	char restrictall[MENU_LINE_REG_LENGTH];
+	char unrestrictall[MENU_LINE_REG_LENGTH];
 	
 	Format(title, sizeof(title), "%t\n ", "Weapons menu restrict types weapon type title", typename);
 	Format(restrictall, sizeof(restrictall), "%t", "Weapons menu restrict types restrict all", typename);
@@ -225,18 +225,18 @@ WeaponsMenuTypeWeapons(client)
 	AddMenuItem(menu_weapons_typeweapons, "restrictall", restrictall, MenuGetItemDraw(!RestrictIsTypeUniform(true, g_iWeaponsCurType[client])));
 	AddMenuItem(menu_weapons_typeweapons, "unrestrictall", unrestrictall, MenuGetItemDraw(!RestrictIsTypeUniform(false, g_iWeaponsCurType[client])));
 	
-	decl String:typeweapon[MENU_LINE_SMALL_LENGTH];
-	decl String:display[MENU_LINE_SMALL_LENGTH + 2]; // +2 to allow room for the [ ] if its restricted.
+	char typeweapon[MENU_LINE_SMALL_LENGTH];
+	char display[MENU_LINE_SMALL_LENGTH + 2]; // +2 to allow room for the [ ] if its restricted.
 	
 	// Get an array populated with all weapons of the given type.
-	new Handle:arrayTypeWeapons;
-	new count = RestrictGetTypeWeapons(g_iWeaponsCurType[client], arrayTypeWeapons);
+	Handle arrayTypeWeapons;
+	int count = RestrictGetTypeWeapons(g_iWeaponsCurType[client], arrayTypeWeapons);
 	
 	// x = Array index.
-	for (new x = 0; x < count; x++)
+	for (int x = 0; x < count; x++)
 	{
 		// Get weapon index to check restricted status of.
-		new weaponindex = GetArrayCell(arrayTypeWeapons, x);
+		int weaponindex = GetArrayCell(arrayTypeWeapons, x);
 		
 		// Get name of weapon.
 		WeaponsGetName(weaponindex, typeweapon, sizeof(typeweapon));
@@ -269,19 +269,19 @@ WeaponsMenuTypeWeapons(client)
  * @param client					The client index.
  * @param slot					  The slot index selected (starting from 0).
  */ 
-public WeaponsMenuTypeWeaponsHandle(Handle:menu_weapons_typeweapons, MenuAction:action, client, slot)
+public int WeaponsMenuTypeWeaponsHandle(Handle menu_weapons_typeweapons, MenuAction action, int client, int slot)
 {
 	// Client selected an option.
 	if (action == MenuAction_Select)
 	{
 		// Get name of current weapon type.
-		decl String:typename[WEAPONS_MAX_LENGTH];
+		char typename[WEAPONS_MAX_LENGTH];
 		RestrictWeaponTypeGetName(g_iWeaponsCurType[client], typename, sizeof(typename));
 		
-		new RestrictQuery:query;
-		new bool:single;
-		new bool:restrict;
-		decl String:returntarget[WEAPONS_MAX_LENGTH];
+		RestrictQuery query;
+		bool single;
+		bool restrict;
+		char returntarget[WEAPONS_MAX_LENGTH];
 		
 		switch(slot)
 		{   
@@ -300,11 +300,11 @@ public WeaponsMenuTypeWeaponsHandle(Handle:menu_weapons_typeweapons, MenuAction:
 			default:
 			{
 				// Get weappon name.
-				decl String:typeweapon[MENU_LINE_REG_LENGTH];
+				char typeweapon[MENU_LINE_REG_LENGTH];
 				GetMenuItem(menu_weapons_typeweapons, slot, typeweapon, sizeof(typeweapon));
 				
 				// Get weapon index.
-				new weaponindex = WeaponsNameToIndex(typeweapon);
+				int weaponindex = WeaponsNameToIndex(typeweapon);
 				
 				// If weapon index is -1, then something went very wrong.
 				if (weaponindex == -1)
@@ -356,19 +356,19 @@ public WeaponsMenuTypeWeaponsHandle(Handle:menu_weapons_typeweapons, MenuAction:
  *  
  * @param client	The client index.
  */
-WeaponsMenuZMarket(client)
+void WeaponsMenuZMarket(int client)
 {
 	// Create menu handle.
-	new Handle:menu_weapons_market = CreateMenu(WeaponsMenuZMarketHandle);
+	Handle menu_weapons_market = CreateMenu(WeaponsMenuZMarketHandle);
 	
 	// Get "yes" or "no" settings from respective cvar.
-	decl String:buyzonesetting[MENU_LINE_SMALL_LENGTH];
+	char buyzonesetting[MENU_LINE_SMALL_LENGTH];
 	ConfigBoolToSetting(GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]), buyzonesetting, sizeof(buyzonesetting), true, client);
 	
 	SetGlobalTransTarget(client);
 	
-	decl String:title[MENU_LINE_TITLE_LENGTH];
-	decl String:buyzone[MENU_LINE_REG_LENGTH];
+	char title[MENU_LINE_TITLE_LENGTH];
+	char buyzone[MENU_LINE_REG_LENGTH];
 	
 	// Add options to menu.
 	Format(title, sizeof(title), "%t\n ", "Weapons menu restrict zmarket title");
@@ -392,7 +392,7 @@ WeaponsMenuZMarket(client)
  * @param client				The client index.
  * @param slot				  The slot index selected (starting from 0).
  */ 
-public WeaponsMenuZMarketHandle(Handle:menu_weapons_market, MenuAction:action, client, slot)
+public int WeaponsMenuZMarketHandle(Handle menu_weapons_market, MenuAction action, int client, int slot)
 {
 	// Client selected an option.
 	if (action == MenuAction_Select)
@@ -403,7 +403,7 @@ public WeaponsMenuZMarketHandle(Handle:menu_weapons_market, MenuAction:action, c
 			case 0:
 			{
 				// Toggle cvar.
-				new bool:zmarketbuyzone = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]);
+				bool zmarketbuyzone = GetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE]);
 				SetConVarBool(g_hCvarsList[CVAR_WEAPONS_ZMARKET_BUYZONE], !zmarketbuyzone);
 			}
 		}

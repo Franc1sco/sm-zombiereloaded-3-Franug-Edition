@@ -28,19 +28,19 @@
 /**
  * Array for storing spawn protect timer handles per client.
  */
-new Handle:tSpawnProtect[MAXPLAYERS + 1];
+Handle tSpawnProtect[MAXPLAYERS + 1];
 
 /**
  * Array for storing time left for spawn protection per client.
  */
-new pSpawnProtectTime[MAXPLAYERS + 1];
+int pSpawnProtectTime[MAXPLAYERS + 1];
  
 /**
  * Client is joining the server.
  * 
  * @param client	The client index.
  */
-SpawnProtectClientInit(client)
+void SpawnProtectClientInit(int client)
 {
 	// Reset timer handle.
 	tSpawnProtect[client] = INVALID_HANDLE;
@@ -51,7 +51,7 @@ SpawnProtectClientInit(client)
  * 
  * @param client	The client index.
  */   
-SpawnProtectOnClientSpawnPost(client)
+void SpawnProtectOnClientSpawnPost(int client)
 {
 	// If client is dead, then they are joining the server, not spawning.
 	if (!IsPlayerAlive(client))
@@ -69,7 +69,7 @@ SpawnProtectOnClientSpawnPost(client)
 	tSpawnProtect[client] = INVALID_HANDLE;
 	
 	// If protect cvar is disabled, then stop.
-	new bool:protect = GetConVarBool(g_hCvarsList[CVAR_SPAWNPROTECT]);
+	bool protect = GetConVarBool(g_hCvarsList[CVAR_SPAWNPROTECT]);
 	if (!protect)
 	{
 		return;
@@ -87,7 +87,7 @@ SpawnProtectOnClientSpawnPost(client)
  * 
  * @param client	The client index.
  */
-SpawnProtectOnClientDeath(client)
+void SpawnProtectOnClientDeath(int client)
 {
 	// If timer is running, kill it.
 	if (tSpawnProtect[client] != INVALID_HANDLE)
@@ -104,7 +104,7 @@ SpawnProtectOnClientDeath(client)
  * 
  * @param client	The client index.
  */
-SpawnProtectStart(client)
+void SpawnProtectStart(int client)
 {
 	// If client is dead, then stop.
 	if (!IsPlayerAlive(client))
@@ -125,12 +125,12 @@ SpawnProtectStart(client)
 	}
 	
 	// Get spawn protect attribute cvars.
-	new Float:speed = GetConVarFloat(g_hCvarsList[CVAR_SPAWNPROTECT_SPEED]);
-	new alpha = GetConVarInt(g_hCvarsList[CVAR_SPAWNPROTECT_ALPHA]);
+	float speed = GetConVarFloat(g_hCvarsList[CVAR_SPAWNPROTECT_SPEED]);
+	int alpha = GetConVarInt(g_hCvarsList[CVAR_SPAWNPROTECT_ALPHA]);
 	
 	// Validate attributes
-	new Float:min;
-	new Float:max;
+	float min;
+	float max;
 	switch (ClassSpeedMethod)
 	{
 		case ClassSpeed_LMV:
@@ -147,13 +147,13 @@ SpawnProtectStart(client)
 	if (speed < min && speed > max)
 	{
 		// Log a warning and abort.
-		LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModules:LogModule_Config, "Config validation", "Out of range value in cvar zr_spawnprotect_speed (%f). Aborting spawn protection.", speed);
+		LogEvent(false, LogType_Error, LOG_CORE_EVENTS, view_as<LogModules>(LogModule_Config), "Config validation", "Out of range value in cvar zr_spawnprotect_speed (%f). Aborting spawn protection.", speed);
 		return;
 	}
 	if (alpha < ZR_CLASS_ALPHA_INITIAL_MIN && alpha > ZR_CLASS_ALPHA_INITIAL_MAX)
 	{
 		// Log a warning and abort.
-		LogEvent(false, LogType_Error, LOG_CORE_EVENTS, LogModules:LogModule_Config, "Config validation", "Out of range value in cvar zr_spawnprotect_alpha (%d). Aborting spawn protection.", alpha);
+		LogEvent(false, LogType_Error, LOG_CORE_EVENTS, view_as<LogModules>(LogModule_Config), "Config validation", "Out of range value in cvar zr_spawnprotect_alpha (%d). Aborting spawn protection.", alpha);
 		return;
 	}
 	
@@ -165,7 +165,7 @@ SpawnProtectStart(client)
 	ToolsSetClientAlpha(client, alpha);
 	
 	// Set time left to zr_protect_time's value.
-	new protect_time = GetConVarInt(g_hCvarsList[CVAR_SPAWNPROTECT_TIME]);
+	int protect_time = GetConVarInt(g_hCvarsList[CVAR_SPAWNPROTECT_TIME]);
 	pSpawnProtectTime[client] = protect_time;
 	
 	// Tell client they are being protected.
@@ -184,7 +184,7 @@ SpawnProtectStart(client)
  * @param timer	 The timer handle.
  * @param client	The client index.
  */	
-public Action:SpawnProtectTimer(Handle:timer, any:client)
+public Action SpawnProtectTimer(Handle timer, any client)
 {
 	// If client leaves, then stop timer.
 	if (!IsClientInGame(client))

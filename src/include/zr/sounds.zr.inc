@@ -27,4 +27,4 @@
 /**
  * Tick Countdown Number.
  */
-forward ZR_OnContdownWarningTick(tick);
+forward ZR_OnContdownWarningTick(int tick);

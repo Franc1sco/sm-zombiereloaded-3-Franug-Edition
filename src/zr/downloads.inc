@@ -28,19 +28,19 @@
 /**
  * Array that stores a list of downloadable files.
  */
-new Handle:arrayDownloads = INVALID_HANDLE;
+Handle arrayDownloads = INVALID_HANDLE;
 
 /**
  * Prepare all model/download data.
  */
-DownloadsLoad()
+void DownloadsLoad()
 {
 	// Register config file.
 	ConfigRegisterConfig(File_Downloads, Structure_List, CONFIG_FILE_ALIAS_DOWNLOADS);
 	
 	// Get downloads file path.
-	decl String:pathdownloads[PLATFORM_MAX_PATH];
-	new bool:exists = ConfigGetCvarFilePath(CVAR_CONFIG_PATH_DOWNLOADS, pathdownloads);
+	char pathdownloads[PLATFORM_MAX_PATH];
+	bool exists = ConfigGetCvarFilePath(CVAR_CONFIG_PATH_DOWNLOADS, pathdownloads);
 	
 	// If file doesn't exist, then log and stop.
 	if (!exists)
@@ -53,7 +53,7 @@ DownloadsLoad()
 	ConfigSetConfigPath(File_Downloads, pathdownloads);
 	
 	// Load config from file and create array structure.
-	new bool:success = ConfigLoadConfig(File_Downloads, arrayDownloads, PLATFORM_MAX_PATH);
+	bool success = ConfigLoadConfig(File_Downloads, arrayDownloads, PLATFORM_MAX_PATH);
 	
 	// Unexpected error, stop plugin.
 	if (!success)
@@ -61,15 +61,15 @@ DownloadsLoad()
 		LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Downloads, "Config Validation", "Unexpected error encountered loading: %s", pathdownloads);
 	}
 	
-	new downloadcount;
-	new downloadvalidcount;
+	int downloadcount;
+	int downloadvalidcount;
 	
-	decl String:downloadpath[PLATFORM_MAX_PATH];
+	char downloadpath[PLATFORM_MAX_PATH];
 	
-	new downloads = downloadcount = GetArraySize(arrayDownloads);
+	int downloads = downloadcount = GetArraySize(arrayDownloads);
 	
 	// x = download array index.
-	for (new x = 0; x < downloads; x++)
+	for (int x = 0; x < downloads; x++)
 	{
 		// Get download path
 		GetArrayString(arrayDownloads, x, downloadpath, sizeof(downloadpath));
@@ -111,7 +111,7 @@ DownloadsLoad()
  * 
  * @param config	The config being reloaded. (only if 'all' is false)
  */
-public DownloadsOnConfigReload(ConfigFile:config)
+public void DownloadsOnConfigReload(ConfigFile config)
 {
 	// Reload download config.
 	DownloadsLoad();

@@ -33,17 +33,17 @@
 /**
  * Array for storing ZHP timer handles per client.
  */
-new Handle:tZHP[MAXPLAYERS + 1];
+Handle tZHP[MAXPLAYERS + 1];
 
 /**
  * Cookie handle for the toggle state of ZHP on a client.
  */
-new Handle:g_hZHPEnabledCookie = INVALID_HANDLE;
+Handle g_hZHPEnabledCookie = INVALID_HANDLE;
 
 /**
  * Create commands specific to ZHP.
  */
-ZHPOnCommandsCreate()
+void ZHPOnCommandsCreate()
 {
 	// Register ZHP command.
 	RegConsoleCmd(SAYHOOKS_KEYWORD_ZHP, ZHPCommand, "Shows real HP as zombie.");
@@ -52,7 +52,7 @@ ZHPOnCommandsCreate()
 /**
  * Create ZHP-related cookies here.
  */
-ZHPOnCookiesCreate()
+void ZHPOnCookiesCreate()
 {
 	// Create cookie handle if it doesn't exist.
 	if (g_hZHPEnabledCookie == INVALID_HANDLE)
@@ -66,7 +66,7 @@ ZHPOnCookiesCreate()
  * 
  * @param client	The client index.
  */
-ZHPClientInit(client)
+void ZHPClientInit(int client)
 {
 	// Reset timer handle.
 	tZHP[client] = INVALID_HANDLE;
@@ -77,13 +77,13 @@ ZHPClientInit(client)
  * 
  * @param client		Client index.
  */
-ZHPOnCookiesCached(client)
+void ZHPOnCookiesCached(int client)
 {
 	// Get default client setting from cvar.
-	new bool:zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP_DEFAULT]);
+	bool zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP_DEFAULT]);
 	
 	// Get ZHP enabled cookie value.
-	decl String:zhpenabled[8];
+	char zhpenabled[8];
 	GetClientCookie(client, g_hZHPEnabledCookie, zhpenabled, sizeof(zhpenabled));
 	
 	// If the cookie is empty, then set the default value.
@@ -99,7 +99,7 @@ ZHPOnCookiesCached(client)
  * 
  * @param client	The client index.
  */
-ZHPOnClientSpawn(client)
+void ZHPOnClientSpawn(int client)
 {
 	// If timer is running, kill it.
 	if (tZHP[client] != INVALID_HANDLE)
@@ -116,7 +116,7 @@ ZHPOnClientSpawn(client)
  * 
  * @param client	The client index.
  */
-ZHPOnClientDeath(client)
+void ZHPOnClientDeath(int client)
 {
 	// If timer is running, kill it.
 	if (tZHP[client] != INVALID_HANDLE)
@@ -133,10 +133,10 @@ ZHPOnClientDeath(client)
  * 
  * @param client	The client index.
  */
-ZHPOnClientInfected(client)
+void ZHPOnClientInfected(int client)
 {
 	// If ZHP is disabled, then stop.
-	new bool:zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP]);
+	bool zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP]);
 	if (!zhp)
 	{
 		return;
@@ -160,7 +160,7 @@ ZHPOnClientInfected(client)
  * 
  * @param client	The client index.
  */
-ZHPOnClientHurt(client)
+void ZHPOnClientHurt(int client)
 {
 	// Update HP display.
 	ZHPUpdateHUD(client);
@@ -171,7 +171,7 @@ ZHPOnClientHurt(client)
  * 
  * @param client	The client index.
  */
-ZHPOnHealthInfectGain(client)
+void ZHPOnHealthInfectGain(int client)
 {
 	// Update HP display.
 	ZHPUpdateHUD(client);
@@ -182,10 +182,10 @@ ZHPOnHealthInfectGain(client)
  * 
  * @param client	The client index.
  */
-bool:ZHPToggle(client)
+bool ZHPToggle(int client)
 {
 	// If ZHP is disabled, then stop.
-	new bool:zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP]);
+	bool zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP]);
 	if (!zhp)
 	{
 		// Tell client feature is disabled.
@@ -196,7 +196,7 @@ bool:ZHPToggle(client)
 	}
 	
 	// Get the cookie value.
-	new bool:zhpstate = CookiesGetClientCookieBool(client, g_hZHPEnabledCookie);
+	bool zhpstate = CookiesGetClientCookieBool(client, g_hZHPEnabledCookie);
 	
 	// Toggle the value.
 	CookiesSetClientCookieBool(client, g_hZHPEnabledCookie, !zhpstate);
@@ -223,17 +223,17 @@ bool:ZHPToggle(client)
  * 
  * @param client	The client index.
  */ 
-ZHPUpdateHUD(client)
+void ZHPUpdateHUD(int client)
 {
 	// If ZHP is disabled, then stop.
-	new bool:zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP]);
+	bool zhp = GetConVarBool(g_hCvarsList[CVAR_ZHP]);
 	if (!zhp)
 	{
 		return;
 	}
 	
 	// Get ZHP enabled cookie as a bool.
-	new bool:zhpstate = CookiesGetClientCookieBool(client, g_hZHPEnabledCookie);
+	bool zhpstate = CookiesGetClientCookieBool(client, g_hZHPEnabledCookie);
 	
 	// If player is a zombie, or has ZHP disabled, then stop.
 	if (!InfectIsClientInfected(client) || !zhpstate)
@@ -242,7 +242,7 @@ ZHPUpdateHUD(client)
 	}
 	
 	// Get health, and if below 0 then set back to 0. (for display purposes)
-	new health = GetClientHealth(client);
+	int health = GetClientHealth(client);
 	if (health < 0)
 	{
 		health = 0;
@@ -259,7 +259,7 @@ ZHPUpdateHUD(client)
  * @param client	The client index.
  * @param argc	  Argument count.
  */
-public Action:ZHPCommand(client, argc)
+public Action ZHPCommand(int client, int argc)
 {
 	// If client is console, then stop and tell them this feature is for players only.
 	if (ZRIsConsole(client))
@@ -281,7 +281,7 @@ public Action:ZHPCommand(client, argc)
  * @param timer	 The timer handle. 
  * @param client	The client index.
  */
-public Action:ZHPTimer(Handle:timer, any:client)
+public Action ZHPTimer(Handle timer, any client)
 {
 	// If client leaves, then stop timer.
 	if (!IsClientInGame(client))

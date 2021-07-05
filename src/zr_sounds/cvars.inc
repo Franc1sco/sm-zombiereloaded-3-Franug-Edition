@@ -92,26 +92,12 @@ CvarsList g_hCvarsList;
  */
 
 /**
- * @section Global cvar handles.
- */
-Handle g_hMp_Maxmoney = INVALID_HANDLE;
-Handle g_hSv_Disable_Radar = INVALID_HANDLE;
-
-char g_sValue_Mp_Maxmoney[10];
-char g_sValue_Sv_Disable_Radar[10];
-
-/**
  * Cvars module init function.
  */
 void CvarsInit()
 {
-	g_hMp_Maxmoney = FindConVar("mp_maxmoney");
-	g_hSv_Disable_Radar = FindConVar("sv_disable_radar");
 	// Create zombiereloaded cvars.
 	CvarsCreate();
-
-	// Hook cvars.
-	CvarsHook();
 
 	// Create public cvar for tracking.
 	char description[64];
@@ -261,15 +247,4 @@ public void ConVarChange(ConVar convar, char[] oldValue, char[] newValue)
 	g_hCvarsList.g_bCVAR_ROUNDEND_SOUNDS_DEFAULT = CVAR_ROUNDEND_SOUNDS_DEFAULT.BoolValue;
 	g_hCvarsList.g_iCVAR_VOICECOUNT_DEFAULT = CVAR_VOICECOUNT_DEFAULT.IntValue;
 	g_hCvarsList.g_fCVAR_VOLUME_DEFAULT = CVAR_VOLUME_DEFAULT.FloatValue;
-}
-
-/**
- * Hook cvar changes.
- * 
- * @param unhook	If true, cvars will be unhooked, false to hook cvars.
- */
-Action CvarsHook()
-{
-	GetConVarString(g_hMp_Maxmoney, g_sValue_Mp_Maxmoney, sizeof(g_sValue_Mp_Maxmoney));
-	GetConVarString(g_hSv_Disable_Radar, g_sValue_Sv_Disable_Radar, sizeof(g_sValue_Sv_Disable_Radar));
 }

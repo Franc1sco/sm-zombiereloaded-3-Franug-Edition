@@ -52,22 +52,6 @@ void CookiesSetClientCookieBool(int client, Handle cookie, bool cookievalue)
 }
 
 /**
- * Returns a cookie value as a bool.
- * 
- * @param client	The client index.
- * @param cookie	The handle to the cookie.
- */
-bool CookiesGetClientCookieBool(int client, Handle cookie)
-{
-	// Get cookie string.
-	char cookievalue[8];
-	GetClientCookie(client, cookie, cookievalue, sizeof(cookievalue));
-	
-	// Return string casted into an int, then to bool.
-	return view_as<bool>(StringToInt(cookievalue));
-}
-
-/**
  * Sets a integer value on a cookie.
  *
  * @param client	The client index.
@@ -85,21 +69,6 @@ void CookiesSetInt(int client, Handle cookie, int value)
 }
 
 /**
- * Gets a integer value from a cookie.
- *
- * @param client	The client index.
- * @param cookie	The handle to the cookie.
- */
-int CookiesGetInt(int client, Handle cookie)
-{
-	char strValue[16];
-	strValue[0] = 0;
-	GetClientCookie(client, cookie, strValue, sizeof(strValue));
-	
-	return StringToInt(strValue);
-}
-
-/**
  * Sets a integer value on a cookie.
  *
  * @param client	The client index.
@@ -114,19 +83,4 @@ void CookiesSetFloat(int client, Handle cookie, float value)
 	FloatToString(value, strValue, sizeof(strValue));
 	// Set string value.
 	SetClientCookie(client, cookie, strValue);
-}
-
-/**
- * Gets a integer value from a cookie.
- *
- * @param client	The client index.
- * @param cookie	The handle to the cookie.
- */
-float CookiesGetFloat(int client, Handle cookie)
-{
-	char strValue[16];
-	strValue[0] = 0;
-	GetClientCookie(client, cookie, strValue, sizeof(strValue));
-	
-	return StringToFloat(strValue);
 }

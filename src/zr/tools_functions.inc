@@ -33,13 +33,13 @@
  * @param stack		 If modifying velocity, then true will stack new velocity onto the client's
  *					  current velocity, false will reset it.
  */
-stock ToolsClientVelocity(client, Float:vecVelocity[3], bool:apply = true, bool:stack = true)
+stock void ToolsClientVelocity(int client, float vecVelocity[3], bool apply = true, bool stack = true)
 {
 	// If retrieve if true, then get client's velocity.
 	if (!apply)
 	{
 		// x = vector component.
-		for (new x = 0; x < 3; x++)
+		for (int x = 0; x < 3; x++)
 		{
 			vecVelocity[x] = GetEntDataFloat(client, g_iToolsVelocity + (x*4));
 		}
@@ -52,10 +52,10 @@ stock ToolsClientVelocity(client, Float:vecVelocity[3], bool:apply = true, bool:
 	if (stack)
 	{
 		// Get client's velocity.
-		new Float:vecClientVelocity[3];
+		float vecClientVelocity[3];
 		
 		// x = vector component.
-		for (new x = 0; x < 3; x++)
+		for (int x = 0; x < 3; x++)
 		{
 			vecClientVelocity[x] = GetEntDataFloat(client, g_iToolsVelocity + (x*4));
 		}
@@ -73,10 +73,10 @@ stock ToolsClientVelocity(client, Float:vecVelocity[3], bool:apply = true, bool:
  * @param client		The client index.
  * @param vecVelocity   Array to store vector in.
  */
-stock ToolsGetClientVelocity(client, Float:vecVelocity[3])
+stock void ToolsGetClientVelocity(int client, float vecVelocity[3])
 {
 	// x = vector component.
-	for (new x = 0; x < 3; x++)
+	for (int x = 0; x < 3; x++)
 	{
 		vecVelocity[x] = GetEntDataFloat(client, g_iToolsVelocity + (x*4));
 	}
@@ -87,7 +87,7 @@ stock ToolsGetClientVelocity(client, Float:vecVelocity[3])
  * @param client	The client index.
  * @param value	 LMV value. (300.0 = default, 600.0 = double)
  */
-stock ToolsSetClientLMV(client, Float:fLMV)
+stock void ToolsSetClientLMV(int client, float fLMV)
 {
 	// Set lagged movement value of client.
 	SetEntDataFloat(client, g_iToolsLMV, fLMV / 300.0, true);
@@ -100,15 +100,15 @@ stock ToolsSetClientLMV(client, Float:fLMV)
  *				  If false, function will return the value of the client's on/off state of the nightvision.
  * @return		  True if aspect of nightvision is enabled on the client, false if not.
  */
-stock bool:ToolsGetClientNightVision(client, bool:ownership = true)
+stock bool ToolsGetClientNightVision(int client, bool ownership = true)
 {
 	// If ownership is true, then toggle the ownership of nightvision on client.
 	if (ownership)
 	{
-		return bool:GetEntData(client, g_iToolsHasNightVision, 1);
+		return view_as<bool>(GetEntData(client, g_iToolsHasNightVision, 1));
 	}
 	
-	return bool:GetEntData(client, g_iToolsNightVisionOn, 1);
+	return view_as<bool>(GetEntData(client, g_iToolsNightVisionOn, 1));
 }
 
 /**
@@ -118,7 +118,7 @@ stock bool:ToolsGetClientNightVision(client, bool:ownership = true)
  * @param ownership If true, enable will toggle the client's ownership of nightvision.
  *				  If false, enable will toggle the client's on/off state of the nightvision.
  */
-stock ToolsSetClientNightVision(client, bool:enable, bool:ownership = true)
+stock void ToolsSetClientNightVision(int client, bool enable, bool ownership = true)
 {
 	// If ownership is true, then toggle the ownership of nightvision on client.
 	if (ownership)
@@ -137,7 +137,7 @@ stock ToolsSetClientNightVision(client, bool:enable, bool:ownership = true)
  * @param client	The client index.
  * @param FOV	   The field of vision of the client.
  */
-stock ToolsSetClientDefaultFOV(client, FOV)
+stock void ToolsSetClientDefaultFOV(int client, int FOV)
 {
 	SetEntData(client, g_iToolsFOV, FOV, 1, true);
 }
@@ -151,7 +151,7 @@ stock ToolsSetClientDefaultFOV(client, FOV)
  * @param value	 The value of the client's score or deaths.
  * @return		  The score or death count of the client, -1 if setting.
  */
-stock ToolsClientScore(client, bool:score = true, bool:apply = true, value = 0)
+stock int ToolsClientScore(int client, bool score = true, bool apply = true, int value = 0)
 {
 	if (!apply)
 	{
@@ -189,7 +189,7 @@ stock ToolsClientScore(client, bool:score = true, bool:apply = true, value = 0)
  * @param alpha	 The alpha value to set client's alpha to. (0-255)
  * @param weapons   Apply alpha to all client's weapons.
  */
-stock ToolsSetClientAlpha(client, alpha)
+stock void ToolsSetClientAlpha(int client, int alpha)
 {
 	// Turn rendermode on, on the client.
 	SetEntityRenderMode(client, RENDER_TRANSALPHA);
@@ -207,15 +207,15 @@ stock ToolsSetClientAlpha(client, alpha)
  * @param client	The client index.
  * @return		  The alpha value of the client. (0-255)
  */
-stock ToolsGetEntityAlpha(entity)
+stock int ToolsGetEntityAlpha(int entity)
 {
-	static bool:gotconfig = false;
-	static String:prop[32];
+	static bool gotconfig = false;
+	static char prop[32];
 	
 	if (!gotconfig)
 	{
-		new Handle:gc = LoadGameConfigFile("core.games");
-		new bool:exists = GameConfGetKeyValue(gc, "m_clrRender", prop, sizeof(prop));
+		Handle gc = LoadGameConfigFile("core.games");
+		bool exists = GameConfGetKeyValue(gc, "m_clrRender", prop, sizeof(prop));
 		CloseHandle(gc);
 		
 		if (!exists)
@@ -226,7 +226,7 @@ stock ToolsGetEntityAlpha(entity)
 		gotconfig = true;
 	}
 	
-	new offset = GetEntSendPropOffs(entity, prop);
+	int offset = GetEntSendPropOffs(entity, prop);
 	
 	return GetEntData(entity, offset + 3, 1);
 }

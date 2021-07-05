@@ -33,12 +33,12 @@
 /**
  * Variable to store account offset value.
  */
-new g_iToolsAccount;
+int g_iToolsAccount;
 
 /**
  * Find account-specific offsets here.
  */
-AccountOnOffsetsFound()
+void AccountOnOffsetsFound()
 {
 	// If offset "m_iAccount" can't be found, then stop the plugin.
 	g_iToolsAccount = FindSendPropInfo("CCSPlayer", "m_iAccount");
@@ -53,17 +53,17 @@ AccountOnOffsetsFound()
  * 
  * @param client	The client index.
  */
-AccountOnClientSpawn(client)
+void AccountOnClientSpawn(int client)
 {
 	// If cashfill cvar is disabled, then stop.
-	new bool:accountcashfill = GetConVarBool(g_hCvarsList[CVAR_ACCOUNT_CASHFILL]);
+	bool accountcashfill = GetConVarBool(g_hCvarsList[CVAR_ACCOUNT_CASHFILL]);
 	if (!accountcashfill)
 	{
 		return;
 	}
 	
 	// Get cash value.
-	new cash = GetConVarInt(g_hCvarsList[CVAR_ACCOUNT_CASHFILL_VALUE]);
+	int cash = GetConVarInt(g_hCvarsList[CVAR_ACCOUNT_CASHFILL_VALUE]);
 	
 	// Set client's account.
 	AccountSetClientCash(client, cash);
@@ -74,7 +74,7 @@ AccountOnClientSpawn(client)
  * @param attacker  The attacker index.
  * @param dmg	   The amount of damage inflicted.
  */
-AccountOnClientHurt(client, attacker, dmg_health)
+void AccountOnClientHurt(int client, int attacker, int dmg_health)
 {
 	// If attacker isn't valid, then stop.
 	if (!ZRIsClientValid(attacker))
@@ -83,7 +83,7 @@ AccountOnClientHurt(client, attacker, dmg_health)
 	}
 	
 	// If cashdmg cvar is disabled, then stop.
-	new bool:accountcashdmg = GetConVarBool(g_hCvarsList[CVAR_ACCOUNT_CASHDMG]);
+	bool accountcashdmg = GetConVarBool(g_hCvarsList[CVAR_ACCOUNT_CASHDMG]);
 	if (!accountcashdmg)
 	{
 		return;
@@ -102,7 +102,7 @@ AccountOnClientHurt(client, attacker, dmg_health)
 	}
 	
 	// Get current cash, add the damage done to it, then set new value.
-	new cash = AccountGetClientCash(attacker);
+	int cash = AccountGetClientCash(attacker);
 	AccountSetClientCash(attacker, cash + dmg_health);
 }
 
@@ -112,7 +112,7 @@ AccountOnClientHurt(client, attacker, dmg_health)
  * @param client	The client index.
  * @return		  The client's current account value.
  */
-stock AccountGetClientCash(client)
+stock int AccountGetClientCash(int client)
 {
 	// Set client's cash.
 	return GetEntData(client, g_iToolsAccount, 4);
@@ -124,7 +124,7 @@ stock AccountGetClientCash(client)
  * @param client	The client index.
  * @param value	The value to set to.
  */
-stock AccountSetClientCash(client, value)
+stock void AccountSetClientCash(int client, int value)
 {
 	// If value if below 0, then set to 0.
 	if (value < 0)

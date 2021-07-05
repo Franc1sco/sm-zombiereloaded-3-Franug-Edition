@@ -35,7 +35,7 @@
 
 #pragma newdecls required
 
-#define VERSION "3.7.1 Anubis edition"
+#define VERSION "3.7.2 Anubis edition"
 
 #include "zr_sounds/zombiereloaded"
 
@@ -59,7 +59,7 @@ public Plugin myinfo =
 	author = "Anúbis",
 	description = "Sounds for Zombie:Reloaded-Anubis Edition.",
 	version = VERSION,
-	url = "https://github.com/Stewart-Anubis/Sm-Zombiereloaded-3-Franug-Anubis-Edition"
+	url = "https://github.com/Stewart-Anubis"
 };
 
 /**

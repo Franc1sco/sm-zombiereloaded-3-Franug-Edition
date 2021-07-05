@@ -25,7 +25,7 @@
  * ============================================================================
  */
 
-DebugOnCommandsCreate()
+void DebugOnCommandsCreate()
 {
 	// Custom test commands:
 	/*
@@ -35,7 +35,7 @@ DebugOnCommandsCreate()
 }
 
 /*
-public Action:Command_GetParameterCount(client, argc)
+public Action Command_GetParameterCount(int client, int argc)
 {
 	if (argc < 1)
 	{
@@ -43,13 +43,13 @@ public Action:Command_GetParameterCount(client, argc)
 		return Plugin_Handled;
 	}
 	
-	decl String:argbuffer[256];
-	decl String:paramstring[256];
+	char argbuffer[256];
+	char paramstring[256];
 	
 	paramstring[0] = 0;
 	
 	// Join the last parameters in a string.
-	for (new arg = 1; arg <= argc; arg++)
+	for (int arg = 1; arg <= argc; arg++)
 	{
 		GetCmdArg(arg, argbuffer, sizeof(argbuffer));
 		StrCat(paramstring, sizeof(paramstring), argbuffer);
@@ -68,7 +68,7 @@ public Action:Command_GetParameterCount(client, argc)
 	return Plugin_Handled;
 }
 
-public Action:Command_GetParameterValue(client, argc)
+public Action Command_GetParameterValue(int client, int argc)
 {
 	if (argc < 2)
 	{
@@ -76,11 +76,11 @@ public Action:Command_GetParameterValue(client, argc)
 		return Plugin_Handled;
 	}
 	
-	decl String:paramname[256];
-	decl String:paramstring[256];
+	char paramname[256];
+	char paramstring[256];
 	
-	decl String:valuebuffer[64];
-	decl String:argbuffer[256];
+	char valuebuffer[64];
+	char argbuffer[256];
 	
 	paramstring[0] = 0;
 	valuebuffer[0] = 0;
@@ -88,7 +88,7 @@ public Action:Command_GetParameterValue(client, argc)
 	GetCmdArg(1, paramname, sizeof(paramname));
 	
 	// Join the last parameters in a string.
-	for (new arg = 2; arg <= argc; arg++)
+	for (int arg = 2; arg <= argc; arg++)
 	{
 		GetCmdArg(arg, argbuffer, sizeof(argbuffer));
 		StrCat(paramstring, sizeof(paramstring), argbuffer);
@@ -100,7 +100,7 @@ public Action:Command_GetParameterValue(client, argc)
 		}
 	}
 	
-	new retval = GetParameterValue(valuebuffer, sizeof(valuebuffer), paramstring, paramname);
+	int retval = GetParameterValue(valuebuffer, sizeof(valuebuffer), paramstring, paramname);
 	
 	ReplyToCommand(client, "Return value: %d\nParameter string: \"%s\"\nParameter value: \"%s\"", retval, paramstring, valuebuffer);
 	

@@ -42,24 +42,24 @@
 /**
  * Cookie handle for the toggle state of an overlay.
  */
-new Handle:g_hOverlayEnabledCookie = INVALID_HANDLE;
+Handle g_hOverlayEnabledCookie = INVALID_HANDLE;
 
 /**
  * Creates command clallbacks for listed overlay commands.
  */
-ClassOverlayOnCommandsHook()
+void ClassOverlayOnCommandsHook()
 {
-	decl String:togglecmds[CLASSOVERLAY_TOGGLE_MAX_CMDS * CLASSOVERLAY_TOGGLE_MAX_LENGTH];
+	char togglecmds[CLASSOVERLAY_TOGGLE_MAX_CMDS * CLASSOVERLAY_TOGGLE_MAX_LENGTH];
 	GetConVarString(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS], togglecmds, sizeof(togglecmds));
 	
 	// Array to store commands.
-	new String:arrayCmds[CLASSOVERLAY_TOGGLE_MAX_CMDS][CLASSOVERLAY_TOGGLE_MAX_LENGTH];
+	char arrayCmds[CLASSOVERLAY_TOGGLE_MAX_CMDS][CLASSOVERLAY_TOGGLE_MAX_LENGTH];
 	
 	// Put the commands into an array.
-	new cmdcount = ExplodeString(togglecmds, ",", arrayCmds, sizeof(arrayCmds), sizeof(arrayCmds[]));
+	int cmdcount = ExplodeString(togglecmds, ",", arrayCmds, sizeof(arrayCmds), sizeof(arrayCmds[]));
 	
 	// Register all overlay commands.
-	for (new i = 0; i < cmdcount; i++)
+	for (int i = 0; i < cmdcount; i++)
 	{
 		TrimString(arrayCmds[i]);
 		RegConsoleCmd(arrayCmds[i], ClassOverlayEnableCommand);
@@ -69,7 +69,7 @@ ClassOverlayOnCommandsHook()
 /**
  * Create class overlay-related cookies here.
  */
-ClassOverlayOnCookiesCreate()
+void ClassOverlayOnCookiesCreate()
 {
 	// Create cookie handle only if it don't exist.
 	if (g_hOverlayEnabledCookie == INVALID_HANDLE)
@@ -83,21 +83,21 @@ ClassOverlayOnCookiesCreate()
  * 
  * @param client		Client index.
  */
-ClassOverlayOnCookiesCached(client)
+void ClassOverlayOnCookiesCached(int client)
 {
 	// Get overlay toggle cvar values.
-	new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);
-	new bool:overlaydefault = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_DEFAULT]);
+	bool overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);
+	bool overlaydefault = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_DEFAULT]);
 	
 	// Get ZHP enabled cookie value.
-	decl String:overlayenabled[8];
+	char overlayenabled[8];
 	GetClientCookie(client, g_hOverlayEnabledCookie, overlayenabled, sizeof(overlayenabled));
 	
 	// If the cookie is empty, then set the default value.
 	if (!overlayenabled[0])
 	{
 		// Set cookie to default value from cvar.
-		new bool:overlayvalue = overlaytoggle ? overlaydefault : true;
+		bool overlayvalue = overlaytoggle ? overlaydefault : true;
 		CookiesSetClientCookieBool(client, g_hOverlayEnabledCookie, overlayvalue);
 	}
 }
@@ -107,13 +107,13 @@ ClassOverlayOnCookiesCached(client)
  * 
  * @param client	The client index.
  */
-ClassOverlayOnClientDeath(client)
+void ClassOverlayOnClientDeath(int client)
 {
 	// Disable overlay.
 	OverlaysClientSetChannelState(client, OVERLAYS_CHANNEL_CLASSES, true, false, false, true);
 }
 
-ClassOverlayInitialize(client, const String:overlay[])
+public int ClassOverlayInitialize(int client, const char[] overlay)
 {
 	if (IsFakeClient(client))
 	{
@@ -128,14 +128,14 @@ ClassOverlayInitialize(client, const String:overlay[])
 	}
 	
 	// If overlay toggle is enabled and class has an overlay, then send center text.
-	new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);
+	bool overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);
 	
-	decl String:overlaypath[PLATFORM_MAX_PATH];
+	char overlaypath[PLATFORM_MAX_PATH];
 	ClassGetOverlayPath(client, overlaypath, sizeof(overlaypath));
 	
 	if (overlaytoggle && overlaypath[0])
 	{
-		decl String:togglecmds[CLASSOVERLAY_TOGGLE_MAX_CMDS * CLASSOVERLAY_TOGGLE_MAX_LENGTH];
+		char togglecmds[CLASSOVERLAY_TOGGLE_MAX_CMDS * CLASSOVERLAY_TOGGLE_MAX_LENGTH];
 		GetConVarString(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLECMDS], togglecmds, sizeof(togglecmds));
 		
 		TranslationPrintHintText(client, "Classes overlay toggle", togglecmds);
@@ -153,7 +153,7 @@ ClassOverlayInitialize(client, const String:overlay[])
  * @param client	The client index.
  * @param argc	  Argument count.
  */
-public Action:ClassOverlayEnableCommand(client, argc)
+public Action ClassOverlayEnableCommand(int client, int argc)
 {
 	// If client isn't valid, then stop.
 	if (!ZRIsClientValid(client))
@@ -162,13 +162,13 @@ public Action:ClassOverlayEnableCommand(client, argc)
 	}
 	
 	// If overlay toggle is disabled, then stop.
-	new bool:overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);
+	bool overlaytoggle = GetConVarBool(g_hCvarsList[CVAR_CLASSES_OVERLAY_TOGGLE]);
 	if (!overlaytoggle)
 	{
 		return;
 	}
 	
 	// Toggle current overlay channel, retrieve new value, and update cookie.
-	new bool:overlayenabled = OverlaysClientSetChannelState(client, OVERLAYS_CHANNEL_CLASSES, true, true);
+	bool overlayenabled = OverlaysClientSetChannelState(client, OVERLAYS_CHANNEL_CLASSES, true, true);
 	CookiesSetClientCookieBool(client, g_hOverlayEnabledCookie, overlayenabled);
 }

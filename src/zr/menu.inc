@@ -56,7 +56,7 @@ void MenuOnCommandsCreate()
  */
 public Action ZMenuCommand(int client, int argc)
 {
-	if (!g_hCvarsList.g_bCVAR_ZMENU_ENABLED)
+	if (!GetConVarBool(g_hCvarsList[CVAR_ZMENU_ENABLED]))
 	{
 		return Plugin_Continue;
 	}
@@ -83,8 +83,6 @@ void ZMenuMain(int client)
 {
 	// Create menu handle.
 	Handle menu_main = CreateMenu(ZMenuMainHandle);
-	SendConVarValue(client, g_hMp_Maxmoney, "0");
-	SendConVarValue(client, g_hSv_Disable_Radar, "1");
 	
 	SetGlobalTransTarget(client);
 	
@@ -96,6 +94,7 @@ void ZMenuMain(int client)
 	char zspawn[MENU_LINE_HUGE_LENGTH];
 	char ztele[MENU_LINE_HUGE_LENGTH];
 	char zsounds[MENU_LINE_HUGE_LENGTH];
+	char zhp[MENU_LINE_HUGE_LENGTH];
 	char zmarket[MENU_LINE_HUGE_LENGTH];
 	
 	// Translate each line into client's language.
@@ -106,6 +105,7 @@ void ZMenuMain(int client)
 	Format(zspawn, sizeof(zspawn), "%t", "Menu main zspawn");
 	Format(ztele, sizeof(ztele), "%t", "Menu main ztele");
 	Format(zsounds, sizeof(zsounds), "%t", "Menu main zsounds");
+	Format(zhp, sizeof(zhp), "%t", "Menu main zhp");
 	Format(zmarket, sizeof(zmarket), "%t", "Menu main zmarket");
 	
 	// Add items to menu.
@@ -124,6 +124,7 @@ void ZMenuMain(int client)
 	AddMenuItem(menu_main, "zspawn", zspawn);
 	AddMenuItem(menu_main, "ztele", ztele);
 	AddMenuItem(menu_main, "zsounds", zsounds);
+	AddMenuItem(menu_main, "zhp", zhp);
 	AddMenuItem(menu_main, "zmarket", zmarket);
 	
 	// Display menu to client.
@@ -194,8 +195,14 @@ public int ZMenuMainHandle(Handle menu, MenuAction action, int client, int slot)
 				// Don't resend this menu.
 				resend = false;
 			}
-			// Select ZMarket.
+			// Select ZHP.
 			case 6:
+			{
+				// Toggle ZHP.
+				ZHPToggle(client);
+			}
+			// Select ZMarket.
+			case 7:
 			{
 				// Send ZMarket menu.
 				resend = !ZMarketMenuMain(client);
@@ -207,11 +214,6 @@ public int ZMenuMainHandle(Handle menu, MenuAction action, int client, int slot)
 		{
 			ZMenuMain(client);
 		}
-	}
-	if (action == MenuAction_Cancel && slot != MenuCancel_ExitBack && IsValidClient(client))
-	{
-		SendConVarValue(client, g_hMp_Maxmoney, g_sValue_Mp_Maxmoney);
-		SendConVarValue(client, g_hSv_Disable_Radar, g_sValue_Sv_Disable_Radar);
 	}
 	// Client exited menu.
 	if (action == MenuAction_End)
@@ -230,7 +232,6 @@ public int ZMenuMainHandle(Handle menu, MenuAction action, int client, int slot)
  * @param dead	  If true, only clients that are dead will be displayed.	 
  * @param any	   Title is a translations phrase.  
  */
-
 stock void MenuClientList(int client,  MenuHandler handler, bool team = false, bool alive = false, bool dead = false, any ...)
 {
 	// Create menu handle.
