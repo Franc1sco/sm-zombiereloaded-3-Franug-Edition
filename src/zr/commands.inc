@@ -28,7 +28,7 @@
 /**
  * Commands are created/hooked.
  */
-CommandsInit()
+void CommandsInit()
 {
 	// Forward event to modules. (create commands)
 	ConfigOnCommandsCreate();
@@ -45,7 +45,6 @@ CommandsInit()
 	ZTeleOnCommandsCreate();
 	ZHPOnCommandsCreate();
 	VolOnCommandsCreate();
-	ZombieSoundsOnCommandsCreate();
 	ImmunityOnCommandsCreate();
 	
 	#if defined ADD_VERSION_INFO

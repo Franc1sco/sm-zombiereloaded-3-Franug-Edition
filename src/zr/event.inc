@@ -28,10 +28,10 @@
 /**
  * Init function for event module.
  */
-EventInit()
+void EventInit()
 {
 	// Hook all events used by plugin.
-	EventHook();
+	EventsHook();
 }
 
 /**
@@ -39,7 +39,7 @@ EventInit()
  * 
  * @param unhook	If true, then unhook all events, if false, then hook.
  */ 
-EventHook(bool:unhook = false)
+void EventsHook(bool unhook = false)
 {
 	// If unhook is true, then continue.
 	if (unhook)
@@ -79,14 +79,13 @@ EventHook(bool:unhook = false)
  * @param name	  Name of the event.
  * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
  */
-public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadcast)
+public Action EventRoundStart(Handle event, const char[] name, bool dontBroadcast)
 {
 	// Forward event to sub-modules.
 	OverlaysOnRoundStart();
 	RoundStartOnRoundStart();
 	RoundEndOnRoundStart();
 	InfectOnRoundStart();
-	SEffectsOnRoundStart();
 	ZSpawnOnRoundStart();
 	VolOnRoundStart();
 	
@@ -115,7 +114,7 @@ public Action:EventRoundStart(Handle:event, const String:name[], bool:dontBroadc
  * @param name	  Name of the event.
  * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
  */
-public Action:EventRoundFreezeEnd(Handle:event, const String:name[], bool:dontBroadcast)
+public Action EventRoundFreezeEnd(Handle event, const char[] name, bool dontBroadcast)
 {
 	// Forward events to modules.
 	RoundEndOnRoundFreezeEnd();
@@ -131,16 +130,20 @@ public Action:EventRoundFreezeEnd(Handle:event, const String:name[], bool:dontBr
  * @param name	  Name of the event.
  * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
  */
-public Action:EventRoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
+public Action EventRoundEnd(Handle event, const char[] name, bool dontBroadcast)
 {
 	// Get all required event info.
-	new winner = GetEventInt(event, "winner");
-	
+	int winner = GetEventInt(event, "winner");
+
+	CreateTimer(0.1, EventRoundEndPost, winner, TIMER_FLAG_NO_MAPCHANGE);
+}
+
+public Action EventRoundEndPost(Handle hTimer, int winner)
+{
 	// Forward event to modules.
 	WeaponsOnRoundEnd();
 	RoundEndOnRoundEnd(winner);
 	InfectOnRoundEnd();
-	SEffectsOnRoundEnd();
 	RespawnOnRoundEnd();
 	ZSpawnOnRoundEnd();
 	VolOnRoundEnd();
@@ -155,11 +158,11 @@ public Action:EventRoundEnd(Handle:event, const String:name[], bool:dontBroadcas
  * @param name	  Name of the event.
  * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
  */
-public Action:EventPlayerTeam(Handle:event, const String:name[], bool:dontBroadcast)
+public Action EventPlayerTeam(Handle event, const char[] name, bool dontBroadcast)
 {
 	// Get all required event info.
-	new index = GetClientOfUserId(GetEventInt(event, "userid"));
-	new team = GetEventInt(event, "team");
+	int index = GetClientOfUserId(GetEventInt(event, "userid"));
+	int team = GetEventInt(event, "team");
 	
 	// Forward event to modules.
 	InfectOnClientTeam(index, team);
@@ -176,10 +179,10 @@ public Action:EventPlayerTeam(Handle:event, const String:name[], bool:dontBroadc
  * @param name	  Name of the event.
  * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
  */
-public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
+public Action EventPlayerSpawn(Handle event, const char[] name, bool dontBroadcast)
 {
 	// Get all required event info.
-	new index = GetClientOfUserId(GetEventInt(event, "userid"));
+	int index = GetClientOfUserId(GetEventInt(event, "userid"));
 	
 	// Forward event to modules.
 	InfectOnClientSpawn(index);	 // Some modules depend on this to finish first.
@@ -187,7 +190,6 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
 	ClassOnClientSpawn(index);
 	WeaponsOnClientSpawn(index);
 	RoundStartOnClientSpawn(index);
-	SEffectsOnClientSpawn(index);
 	RespawnOnClientSpawn(index);
 	ZTeleOnClientSpawn(index);
 	ZHPOnClientSpawn(index);
@@ -206,7 +208,7 @@ public Action:EventPlayerSpawn(Handle:event, const String:name[], bool:dontBroad
  * @param name	  Name of the event.
  * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
  */
-public Action:EventPlayerSpawnPost(Handle:timer, any:client)
+public Action EventPlayerSpawnPost(Handle timer, any client)
 {
 	// If client isn't in-game, then stop.
 	if (!IsClientInGame(client))
@@ -216,7 +218,6 @@ public Action:EventPlayerSpawnPost(Handle:timer, any:client)
 	
 	// Forward event to modules.
 	WeaponsOnClientSpawnPost(client);
-	SEffectsOnClientSpawnPost(client);
 	ClassOnClientSpawnPost(client);
 	SpawnProtectOnClientSpawnPost(client);	// Must be executed after class attributes are applied.
 }
@@ -229,22 +230,21 @@ public Action:EventPlayerSpawnPost(Handle:timer, any:client)
  * @param name	  Name of the event.
  * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
  */
-public Action:EventPlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
+public Action EventPlayerHurt(Handle event, const char[] name, bool dontBroadcast)
 {
 	// Get all required event info.
-	new index = GetClientOfUserId(GetEventInt(event, "userid"));
-	new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-	new hitgroup = GetEventInt(event, "hitgroup");
-	new dmg_health = GetEventInt(event, "dmg_health");
+	int index = GetClientOfUserId(GetEventInt(event, "userid"));
+	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+	int hitgroup = GetEventInt(event, "hitgroup");
+	int dmg_health = GetEventInt(event, "dmg_health");
 	
-	decl String:weapon[WEAPONS_MAX_LENGTH];
+	char weapon[WEAPONS_MAX_LENGTH];
 	GetEventString(event, "weapon", weapon, sizeof(weapon));
 	
 	// Forward event to modules.
 	ClassAlphaUpdate(index);
 	InfectOnClientHurt(index, attacker, weapon);
 	AccountOnClientHurt(index, attacker, dmg_health);
-	SEffectsOnClientHurt(index);
 	KnockbackOnClientHurt(index, attacker, weapon, hitgroup, dmg_health);
 	NapalmOnClientHurt(index, attacker, weapon);
 	ZHPOnClientHurt(index);
@@ -258,11 +258,11 @@ public Action:EventPlayerHurt(Handle:event, const String:name[], bool:dontBroadc
  * @param name	  Name of the event.
  * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
  */
-public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
+public Action EventPlayerDeath(Handle event, const char[] name, bool dontBroadcast)
 {
 	// Get all required event info.
-	new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-	new index = GetClientOfUserId(GetEventInt(event, "userid"));
+	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+	int index = GetClientOfUserId(GetEventInt(event, "userid"));
 	
 	// If client is being infected, then stop.
 	/*if (InfectIsClientInfected(attacker) && index != attacker)
@@ -279,14 +279,13 @@ public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroad
 	}
 	
 	// Get the weapon name.
-	decl String:weapon[WEAPONS_MAX_LENGTH];
+	char weapon[WEAPONS_MAX_LENGTH];
 	GetEventString(event, "weapon", weapon, sizeof(weapon));
 	
 	// Forward event to modules.
 	ClassOnClientDeath(index);
 	InfectOnClientDeath(index, attacker);
 	VEffectsOnClientDeath(index);
-	SEffectsOnClientDeath(index);
 	SpawnProtectOnClientDeath(index);
 	RespawnOnClientDeath(index, attacker, weapon);
 	NapalmOnClientDeath(index);
@@ -306,10 +305,10 @@ public Action:EventPlayerDeath(Handle:event, const String:name[], bool:dontBroad
  * @param name	  Name of the event.
  * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
  */
-public Action:EventPlayerJump(Handle:event, const String:name[], bool:dontBroadcast)
+public Action EventPlayerJump(Handle event, const char[] name, bool dontBroadcast)
 {
 	// Get all required event info.
-	new index = GetClientOfUserId(GetEventInt(event, "userid"));
+	int index = GetClientOfUserId(GetEventInt(event, "userid"));
 	
 	// Fire post player_jump event.
 	CreateTimer(0.0, EventPlayerJumpPost, index);
@@ -323,7 +322,7 @@ public Action:EventPlayerJump(Handle:event, const String:name[], bool:dontBroadc
  * @param name	  Name of the event.
  * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
  */
-public Action:EventPlayerJumpPost(Handle:timer, any:client)
+public Action EventPlayerJumpPost(Handle timer, any client)
 {
 	// If client isn't in-game, then stop.
 	if (!IsClientInGame(client))
@@ -343,11 +342,11 @@ public Action:EventPlayerJumpPost(Handle:timer, any:client)
  * @param name	  Name of the event.
  * @dontBroadcast   If true, event is broadcasted to all clients, false if not.
  */
-public Action:EventWeaponFire(Handle:event, const String:name[], bool:dontBroadcast)
+public Action EventWeaponFire(Handle event, const char[] name, bool dontBroadcast)
 {
 	// Get all required event info.
-	new index = GetClientOfUserId(GetEventInt(event, "userid"));
-	decl String:weapon[32];
+	int index = GetClientOfUserId(GetEventInt(event, "userid"));
+	char weapon[32];
 	GetEventString(event, "weapon", weapon, sizeof(weapon));
 	
 	// Forward event to modules.

@@ -45,17 +45,19 @@
 #include "zr/api/respawn.api"
 #include "zr/api/class.api"
 #include "zr/api/weapons.api"
+#include "zr/api/sounds.api"
 
 /**
  * Initializes all main natives and forwards.
  */
-APIInit()
+void APIInit()
 {
 	// Forward event to sub-modules.
 	APIInfectInit();
 	APIRespawnInit();
 	APIClassInit();
 	APIWeapons();
+	APISoundsInit();
 }
 
 /**
@@ -66,7 +68,7 @@ APIInit()
  * 
  * @error		   Throws an error when the client isn't valid.
  */
-stock APIValidateClientIndex(client, EligibleCondition:alive = Condition_Either)
+stock void APIValidateClientIndex(int client, EligibleCondition alive = Condition_Either)
 {
 	// Verify client index.
 	if (client < 1 || client > MaxClients)
@@ -83,7 +85,7 @@ stock APIValidateClientIndex(client, EligibleCondition:alive = Condition_Either)
 	}
 	
 	// Check if the player must be dead or alive.
-	new bool:bAlive = bool:alive;
+	bool bAlive = view_as<bool>(alive);
 	if (alive != Condition_Either)
 	{
 		if (bAlive && !IsPlayerAlive(client))

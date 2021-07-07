@@ -81,7 +81,6 @@ enum LogModules
 	bool:LogModule_Napalm,
 	bool:LogModule_Playerclasses,
 	bool:LogModule_VEffects,
-	bool:LogModule_SEffects,
 	bool:LogModule_Tools,
 	bool:LogModule_Volfeatures,
 	bool:LogModule_Weapons,
@@ -93,9 +92,9 @@ enum LogModules
 /**
  * Handle for dynamic string array for module filtering.
  */
-new Handle:hLogModuleFilter;
+Handle hLogModuleFilter;
 
 /**
  * Cache of current module filter settings. For fast and easy access.
  */
-new LogModuleFilterCache[LogModules];
+LogModuleFilterCache[LogModules];

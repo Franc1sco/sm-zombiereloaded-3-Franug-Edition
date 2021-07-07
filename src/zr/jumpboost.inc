@@ -30,11 +30,11 @@
  * 
  * @param client	The client index.
  */
-JumpBoostOnClientJumpPost(client)
+void JumpBoostOnClientJumpPost(int client)
 {
 	// Get class jump multipliers.
-	new Float:distancemultiplier = ClassGetJumpDistance(client);
-	new Float:heightmultiplier = ClassGetJumpHeight(client);
+	float distancemultiplier = ClassGetJumpDistance(client);
+	float heightmultiplier = ClassGetJumpHeight(client);
 	
 	// If both are set to 1.0, then stop here to save some work.
 	if (distancemultiplier == 1.0 && heightmultiplier == 1.0)
@@ -42,7 +42,7 @@ JumpBoostOnClientJumpPost(client)
 		return;
 	}
 	
-	new Float:vecVelocity[3];
+	float vecVelocity[3];
 	
 	// Get client's current velocity.
 	ToolsClientVelocity(client, vecVelocity, false);
@@ -69,19 +69,19 @@ JumpBoostOnClientJumpPost(client)
  * @param vecVelocity   The velocity of the client jumping.
  * @return			  True if the client is bunnyhopping, false if not.
  */
-stock bool:JumpBoostIsBHop(const Float:vecVelocity[])
+stock bool JumpBoostIsBHop(const float[] vecVelocity)
 {
 	// If bunnyhop protection is disabled, then stop.
-	new bool:bunnyhopprotect = GetConVarBool(g_hCvarsList[CVAR_JUMPBOOST_BHOP_PROTECT]);
+	bool bunnyhopprotect = GetConVarBool(g_hCvarsList[CVAR_JUMPBOOST_BHOP_PROTECT]);
 	if (!bunnyhopprotect)
 	{
 		return false;
 	}
 	
 	// Calculate the magnitude of jump on the xy plane.
-	new Float:magnitude = SquareRoot(Pow(vecVelocity[0], 2.0) + Pow(vecVelocity[1], 2.0));
+	float magnitude = SquareRoot(Pow(vecVelocity[0], 2.0) + Pow(vecVelocity[1], 2.0));
 	
 	// Return true if the magnitude exceeds the max.
-	new Float:bunnyhopmax = GetConVarFloat(g_hCvarsList[CVAR_JUMPBOOST_BHOP_MAX]);
+	float bunnyhopmax = GetConVarFloat(g_hCvarsList[CVAR_JUMPBOOST_BHOP_MAX]);
 	return (magnitude > bunnyhopmax);
 }

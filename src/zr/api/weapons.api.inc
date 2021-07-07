@@ -29,12 +29,12 @@
  * Initializes all natives and forwards related to infection.
  */
 
-APIWeapons()
+void APIWeapons()
 {
-	CreateNative("ZR_NoWeaponRestrictions", Native_NoWeaponRestrictions);
+	CreateNative("ZR_NoWeaponRestrictions", Native_NoWeaponRestrictions);	
 }
 
-public Native_NoWeaponRestrictions(Handle:plugin, numParams)
+public int Native_NoWeaponRestrictions(Handle plugin, int numParams)
 {
 	g_allweapons[GetNativeCell(1)] = GetNativeCell(2);
 

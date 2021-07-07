@@ -31,7 +31,7 @@
 /**
  * The map is ending.
  */
-VEffectsOnMapEnd()
+void VEffectsOnMapEnd()
 {
 	// Forward event to sub-modules.
 	VAmbienceOnMapEnd();
@@ -40,7 +40,7 @@ VEffectsOnMapEnd()
 /**
  * Visual effect loading.
  */
-VEffectsLoad()
+void VEffectsLoad()
 {
 	// Forward event to sub-modules.
 	VAmbienceLoad();
@@ -49,7 +49,7 @@ VEffectsLoad()
 /**
  * Plugin has just finished creating/hooking cvars.
  */
-VEffectsOnCvarInit()
+void VEffectsOnCvarInit()
 {
 	// Hook zr_veffects_* cvars.
 	VAmbienceCvarsHook();
@@ -58,7 +58,7 @@ VEffectsOnCvarInit()
 /**
  * Find VEffects-specific offsets here.
  */
-VEffectsOnOffsetsFound()
+void VEffectsOnOffsetsFound()
 {
 	// Forward event to sub-modules
 	RagdollOnOffsetsFound();
@@ -69,7 +69,7 @@ VEffectsOnOffsetsFound()
  * 
  * @param client	The client index.
  */
-VEffectsOnClientDeath(client)
+void VEffectsOnClientDeath(int client)
 {
 	// Forward event to sub-modules.
 	RagdollOnClientDeath(client);
@@ -82,7 +82,7 @@ VEffectsOnClientDeath(client)
  * @param origin		The origin of the effect.
  * @param direction	 The direction of the effect.
  */
-VEffectsCreateEnergySplash(const Float:origin[3], const Float:direction[3], bool:explosive)
+void VEffectsCreateEnergySplash(const float origin[3], const float direction[3], bool explosive)
 {
 	TE_SetupEnergySplash(origin, direction, explosive);
 	TE_SendToAll();
@@ -94,10 +94,10 @@ VEffectsCreateEnergySplash(const Float:origin[3], const Float:direction[3], bool
  * @param origin	The (x, y, z) coordinate of the explosion.
  * @param flags	 The flags to set on the explosion.
  */
-VEffectsCreateExplosion(const Float:origin[3], flags)
+void VEffectsCreateExplosion(const float origin[3], int flags)
 {
 	// Create an explosion entity.
-	new explosion = CreateEntityByName("env_explosion");
+	int explosion = CreateEntityByName("env_explosion");
 	
 	// If explosion entity isn't valid, then stop.
 	if (explosion == -1)
@@ -106,7 +106,7 @@ VEffectsCreateExplosion(const Float:origin[3], flags)
 	}
 	
 	// Get and modify flags on explosion.
-	new spawnflags = GetEntProp(explosion, Prop_Data, "m_spawnflags");
+	int spawnflags = GetEntProp(explosion, Prop_Data, "m_spawnflags");
 	spawnflags = spawnflags | EXP_NODAMAGE | EXP_NODECAL | flags;
 	
 	// Set modified flags on entity.
@@ -137,9 +137,9 @@ VEffectsCreateExplosion(const Float:origin[3], flags)
  * @param frequency	 The frequency (speed) of the shaking.
  * @param duration	  The duration (time) of the shaking.
  */
-VEffectsShakeClientScreen(client, Float:amplitude, Float:frequency, Float:duration)
+void VEffectsShakeClientScreen(int client, float amplitude, float frequency, float duration)
 {
-	new Handle:hShake = StartMessageOne("Shake", client);
+	Handle hShake = StartMessageOne("Shake", client);
 	
 	// Validate.
 	if (hShake == INVALID_HANDLE)

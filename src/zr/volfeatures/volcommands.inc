@@ -53,7 +53,7 @@ Example:
 /**
  * Creates commands for managing volumes.
  */
-VolOnCommandsCreate()
+void VolOnCommandsCreate()
 {
 	RegConsoleCmd("zr_vol_add", VolAddVolumeCommand, "Creates a rectangular volume in the map. Usage: zr_vol_add <x1> <y1> <z1> <x2> <y2> <z2> <type> [params]");
 	RegConsoleCmd("zr_vol_remove", VolRemoveVolumeCommand, "Removes an existing volume in the map. Usage: zr_vol_remove <volume index>");
@@ -64,9 +64,9 @@ VolOnCommandsCreate()
 /**
  * Command callback for creating a new volume.
  */
-public Action:VolAddVolumeCommand(client, argc)
+public Action VolAddVolumeCommand(int client, int argc)
 {
-	decl String:buffer[640];
+	char buffer[640];
 	buffer[0] = 0;
 	
 	// Check if privileged.
@@ -97,22 +97,22 @@ public Action:VolAddVolumeCommand(client, argc)
 		return Plugin_Handled;
 	}
 	
-	new Float:x1;
-	new Float:y1;
-	new Float:z1;
-	new Float:x2;
-	new Float:y2;
-	new Float:z2;
-	new Float:min[3];
-	new Float:max[3];
-	new VolumeFeatureTypes:voltype;
-	new Float:floatbuffer;
-	new volindex;
-	new dataindex;
-	new paramcount;
+	float x1;
+	float y1;
+	float z1;
+	float x2;
+	float y2;
+	float z2;
+	float min[3];
+	float max[3];
+	VolumeFeatureTypes voltype;
+	float floatbuffer;
+	int volindex;
+	int dataindex;
+	int paramcount;
 	
-	decl String:params[512];
-	decl String:argbuffer[256];
+	char params[512];
+	char argbuffer[256];
 	
 	params[0] = 0;
 	
@@ -217,7 +217,7 @@ public Action:VolAddVolumeCommand(client, argc)
 	if (argc >= 8)
 	{
 		// Join the last parameters in a string.
-		for (new arg = 8; arg <= argc; arg++)
+		for (int arg = 8; arg <= argc; arg++)
 		{
 			GetCmdArg(arg, argbuffer, sizeof(argbuffer));
 			StrCat(params, sizeof(params), argbuffer);
@@ -257,10 +257,10 @@ public Action:VolAddVolumeCommand(client, argc)
 /**
  * Command callback for removing a volume.
  */
-public Action:VolRemoveVolumeCommand(client, argc)
+public Action VolRemoveVolumeCommand(int client, int argc)
 {
-	decl String:arg[16];
-	new volindex;
+	char arg[16];
+	int volindex;
 	
 	// Check if privileged.
 	if (!ZRIsClientPrivileged(client, OperationType_Configuration))
@@ -304,19 +304,19 @@ public Action:VolRemoveVolumeCommand(client, argc)
 /**
  * Command callback for listing volumes or dumping data.
  */
-public Action:VolListCommand(client, argc)
+public Action VolListCommand(int client, int argc)
 {
-	decl String:buffer[1022];	   // Two chars reserved for newline and null terminator.
-	decl String:linebuffer[128];
-	decl String:valuebuffer[32];
-	decl String:arg[16];
+	char buffer[1022];	   // Two chars reserved for newline and null terminator.
+	char linebuffer[128];
+	char valuebuffer[32];
+	char arg[16];
 	
 	buffer[0] = 0;
 	linebuffer[0] = 0;
 	
-	new volindex;
-	new volcount;
-	new volcache[VolumeAttributes];
+	int volindex;
+	int volcount;
+	int volcache[VolumeAttributes];
 	
 	if (argc < 1)
 	{
@@ -449,10 +449,10 @@ public Action:VolListCommand(client, argc)
 	}
 }
 
-public Action:VolDumpStatesCommand(client, argc)
+public Action VolDumpStatesCommand(int client, int argc)
 {
-	decl String:target[64];
-	new targetclient;
+	char target[64];
+	int targetclient;
 	
 	// Check if privileged.
 	if (!ZRIsClientPrivileged(client, OperationType_Generic))
@@ -482,14 +482,14 @@ public Action:VolDumpStatesCommand(client, argc)
 	ReplyToCommand(client, "Volume ID:  Player in volume:\n----------------------------------------");
 	
 	// Get player states.
-	new bool:statebuffer[ZR_VOLUMES_MAX];
+	bool statebuffer[ZR_VOLUMES_MAX];
 	VolGetPlayerStates(targetclient, statebuffer, sizeof(statebuffer));
 	
 	// Set language.
 	SetGlobalTransTarget(client);
 	
 	// Loop through each volume.
-	for (new volumeindex = 0; volumeindex < ZR_VOLUMES_MAX; volumeindex++)
+	for (int volumeindex = 0; volumeindex < ZR_VOLUMES_MAX; volumeindex++)
 	{
 		// Check if volume is in use.
 		if (VolInUse(volumeindex))
@@ -515,7 +515,7 @@ public Action:VolDumpStatesCommand(client, argc)
  *
  * @return			  The new volume index, or -1 if failed.
  */
-VolAdd(volumeIndex = -1, Float:locMin[3], Float:locMax[3], VolumeFeatureTypes:volumeType, dataIndex)
+int VolAdd(int volumeIndex = -1, float locMin[3], float locMax[3], VolumeFeatureTypes volumeType, int dataIndex)
 {
 	if (volumeIndex < 0)
 	{
@@ -562,7 +562,7 @@ VolAdd(volumeIndex = -1, Float:locMin[3], Float:locMax[3], VolumeFeatureTypes:vo
  * @param volumeIndex   The volume index.
  * @return			  True if successful, false otherwise.
  */
-bool:VolRemove(volumeIndex)
+bool VolRemove(int volumeIndex)
 {
 	// Validate index.
 	if (VolIsValidIndex(volumeIndex))
@@ -596,7 +596,7 @@ bool:VolRemove(volumeIndex)
  *
  * @param volumeIndex   The volume index.
  */
-VolClear(volumeIndex)
+void VolClear(int volumeIndex)
 {
 	Volumes[volumeIndex][Vol_Enabled] = false;
 	Volumes[volumeIndex][Vol_InUse] = false;
@@ -614,7 +614,7 @@ VolClear(volumeIndex)
 	Volumes[volumeIndex][Vol_EffectColor][1] = 0;
 	Volumes[volumeIndex][Vol_EffectColor][2] = 0;
 	
-	new dataindex = Volumes[volumeIndex][Vol_DataIndex];
+	int dataindex = Volumes[volumeIndex][Vol_DataIndex];
 	if (dataindex >= 0)
 	{
 		switch (Volumes[volumeIndex][Vol_Type])
@@ -640,9 +640,9 @@ VolClear(volumeIndex)
 /**
  * Clears all volumes.
  */
-VolClearAll()
+void VolClearAll()
 {
-	for (new volindex = 0; volindex < ZR_VOLUMES_MAX; volindex++)
+	for (int volindex = 0; volindex < ZR_VOLUMES_MAX; volindex++)
 	{
 		VolClear(volindex);
 	}
@@ -656,14 +656,14 @@ VolClearAll()
  *					  format.
  * @return			  Number of successful attributes set, -1 on error.
  */
-VolSetAttributes(volumeIndex, const String:attributes[])
+int VolSetAttributes(int volumeIndex, const char[] attributes)
 {
-	new attribCount;
-	new successfulCount;
-	new VolumeFeatureTypes:voltype;
-	new dataindex;
-	decl String:attribName[64];
-	decl String:attribValue[256];
+	int attribCount;
+	int successfulCount;
+	VolumeFeatureTypes voltype;
+	int dataindex;
+	char attribName[64];
+	char attribValue[256];
 	
 	// Validate volume index.
 	if (!VolIsValidIndex(volumeIndex))
@@ -687,7 +687,7 @@ VolSetAttributes(volumeIndex, const String:attributes[])
 	dataindex = Volumes[volumeIndex][Vol_DataIndex];
 	
 	// Loop through all attributes.
-	for (new attrib = 0; attrib < attribCount; attrib++)
+	for (int attrib = 0; attrib < attribCount; attrib++)
 	{
 		// Get attribute name.
 		GetParameterName(attribName, sizeof(attribName), attributes, attrib);

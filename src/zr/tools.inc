@@ -28,11 +28,11 @@
 /**
  * Initialize global offset variables.
  */
-new g_iToolsVelocity;
-new g_iToolsLMV;
-new g_iToolsHasNightVision;
-new g_iToolsNightVisionOn;
-new g_iToolsFOV;
+int g_iToolsVelocity;
+int g_iToolsLMV;
+int g_iToolsHasNightVision;
+int g_iToolsNightVisionOn;
+int g_iToolsFOV;
 
 /**
  * @endsection
@@ -44,7 +44,7 @@ new g_iToolsFOV;
 /**
  * Tools module init function.
  */
-ToolsInit()
+void ToolsInit()
 {
 	// Find offsets.
 	ToolsFindOffsets();
@@ -53,7 +53,7 @@ ToolsInit()
 /**
  * Finds all offset values for the plugin.
  */
-ToolsFindOffsets()
+void ToolsFindOffsets()
 {
 	// If offset "m_vecVelocity[0]" can't be found, then stop the plugin.
 	g_iToolsVelocity = FindSendPropInfo("CBasePlayer", "m_vecVelocity[0]");

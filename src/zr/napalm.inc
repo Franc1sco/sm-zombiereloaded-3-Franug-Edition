@@ -44,12 +44,12 @@
 /**
  * Variable to store water-level offset value.
  */
-new g_iToolsWaterLevel;
+int g_iToolsWaterLevel;
 
 /**
  * Find napalm-specific offsets here.
  */
-NapalmOnOffsetsFound()
+void NapalmOnOffsetsFound()
 {
 	// If offset "m_bInBuyZone" can't be found, then stop the plugin.
 	g_iToolsWaterLevel = FindSendPropInfo("CBasePlayer", "m_nWaterLevel");
@@ -69,13 +69,13 @@ NapalmOnOffsetsFound()
  *					  ZRTools_Continue to allow damage to client.
  *					  Return -1 to not return anything and let the damage module continue as usual.
  */
-NapalmOnTakeDamage(client, damagetype)
+int NapalmOnTakeDamage(int client, int damagetype)
 {
 	// Client was damaged by fire.
 	if (damagetype & DMG_CSS_BURN)
 	{
 		// Only take action if it isn't disabled, or the option is valid.
-		new douse = GetConVarInt(g_hCvarsList[CVAR_NAPALM_DOUSE]);
+		int douse = GetConVarInt(g_hCvarsList[CVAR_NAPALM_DOUSE]);
 		
 		if (douse > NAPALM_WLEVEL_DRY && douse <= NAPALM_WLEVEL_FULL)
 		{
@@ -87,11 +87,11 @@ NapalmOnTakeDamage(client, damagetype)
 				//ExtinguishEntity(client);  <-- Don't use this.  Takes off the FL_ONFIRE flag, but flame doesn't get extinguished.
 				
 				// This works.
-				new fire = GetEntPropEnt(client, Prop_Data, "m_hEffectEntity");
+				int fire = GetEntPropEnt(client, Prop_Data, "m_hEffectEntity");
 				if (IsValidEntity(fire))
 				{
 					// Make sure the entity is a flame, so we can extinguish it.
-					decl String:classname[64];
+					char classname[64];
 					GetEdictClassname(fire, classname, sizeof(classname));
 					if (StrEqual(classname, "entityflame", false))
 					{
@@ -104,7 +104,7 @@ NapalmOnTakeDamage(client, damagetype)
 					}
 				}
 				
-				return _:ACTION_CONTINUE;
+				return view_as<int>(ACTION_CONTINUE);
 			}
 		}
 	}
@@ -120,7 +120,7 @@ NapalmOnTakeDamage(client, damagetype)
  * @param attacker  The attacker index.
  * @param weapon	The weapon name. 
  */
-NapalmOnClientHurt(client, attacker, const String:weapon[])
+void NapalmOnClientHurt(int client, int attacker, const char[] weapon)
 {
 	// If there's no attacker, then stop.
 	if (!attacker)
@@ -135,7 +135,7 @@ NapalmOnClientHurt(client, attacker, const String:weapon[])
 	}
 	
 	// If napalm time is invalid or 0, then stop.
-	new Float:napalm_time = ClassGetNapalmTime(client);
+	float napalm_time = ClassGetNapalmTime(client);
 	if (napalm_time <= 0.0)
 	{
 		return;
@@ -150,8 +150,8 @@ NapalmOnClientHurt(client, attacker, const String:weapon[])
 	// If weapon is a grenade, then ignite player.
 	if (StrEqual(weapon, "hegrenade", false))
 	{
-		new bool:reset = GetConVarBool(g_hCvarsList[CVAR_NAPALM_TIME_RESET]);
-		new flags = GetEntityFlags(client);
+		bool reset = GetConVarBool(g_hCvarsList[CVAR_NAPALM_TIME_RESET]);
+		int flags = GetEntityFlags(client);
 		
 		if (reset || !(flags & FL_ONFIRE))
 		{
@@ -169,7 +169,7 @@ NapalmOnClientHurt(client, attacker, const String:weapon[])
  * 
  * @param client	The client index.
  */
-NapalmOnClientDeath(client)
+void NapalmOnClientDeath(int client)
 {
 	// Extinguish any flames to stop burning sounds.
 	ExtinguishEntity(client);
@@ -181,10 +181,10 @@ NapalmOnClientDeath(client)
  * @param client	   The client index.
  * @param weapon	   The weapon name.
  */
-NapalmOnWeaponFire(client, const String:weapon[])
+void NapalmOnWeaponFire(int client, const char[] weapon)
 {
 	// If grenade fire is disabled, then stop.
-	new bool:napalmignite = GetConVarBool(g_hCvarsList[CVAR_NAPALM_IGNITE]);
+	bool napalmignite = GetConVarBool(g_hCvarsList[CVAR_NAPALM_IGNITE]);
 	if (!napalmignite)
 	{
 		return;
@@ -197,7 +197,7 @@ NapalmOnWeaponFire(client, const String:weapon[])
 	}
 	
 	// If weapon isn't a grenade, then stop.
-	if (!StrEqual(weapon, "hegrenade", false))
+	if (!StrEqual(weapon, "weapon_hegrenade", false))
 	{
 		return;
 	}
@@ -211,15 +211,15 @@ NapalmOnWeaponFire(client, const String:weapon[])
  * 
  * @param timer	 The timer handle.
  */   
-public Action:NapalmIgniteGrenade(Handle:timer)
+public Action NapalmIgniteGrenade(Handle timer)
 {
-	decl String:classname[64];
+	char classname[64];
 	
 	// Get max entities.
-	new maxentities = GetMaxEntities();
+	int maxentities = GetMaxEntities();
 	
 	// x = entity index.
-	for (new x = 0; x <= maxentities; x++)
+	for (int x = 0; x <= maxentities; x++)
 	{
 		// If entity is invalid, then stop.
 		if(!IsValidEntity(x) || !IsValidEdict(x))
@@ -241,7 +241,7 @@ public Action:NapalmIgniteGrenade(Handle:timer)
  * @param client	The client index.
  * @return		  A NAPALM_WLEVEL_ define. 
  */
-stock NapalmGetClientWaterLevel(client)
+stock int NapalmGetClientWaterLevel(int client)
 {
 	// Return client's water-level.
 	return GetEntData(client, g_iToolsWaterLevel);

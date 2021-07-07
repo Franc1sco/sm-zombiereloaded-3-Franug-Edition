@@ -99,7 +99,7 @@ enum ParamParseResult
  *					  occoured.
  * @return			  Number of keys parsed.
  */
-stock ParamParseString(buffer[][ParamParseResult], maxlen, String:paramString[], &err = 0, &errPos = -1)
+stock int ParamParseString(buffer[][ParamParseResult], int maxlen, char[] paramString, int &err = 0, int &errPos = -1)
 {
 	/*
 	 *  VALIDATION OF INPUT AND BUFFERS
@@ -130,22 +130,22 @@ stock ParamParseString(buffer[][ParamParseResult], maxlen, String:paramString[],
 	 */
 	
 	// Get raw string length.
-	new rawlen = sizeof(paramString);
+	int rawlen = sizeof(paramString);
 	
 	// Initialize. Expect the start to be a key or a flag.
-	new ParamModes:mode = ParamMode_TypeCheck;
+	ParamModes mode = ParamMode_TypeCheck;
 	
 	// Counter for number of parameters parsed.
-	new paramcount;
+	int paramcount;
 	
 	// Buffers for temp values.
-	new startpos;
-	new endpos;
-	new bool:quoteon;
-	decl String:value[PARAM_VALUE_MAXLEN];
+	int startpos;
+	int endpos;
+	bool quoteon;
+	char value[PARAM_VALUE_MAXLEN];
 	
 	// Loop through all characters in the string. Exclude null terminator.
-	for (new strpos = 0; strpos < rawlen - 1; strpos++)
+	for (int strpos = 0; strpos < rawlen - 1; strpos++)
 	{
 		// Check if there's space left in the destination buffer.
 		if (paramcount > maxlen)
@@ -361,10 +361,10 @@ stock ParamParseString(buffer[][ParamParseResult], maxlen, String:paramString[],
  *						  not (default).
  * @return				  Index of the key if found, -1 otherwise.
  */
-stock ParamFindKey(const params[][ParamParseResult], maxlen, const String:key[], bool:caseSensitive = false)
+stock int ParamFindKey(const params[][ParamParseResult], int maxlen, const char[] key, bool caseSensitive = false)
 {
 	// Loop through all parameters.
-	for (new index = 0; index < maxlen; index++)
+	for (int index = 0; index < maxlen; index++)
 	{
 		// Check parameter type.
 		if (params[index][Param_IsFlag])
@@ -394,10 +394,10 @@ stock ParamFindKey(const params[][ParamParseResult], maxlen, const String:key[],
  *						  not (default).
  * @return				  True flag is found, false otherwise.
  */
-stock bool:ParamHasFlag(const params[][ParamParseResult], maxlen, const String:flag[], bool:caseSensitive = false)
+stock bool ParamHasFlag(const params[][ParamParseResult], int maxlen, const char[] flag, bool caseSensitive = false)
 {
 	// Loop through all parameters.
-	for (new index = 0; index < maxlen; index++)
+	for (int index = 0; index < maxlen; index++)
 	{
 		// Check parameter type.
 		if (!params[index][Param_IsFlag])
@@ -433,9 +433,9 @@ stock bool:ParamHasFlag(const params[][ParamParseResult], maxlen, const String:f
  * @return			  Position of the last non white space character, or -1
  *					  if failed.
  */
-stock ParamFindEndPos(const String:paramString[], startPos = 0)
+stock int ParamFindEndPos(const char[] paramString, int startPos = 0)
 {
-	new rawlen = sizeof(paramString);
+	int rawlen = sizeof(paramString);
 	
 	// Validate string length.
 	if (rawlen == 0)
@@ -444,7 +444,7 @@ stock ParamFindEndPos(const String:paramString[], startPos = 0)
 	}
 	
 	// Loop through all characters from the specified start position.
-	for (new strpos = startPos; strpos < rawlen; strpos++)
+	for (int strpos = startPos; strpos < rawlen; strpos++)
 	{
 		// Check if white space or if current position is the last
 		// character before the null terminator.
@@ -466,9 +466,9 @@ stock ParamFindEndPos(const String:paramString[], startPos = 0)
  * @param startPos	  Optional. Position to start searching from.
  * @return			  Position of first character or -1 if failed.
  */
-stock ParamFindStartPos(const String:paramString[], startPos = 0)
+stock int ParamFindStartPos(const char[] paramString, int startPos = 0)
 {
-	new rawlen = sizeof(paramString);
+	int rawlen = sizeof(paramString);
 	
 	// Validate string length.
 	if (rawlen == 0)
@@ -477,7 +477,7 @@ stock ParamFindStartPos(const String:paramString[], startPos = 0)
 	}
 	
 	// Loop through all characters from the specified start position.
-	for (new strpos = startPos; strpos < rawlen; strpos++)
+	for (int strpos = startPos; strpos < rawlen; strpos++)
 	{
 		// Check if not white space.
 		if (!IsCharSpace(paramString[strpos]))
@@ -500,9 +500,9 @@ stock ParamFindStartPos(const String:paramString[], startPos = 0)
  * @param endpos	End position of string to extract.
  * @return		  Number of cells written.
  */
-stock StrExtract(String:buffer[], maxlen, const String:source[], startpos, endpos)
+stock int StrExtract(char[] buffer, int maxlen, const char[] source, int startpos, int endpos)
 {
-	new len;
+	int len;
 	
 	// Calculate string length. Also add space for null terminator.
 	len = endpos - startpos + 1;
@@ -522,9 +522,9 @@ stock StrExtract(String:buffer[], maxlen, const String:source[], startpos, endpo
  *
  * @param str   String to unescape.
  */
-stock StrUnescape(String:str[])
+stock void StrUnescape(char[] str)
 {
-	new len = sizeof(str);
+	int len = sizeof(str);
 	
 	ReplaceString(str, len, "\\n", "\n");
 	ReplaceString(str, len, "\\r", "\r");

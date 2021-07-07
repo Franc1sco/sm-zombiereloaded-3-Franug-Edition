@@ -33,14 +33,14 @@
 /**
  * Array that stores the "HookID" to be later unhooked on player disconnect.
  */
-new g_iWeaponDropHookID[MAXPLAYERS + 1] = {-1, ...};
+int g_iWeaponDropHookID[MAXPLAYERS + 1] = {-1, ...};
 
 /**
  * Client is joining the server.
  * 
  * @param client	The client index.
  */
-WeaponAlphaClientInit(client)
+void WeaponAlphaClientInit(int client)
 {
 	// Hook "Weapon_Drop" on client.
 	#if defined USE_SDKHOOKS
@@ -58,7 +58,7 @@ WeaponAlphaClientInit(client)
  * 
  * @param client	The client index.
  */
-WeaponAlphaOnClientDisconnect(client)
+void WeaponAlphaOnClientDisconnect(int client)
 {
 	// Unhook "Weapon_Drop" callback, and reset variable.
 	if (g_iWeaponDropHookID[client] != -1)
@@ -79,7 +79,7 @@ WeaponAlphaOnClientDisconnect(client)
  * @param client	The client index.
  * @param weapon	The weapon index.   
  */
-WeaponAlphaOnItemPickupPost(client, weapon)
+void WeaponAlphaOnItemPickupPost(int client, int weapon)
 {
 	if (Entity_HasChildren(weapon))
 	{
@@ -92,7 +92,7 @@ WeaponAlphaOnItemPickupPost(client, weapon)
 	}
 	
 	// Get client's current alpha.
-	new alpha = ToolsGetEntityAlpha(client);
+	int alpha = ToolsGetEntityAlpha(client);
 	
 	// Set new alpha on weapons.
 	WeaponAlphaApplyWeaponAlpha(weapon, alpha);
@@ -106,9 +106,9 @@ WeaponAlphaOnItemPickupPost(client, weapon)
  * @param weapon	The weapon index.
  */
 #if defined USE_SDKHOOKS
-public Action:WeaponAlphaDrop(client, weapon)
+public Action WeaponAlphaDrop(int client, int weapon)
 #else
-public ZRTools_Action:WeaponAlphaDrop(client, weapon)
+public ZRTools_Action WeaponAlphaDrop(int client, int weapon)
 #endif
 {
 	// If weapon isn't a valid entity, then stop.
@@ -126,7 +126,7 @@ public ZRTools_Action:WeaponAlphaDrop(client, weapon)
  * 
  * @param client	The client index.
  */
-WeaponAlphaOnClientAlphaChanged(client, alpha)
+void WeaponAlphaOnClientAlphaChanged(int client, int alpha)
 {
 	// Set new alpha on weapons.
 	WeaponAlphaApplyWeaponAlpha(client, alpha);
@@ -139,7 +139,7 @@ WeaponAlphaOnClientAlphaChanged(client, alpha)
  *				  If a non-client index is given, alpha will be set on given entity.
  * @param alpha	 The alpha to set the weapons to.
  */
-WeaponAlphaApplyWeaponAlpha(entity, alpha)
+void WeaponAlphaApplyWeaponAlpha(int entity, int alpha)
 {
 	if (entity > MaxClients)
 	{
@@ -158,12 +158,12 @@ WeaponAlphaApplyWeaponAlpha(entity, alpha)
 	}
 	
 	// Get client's list of weapons.
-	new weapons[WeaponsSlot];
+	int weapons[WeaponsSlot];
 	WeaponsGetClientWeapons(entity, weapons);
 	
 	// Loop through array slots and set alpha.
 	// x = weapon slot.
-	for (new x = 0; x < WEAPONS_SLOTS_MAX; x++)
+	for (int x = 0; x < WEAPONS_SLOTS_MAX; x++)
 	{
 		// If weapon is invalid, then stop.
 		if (weapons[x] == -1)

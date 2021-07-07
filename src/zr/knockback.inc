@@ -39,7 +39,7 @@
  * @param hitgroup	  Hitgroup attacker has damaged. 
  * @param dmg_health	Damage done.
  */
-KnockbackOnClientHurt(client, attacker, const String:weapon[], hitgroup, dmg_health)
+void KnockbackOnClientHurt(int client, int attacker, const char[] weapon, int hitgroup, int dmg_health)
 {
 	// If attacker is invalid, then stop.
 	if (!ZRIsClientValid(attacker))
@@ -66,10 +66,10 @@ KnockbackOnClientHurt(client, attacker, const String:weapon[], hitgroup, dmg_hea
 	}
 	
 	// Get zombie knockback value.
-	new Float:knockback = ClassGetKnockback(client);
+	float knockback = ClassGetKnockback(client);
 	
-	new Float:clientloc[3];
-	new Float:attackerloc[3];
+	float clientloc[3];
+	float attackerloc[3];
 	
 	GetClientAbsOrigin(client, clientloc);
 	
@@ -89,7 +89,7 @@ KnockbackOnClientHurt(client, attacker, const String:weapon[], hitgroup, dmg_hea
 		GetClientEyePosition(attacker, attackerloc);
 		
 		// Get attackers eye angles.
-		new Float:attackerang[3];
+		float attackerang[3];
 		GetClientEyeAngles(attacker, attackerang);
 		
 		// Calculate knockback end-vector.
@@ -97,10 +97,10 @@ KnockbackOnClientHurt(client, attacker, const String:weapon[], hitgroup, dmg_hea
 		TR_GetEndPosition(clientloc);
 	}
 	
-	new bool:weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
+	bool weapons = GetConVarBool(g_hCvarsList[CVAR_WEAPONS]);
 	if (weapons)
 	{
-		new weaponindex = WeaponsNameToIndex(weapon);
+		int weaponindex = WeaponsNameToIndex(weapon);
 		if (weaponindex != -1)
 		{
 			// Apply weapon knockback multiplier.
@@ -108,10 +108,10 @@ KnockbackOnClientHurt(client, attacker, const String:weapon[], hitgroup, dmg_hea
 		}
 	}
 	
-	new bool:hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
+	bool hitgroups = GetConVarBool(g_hCvarsList[CVAR_HITGROUPS]);
 	if (hitgroups)
 	{
-		new hitgroupindex = HitgroupToIndex(hitgroup);
+		int hitgroupindex = HitgroupToIndex(hitgroup);
 		if (hitgroupindex != -1)
 		{
 			// Apply hitgroup knockback multiplier.
@@ -140,10 +140,10 @@ KnockbackOnClientHurt(client, attacker, const String:weapon[], hitgroup, dmg_hea
  * @param endpoint	  The ending coordinate to push towards.
  * @param magnitude	 Magnitude of the push.
  */  
-KnockbackSetVelocity(client, const Float:startpoint[3], const Float:endpoint[3], Float:magnitude)
+void KnockbackSetVelocity(int client, const float startpoint[3], const float endpoint[3], float magnitude)
 {
 	// Create vector from the given starting and ending points.
-	new Float:vector[3];
+	float vector[3];
 	MakeVectorFromPoints(startpoint, endpoint, vector);
 	
 	// Normalize the vector (equal magnitude at varying distances).
@@ -163,7 +163,7 @@ KnockbackSetVelocity(client, const Float:startpoint[3], const Float:endpoint[3],
  * @param contentsMask  The contents mask.
  * @return			  True to allow hit, false to continue tracing. 
  */ 
-public bool:KnockbackTRFilter(entity, contentsMask)
+public bool KnockbackTRFilter(int entity, int contentsMask)
 {
 	// If entity is a player, continue tracing.
 	if (entity > 0 && entity < MAXPLAYERS)
@@ -181,13 +181,13 @@ public bool:KnockbackTRFilter(entity, contentsMask)
  * @param heLoc	 The location of the exploding grenade.
  * @return		  The entity index of the grenade. 
  */  
-KnockbackFindExplodingGrenade(Float:heLoc[3])
+int KnockbackFindExplodingGrenade(float heLoc[3])
 {
-	decl String:classname[64];
+	char classname[64];
 	
 	// Find max entities and loop through all of them.
-	new maxentities = GetMaxEntities();
-	for (new x = MaxClients; x <= maxentities; x++)
+	int maxentities = GetMaxEntities();
+	for (int x = MaxClients; x <= maxentities; x++)
 	{
 		// If entity is invalid, then stop.
 		if (!IsValidEdict(x))
@@ -203,7 +203,7 @@ KnockbackFindExplodingGrenade(Float:heLoc[3])
 		}
 		
 		// If m_takedamage is set to 0, we found our grenade.
-		new takedamage = GetEntProp(x, Prop_Data, "m_takedamage");
+		int takedamage = GetEntProp(x, Prop_Data, "m_takedamage");
 		if (takedamage == 0)
 		{
 			// Return its location.

@@ -381,7 +381,7 @@
 
 	"Infect countdown"
 	{
-		"ru"		"First infection in {1} seconds."
+		"ru"		"До начала заражения {1} секунд."
 	}
 
 	// Menu
@@ -471,6 +471,11 @@
 	"Menu main ztele"
 	{
 		"ru"		"ZTele - Телепорт к респавну"
+	}
+
+	"Menu main zsounds"
+	{
+		"ru"		"ZSounds - Управляйте звуками ZR."
 	}
 
 	"Menu main zhp"

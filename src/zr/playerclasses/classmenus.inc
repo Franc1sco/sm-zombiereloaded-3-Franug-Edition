@@ -38,33 +38,33 @@
  *
  * @param client	The client index.
  */
-ClassMenuMain(client)
+void ClassMenuMain(int client)
 {
-	new Handle:menu = CreateMenu(ClassMenuMainHandle);
+	Handle menu = CreateMenu(ClassMenuMainHandle);
 	
 	SetGlobalTransTarget(client);
 	
-	decl String:title[MENU_LINE_TITLE_LENGTH];
+	char title[MENU_LINE_TITLE_LENGTH];
 	
-	decl String:zombieclass[MENU_LINE_REG_LENGTH];
-	decl String:humanclass[MENU_LINE_REG_LENGTH];
-	decl String:adminclass[MENU_LINE_REG_LENGTH];
+	char zombieclass[MENU_LINE_REG_LENGTH];
+	char humanclass[MENU_LINE_REG_LENGTH];
+	char adminclass[MENU_LINE_REG_LENGTH];
 	
-	decl String:nextzombiename[MENU_LINE_REG_LENGTH];
-	decl String:nexthumanname[MENU_LINE_REG_LENGTH];
-	decl String:nextadminname[MENU_LINE_REG_LENGTH];
+	char nextzombiename[MENU_LINE_REG_LENGTH];
+	char nexthumanname[MENU_LINE_REG_LENGTH];
+	char nextadminname[MENU_LINE_REG_LENGTH];
 	
-	decl String:zombieselect[MENU_LINE_BIG_LENGTH];
-	decl String:humanselect[MENU_LINE_BIG_LENGTH];
-	decl String:adminselect[MENU_LINE_BIG_LENGTH];
+	char zombieselect[MENU_LINE_BIG_LENGTH];
+	char humanselect[MENU_LINE_BIG_LENGTH];
+	char adminselect[MENU_LINE_BIG_LENGTH];
 		
-	decl String:inadminmnode[MENU_LINE_BIG_LENGTH];
-	decl String:adminmode[MENU_LINE_BIG_LENGTH];
-	decl String:toggleadminmode[MENU_LINE_BIG_LENGTH];
+	char inadminmnode[MENU_LINE_BIG_LENGTH];
+	char adminmode[MENU_LINE_BIG_LENGTH];
+	char toggleadminmode[MENU_LINE_BIG_LENGTH];
 	
 	// Setup filtering.
 	// ----------------
-	new filter[ClassFilter];
+	int filter[ClassFilter];
 	
 	// Hide mother zombie classes.
 	filter[ClassFilter_DenyFlags] = ZR_CLASS_FLAG_MOTHER_ZOMBIE;
@@ -79,21 +79,21 @@ ClassMenuMain(client)
 	// ----------------------
 	
 	// Get number of enabled classes per team.
-	new zombiecount = ClassCountTeam(ZR_CLASS_TEAM_ZOMBIES, filter);
-	new humancount = ClassCountTeam(ZR_CLASS_TEAM_HUMANS, filter);
-	new admincount = ClassCountTeam(ZR_CLASS_TEAM_ADMINS, filter);
+	int zombiecount = ClassCountTeam(ZR_CLASS_TEAM_ZOMBIES, filter);
+	int humancount = ClassCountTeam(ZR_CLASS_TEAM_HUMANS, filter);
+	int admincount = ClassCountTeam(ZR_CLASS_TEAM_ADMINS, filter);
 	
 	// Get next class indexes, if set.
-	new nextzombie = ClassSelectedNext[client][ZR_CLASS_TEAM_ZOMBIES];
-	new nexthuman = ClassSelectedNext[client][ZR_CLASS_TEAM_HUMANS];
-	new nextadmin = ClassSelectedNext[client][ZR_CLASS_TEAM_ADMINS];
+	int nextzombie = ClassSelectedNext[client][ZR_CLASS_TEAM_ZOMBIES];
+	int nexthuman = ClassSelectedNext[client][ZR_CLASS_TEAM_HUMANS];
+	int nextadmin = ClassSelectedNext[client][ZR_CLASS_TEAM_ADMINS];
 	
 	// Set draw style on class options depending on number of enabled classes
 	// and selection permissions. Disable class selection if there's only one
 	// class.
-	new zombie_itemdraw = (zombiecount > 1 && ClassAllowSelection(client, ZR_CLASS_TEAM_ZOMBIES, filter)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
-	new human_itemdraw = (humancount > 1 && ClassAllowSelection(client, ZR_CLASS_TEAM_HUMANS, filter)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
-	new admin_itemdraw = (admincount > 1 && ClassAllowSelection(client, ZR_CLASS_TEAM_ADMINS, filter)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
+	int zombie_itemdraw = (zombiecount > 1 && ClassAllowSelection(client, ZR_CLASS_TEAM_ZOMBIES, filter)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
+	int human_itemdraw = (humancount > 1 && ClassAllowSelection(client, ZR_CLASS_TEAM_HUMANS, filter)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
+	int admin_itemdraw = (admincount > 1 && ClassAllowSelection(client, ZR_CLASS_TEAM_ADMINS, filter)) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED;
 	
 	// Check if the player is in admin mode.
 	if (ClassPlayerInAdminMode[client])
@@ -204,7 +204,7 @@ ClassMenuMain(client)
 /**
  * Main class menu handler.
  */
-public ClassMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
+public int ClassMenuMainHandle(Handle menu, MenuAction action, int client, int slot)
 {
 	switch (action)
 	{
@@ -258,16 +258,16 @@ public ClassMenuMainHandle(Handle:menu, MenuAction:action, client, slot)
  * @param client	The client index.
  * @param teamid	What class types to display.
  */
-ClassMenuSelect(client, teamid)
+void ClassMenuSelect(int client, int teamid)
 {
-	new Handle:menu = CreateMenu(ClassMenuSelectHandle);
-	new arraycount;
-	new classindex;
+	Handle menu = CreateMenu(ClassMenuSelectHandle);
+	int arraycount;
+	int classindex;
 	
-	decl String:title[MENU_LINE_TITLE_LENGTH];
-	decl String:classname[MENU_LINE_REG_LENGTH];
-	decl String:description[MENU_LINE_BIG_LENGTH];
-	decl String:menuitem[MENU_LINE_HUGE_LENGTH];
+	char title[MENU_LINE_TITLE_LENGTH];
+	char classname[MENU_LINE_REG_LENGTH];
+	char description[MENU_LINE_BIG_LENGTH];
+	char menuitem[MENU_LINE_HUGE_LENGTH];
 	
 	SetGlobalTransTarget(client);
 	
@@ -290,11 +290,11 @@ ClassMenuSelect(client, teamid)
 	SetMenuTitle(menu, title);
 	
 	// Create buffer array.
-	new Handle:classarray = CreateArray();
+	Handle classarray = CreateArray();
 	
 	// Set up filtering
 	// ----------------
-	new filter[ClassFilter];
+	int filter[ClassFilter];
 	
 	// Hide mother zombie classes.
 	filter[ClassFilter_DenyFlags] = ZR_CLASS_FLAG_MOTHER_ZOMBIE;
@@ -315,7 +315,7 @@ ClassMenuSelect(client, teamid)
 		arraycount = GetArraySize(classarray);
 		
 		// Loop through each class.
-		for (new i = 0; i < arraycount; i++)
+		for (int i = 0; i < arraycount; i++)
 		{
 			// Get index, name and description.
 			classindex = GetArrayCell(classarray, i);
@@ -338,11 +338,11 @@ ClassMenuSelect(client, teamid)
 /**
  * Class selection menu handler.
  */
-public ClassMenuSelectHandle(Handle:menu, MenuAction:action, client, slot)
+public int ClassMenuSelectHandle(Handle menu, MenuAction action, int client, int slot)
 {
-	decl String:className[MENU_LINE_REG_LENGTH];
-	new classIndex;
-	new bool:autoclose = GetConVarBool(g_hCvarsList[CVAR_CLASSES_MENU_AUTOCLOSE]);
+	char className[MENU_LINE_REG_LENGTH];
+	int classIndex;
+	bool autoclose = GetConVarBool(g_hCvarsList[CVAR_CLASSES_MENU_AUTOCLOSE]);
 	
 	switch (action)
 	{
@@ -396,7 +396,7 @@ public ClassMenuSelectHandle(Handle:menu, MenuAction:action, client, slot)
  * @param client	The client index.
  * @return		  True if displayed, false otherwise.
  */
-bool:ClassTeamSelect(client)
+bool ClassTeamSelect(int client)
 {	
 	// Validate permissions.
 	if (!ZRIsClientPrivileged(client, OperationType_Configuration))
@@ -405,11 +405,11 @@ bool:ClassTeamSelect(client)
 	}
 	
 	// Create menu.
-	new Handle:menu = CreateMenu(ClassTeamSelectHandle);
+	Handle menu = CreateMenu(ClassTeamSelectHandle);
 	
-	decl String:title[MENU_LINE_TITLE_LENGTH];
-	decl String:zombies[MENU_LINE_SMALL_LENGTH];
-	decl String:humans[MENU_LINE_SMALL_LENGTH];
+	char title[MENU_LINE_TITLE_LENGTH];
+	char zombies[MENU_LINE_SMALL_LENGTH];
+	char humans[MENU_LINE_SMALL_LENGTH];
 	
 	// Set translation language.
 	SetGlobalTransTarget(client);
@@ -433,7 +433,7 @@ bool:ClassTeamSelect(client)
 /**
  * Team selection menu handler.
  */
-public ClassTeamSelectHandle(Handle:menu, MenuAction:action, client, slot)
+public int ClassTeamSelectHandle(Handle menu, MenuAction action, int client, int slot)
 {
 	switch (action)
 	{
@@ -480,45 +480,45 @@ public ClassTeamSelectHandle(Handle:menu, MenuAction:action, client, slot)
  *
  * @param client	The client index.
  */
-ClassMultiplierSelectMenu(client)
+void ClassMultiplierSelectMenu(int client)
 {
 	// Create menu.
-	new Handle:menu = CreateMenu(ClassMultiplierSelectHandle);
+	Handle menu = CreateMenu(ClassMultiplierSelectHandle);
 	
-	new teamid = ClassAdminTeamSelected[client];
-	new bool:zombiesselected = bool:(teamid == ZR_CLASS_TEAM_ZOMBIES);
+	int teamid = ClassAdminTeamSelected[client];
+	bool zombiesselected = view_as<bool>((teamid == ZR_CLASS_TEAM_ZOMBIES));
 	
-	decl String:title[MENU_LINE_TITLE_LENGTH];
-	decl String:napalmtime[MENU_LINE_REG_LENGTH];
-	decl String:health[MENU_LINE_REG_LENGTH];
-	decl String:regeninterval[MENU_LINE_REG_LENGTH];
-	decl String:regenamount[MENU_LINE_REG_LENGTH];
-	decl String:infectgain[MENU_LINE_REG_LENGTH];
-	decl String:speed[MENU_LINE_REG_LENGTH];
-	decl String:knockback[MENU_LINE_REG_LENGTH];
-	decl String:jumpheight[MENU_LINE_REG_LENGTH];
-	decl String:jumpdistance[MENU_LINE_REG_LENGTH];
+	char title[MENU_LINE_TITLE_LENGTH];
+	char napalmtime[MENU_LINE_REG_LENGTH];
+	char health[MENU_LINE_REG_LENGTH];
+	char regeninterval[MENU_LINE_REG_LENGTH];
+	char regenamount[MENU_LINE_REG_LENGTH];
+	char infectgain[MENU_LINE_REG_LENGTH];
+	char speed[MENU_LINE_REG_LENGTH];
+	char knockback[MENU_LINE_REG_LENGTH];
+	char jumpheight[MENU_LINE_REG_LENGTH];
+	char jumpdistance[MENU_LINE_REG_LENGTH];
 	
-	new Float:currentnapalmtime;
-	new Float:currenthealth;
-	new Float:currentregeninterval;
-	new Float:currentregenamount;
-	new Float:currentinfectgain;
-	new Float:currentspeed;
-	new Float:currentknockback;
-	new Float:currentjumpheight;
-	new Float:currentjumpdistance;
+	float currentnapalmtime;
+	float currenthealth;
+	float currentregeninterval;
+	float currentregenamount;
+	float currentinfectgain;
+	float currentspeed;
+	float currentknockback;
+	float currentjumpheight;
+	float currentjumpdistance;
 	
 	// Get current multipliers.
-	currentnapalmtime = Float:ClassMultiplierCache[teamid][ClassM_NapalmTime];
-	currenthealth = Float:ClassMultiplierCache[teamid][ClassM_Health];
-	currentregeninterval = Float:ClassMultiplierCache[teamid][ClassM_HealthRegenInterval];
-	currentregenamount = Float:ClassMultiplierCache[teamid][ClassM_HealthRegenAmount];
-	currentinfectgain = Float:ClassMultiplierCache[teamid][ClassM_HealthInfectGain];
-	currentspeed = Float:ClassMultiplierCache[teamid][ClassM_Speed];
-	currentknockback = Float:ClassMultiplierCache[teamid][ClassM_Knockback];
-	currentjumpheight = Float:ClassMultiplierCache[teamid][ClassM_JumpHeight];
-	currentjumpdistance = Float:ClassMultiplierCache[teamid][ClassM_JumpDistance];
+	currentnapalmtime = view_as<float>(ClassMultiplierCache[teamid][ClassM_NapalmTime]);
+	currenthealth = view_as<float>(ClassMultiplierCache[teamid][ClassM_Health]);
+	currentregeninterval = view_as<float>(ClassMultiplierCache[teamid][ClassM_HealthRegenInterval]);
+	currentregenamount = view_as<float>(ClassMultiplierCache[teamid][ClassM_HealthRegenAmount]);
+	currentinfectgain = view_as<float>(ClassMultiplierCache[teamid][ClassM_HealthInfectGain]);
+	currentspeed = view_as<float>(ClassMultiplierCache[teamid][ClassM_Speed]);
+	currentknockback = view_as<float>(ClassMultiplierCache[teamid][ClassM_Knockback]);
+	currentjumpheight = view_as<float>(ClassMultiplierCache[teamid][ClassM_JumpHeight]);
+	currentjumpdistance = view_as<float>(ClassMultiplierCache[teamid][ClassM_JumpDistance]);
 	
 	SetGlobalTransTarget(client);
 	
@@ -559,10 +559,10 @@ ClassMultiplierSelectMenu(client)
 /**
  * Multiplier select menu handler.
  */
-public ClassMultiplierSelectHandle(Handle:menu, MenuAction:action, client, slot)
+public int ClassMultiplierSelectHandle(Handle menu, MenuAction action, int client, int slot)
 {
-	decl String:attributename[48];
-	new ClassMultipliers:attribute;
+	char attributename[48];
+	ClassMultipliers attribute;
 	
 	switch (action)
 	{
@@ -639,22 +639,22 @@ public ClassMultiplierSelectHandle(Handle:menu, MenuAction:action, client, slot)
 /**
  * Displays multiplier menu for the specified attribute.
  */
-ClassMultiplierMenu(client, ClassMultipliers:attribute)
+void ClassMultiplierMenu(int client, ClassMultipliers attribute)
 {
 	// Cache selected attribute.
 	ClassAdminAttributeSelected[client] = attribute;
 	
-	new Handle:menu = CreateMenu(ClassMultiplierHandle);
+	Handle menu = CreateMenu(ClassMultiplierHandle);
 	
-	decl String:title[MENU_LINE_TITLE_LENGTH];
-	decl String:attributename[MENU_LINE_REG_LENGTH];
-	decl String:linebuffer[MENU_LINE_REG_LENGTH];
+	char title[MENU_LINE_TITLE_LENGTH];
+	char attributename[MENU_LINE_REG_LENGTH];
+	char linebuffer[MENU_LINE_REG_LENGTH];
 	
 	// Get attribute string.
 	ClassMultiplierToString(client, attribute, attributename, sizeof(attributename));
 	
 	SetGlobalTransTarget(client);
-	Format(title, sizeof(title), "%t %s\n%t %.2f\n", "Classes Menu Adjust Value", attributename, "Current Value", Float:ClassMultiplierCache[ClassAdminTeamSelected[client]][attribute]);
+	Format(title, sizeof(title), "%t %s\n%t %.2f\n", "Classes Menu Adjust Value", attributename, "Current Value", view_as<float>(ClassMultiplierCache[ClassAdminTeamSelected[client]][attribute]));
 	SetMenuTitle(menu, title);
 	
 	SetGlobalTransTarget(client);
@@ -671,9 +671,9 @@ ClassMultiplierMenu(client, ClassMultipliers:attribute)
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
-public ClassMultiplierHandle(Handle:menu, MenuAction:action, client, slot)
+public int ClassMultiplierHandle(Handle menu, MenuAction action, int client, int slot)
 {
-	new Float:value;
+	float value;
 	
 	switch (action)
 	{
@@ -726,7 +726,7 @@ public ClassMultiplierHandle(Handle:menu, MenuAction:action, client, slot)
  * @param attribute	 The attribute to add to.
  * @param value		 Value to add.
  */
-ClassAddToMultiplier(teamid, ClassMultipliers:attribute, Float:value)
+void ClassAddToMultiplier(int teamid, ClassMultipliers attribute, float value)
 {
 	ClassMultiplierCache[teamid][attribute] = ClassMultiplierCache[teamid][attribute] + value;
 }

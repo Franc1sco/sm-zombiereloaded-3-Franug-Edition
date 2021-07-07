@@ -38,34 +38,34 @@
 /**
  * Timers for handling timed immunity actions.
  */
-new Handle:PlayerImmunityTimer[MAXPLAYERS + 1] = {INVALID_HANDLE, ...};
+Handle PlayerImmunityTimer[MAXPLAYERS + 1] = {INVALID_HANDLE, ...};
 
 /**
  * Remaining time of timed immunity actions.
  */
-new PlayerImmunityDuration[MAXPLAYERS + 1] = {-1, ...};
+int PlayerImmunityDuration[MAXPLAYERS + 1] = {-1, ...};
 
 /**
  * Cached attacker index for delayed infections, if available.
  */
-new PlayerImmunityAttacker[MAXPLAYERS + 1] = {0, ...};
+int PlayerImmunityAttacker[MAXPLAYERS + 1] = {0, ...};
 
 /**
  * Timestamp of last action. Usage depends on mode (cooldown, etc).
  */
-new PlayerImmunityLastUse[MAXPLAYERS + 1] = {0, ...};
+int PlayerImmunityLastUse[MAXPLAYERS + 1] = {0, ...};
 
 /**
  * Whether the player has passed a threshold (infect mode).
  */
-new bool:PlayerImmunityThresholdPassed[MAXPLAYERS + 1] = {false, ...};
+bool PlayerImmunityThresholdPassed[MAXPLAYERS + 1] = {false, ...};
 
 /*____________________________________________________________________________*/
 
 /**
  * Console commands are being created.
  */
-ImmunityOnCommandsCreate()
+void ImmunityOnCommandsCreate()
 {
 	RegConsoleCmd(SAYHOOKS_KEYWORD_ZSHIELD, Command_DeployShield, "Deploy the shield, if available.");
 }
@@ -78,7 +78,7 @@ ImmunityOnCommandsCreate()
  * @param client	Client index.
  * @param argc	  Number of arguments.
  */
-public Action:Command_DeployShield(client, argc)
+public Action Command_DeployShield(int client, int argc)
 {
 	// Block console.
 	if (ZRIsConsole(client))
@@ -105,10 +105,10 @@ public Action:Command_DeployShield(client, argc)
  * @return		  True if infection will be handled by this module, false if
  *				  infection can be applied instantly.
  */
-bool:ImmunityOnClientInfect(client, attacker)
+bool ImmunityOnClientInfect(int client, int attacker)
 {
 	// Get immunity mode from client class.
-	new ImmunityMode:mode = ClassGetImmunityMode(client);
+	ImmunityMode mode = ClassGetImmunityMode(client);
 	
 	// Check mode.
 	switch(mode)
@@ -161,7 +161,7 @@ bool:ImmunityOnClientInfect(client, attacker)
  *
  * @return		  True if damage should be blocked, false otherwise.
  */
-bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damageType)
+bool ImmunityOnClientTraceAttack(int client, int attacker, float damage, int hitgroup, int damageType)
 {
 	// Check if there is no attacker (world damage).
 	if (!ZRIsClientValid(attacker))
@@ -171,7 +171,7 @@ bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damag
 	}
 	
 	// Get immunity mode from client class.
-	new ImmunityMode:mode = ClassGetImmunityMode(client);
+	ImmunityMode mode = ClassGetImmunityMode(client);
 	
 	// Check mode.
 	switch(mode)
@@ -210,7 +210,7 @@ bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damag
 			}
 			
 			// Get attacker weapon.
-			decl String:weapon[32];
+			char weapon[32];
 			weapon[0] = 0;
 			if (damageType == DMG_BLAST)
 			{
@@ -268,7 +268,7 @@ bool:ImmunityOnClientTraceAttack(client, attacker, Float:damage, hitgroup, damag
  * @return		  Plugin_Handled if damage was blocked, Plugin_Changed if
  *				  damage was modified, Plugin_Continue otherwise.
  */
-Action:ImmunityOnClientDamage(client, attacker, &Float:damage)
+Action ImmunityOnClientDamage(int client, int attacker, float &damage)
 {
 	// Check if there is no attacker (world damage).
 	if (!ZRIsClientValid(attacker))
@@ -285,7 +285,7 @@ Action:ImmunityOnClientDamage(client, attacker, &Float:damage)
 	}
 	
 	// Get immunity mode from client class.
-	new ImmunityMode:mode = ClassGetImmunityMode(client);
+	ImmunityMode mode = ClassGetImmunityMode(client);
 	
 	switch(mode)
 	{
@@ -355,13 +355,13 @@ Action:ImmunityOnClientDamage(client, attacker, &Float:damage)
  * @return		  True if infection will be handled by this module, false if
  *				  infection can be applied instantly.
  */
-bool:ImmunityInfectModeHandler(client)
+bool ImmunityInfectModeHandler(int client)
 {
 	// Note: ImmunityOnClientDamage and ImmunityOnClientTraceAttack hook into
 	//	   the damage module to prevent humans with low HP from dying when
 	//	   they're not supposed to.
 	
-	new threshold = ClassGetImmunityAmount(client);
+	int threshold = ClassGetImmunityAmount(client);
 	// Check if infection is disabled.
 	if (threshold == 0)
 	{
@@ -388,7 +388,7 @@ bool:ImmunityInfectModeHandler(client)
  * @return		  True if infection will be handled by this module, false if
  *				  infection can be applied instantly.
  */
-bool:ImmunityDelayModeHandler(client, attacker)
+bool ImmunityDelayModeHandler(int client, int attacker)
 {
 	// Check if an infection is in progress
 	if (PlayerImmunityTimer[client] != INVALID_HANDLE)
@@ -397,7 +397,7 @@ bool:ImmunityDelayModeHandler(client, attacker)
 		// speedup the infection.
 		
 		// Get reduction amount for subsequent zombie attack.
-		new reduction = ClassGetImmunityCooldown(client);
+		int reduction = ClassGetImmunityCooldown(client);
 		if (reduction > 0)
 		{
 			// Reduce duration. Add one because the timer handler itself reduce
@@ -433,7 +433,7 @@ bool:ImmunityDelayModeHandler(client, attacker)
  * Delayed infection timer handler. Handles countdown and infection when time
  * is up.
  */
-public Action:ImmunityDelayTimerHandler(Handle:timer, any:client)
+public Action ImmunityDelayTimerHandler(Handle timer, any client)
 {
 	// Verify that client is still connected and alive.
 	if (!IsClientInGame(client) || !IsPlayerAlive(client))
@@ -450,7 +450,7 @@ public Action:ImmunityDelayTimerHandler(Handle:timer, any:client)
 	if (PlayerImmunityDuration[client] <= 0)
 	{
 		// Get attacker before cleaning up.
-		new attacker = PlayerImmunityAttacker[client];
+		int attacker = PlayerImmunityAttacker[client];
 		
 		// Time is up. Reset data.
 		PlayerImmunityDuration[client] = 0;
@@ -478,7 +478,7 @@ public Action:ImmunityDelayTimerHandler(Handle:timer, any:client)
  * @return		  True if infection will be handled by this module, false if
  *				  infection can be applied instantly.
  */
-bool:ImmunityShieldModeHandler(client)
+bool ImmunityShieldModeHandler(int client)
 {
 	// Check if shield is active.
 	if (PlayerImmunityTimer[client] != INVALID_HANDLE)
@@ -498,7 +498,7 @@ bool:ImmunityShieldModeHandler(client)
  *
  * @param client	Client index.
  */
-ImmunityDeployShield(client)
+void ImmunityDeployShield(int client)
 {
 	// Check if shield is available.
 	if (!ImmunityCanDeployShield(client))
@@ -521,7 +521,7 @@ ImmunityDeployShield(client)
 /**
  * Shield timer handler. Handles countdown and shield removal when time is up.
  */
-public Action:ImmunityShieldTimerHandler(Handle:timer, any:client)
+public Action ImmunityShieldTimerHandler(Handle timer, any client)
 {
 	// Verify that client is still connected and alive.
 	if (!IsClientInGame(client) || !IsPlayerAlive(client))
@@ -556,7 +556,7 @@ public Action:ImmunityShieldTimerHandler(Handle:timer, any:client)
  * @param client		Client that's aborting immunity mode actions.
  * @param resetLastUse  Reset timestamp of last use. This will reset cooldown.
  */
-ImmunityAbortHandler(client, bool:resetLastUse = true)
+void ImmunityAbortHandler(int client, bool resetLastUse = true)
 {
 	// Stop timer, if running.
 	ZREndTimer(PlayerImmunityTimer[client]);
@@ -579,9 +579,9 @@ ImmunityAbortHandler(client, bool:resetLastUse = true)
  *
  * @param resetLastUse  Reset timestamp of last use. This will reset cooldown.
  */
-ImmunityAbortAll(bool:resetLastUse = true)
+void ImmunityAbortAll(bool resetLastUse = true)
 {
-	for (new client = 0; client < MAXPLAYERS + 1; client++)
+	for (int client = 0; client < MAXPLAYERS + 1; client++)
 	{
 		ImmunityAbortHandler(resetLastUse);
 	}
@@ -596,7 +596,7 @@ ImmunityAbortAll(bool:resetLastUse = true)
  *
  * @return	  True if knock back should be blocked, false otherwise.
  */
-bool:ImmunityOnClientKnockBack(client)
+bool ImmunityOnClientKnockBack(int client)
 {
 	// Knock back filter is currently only used in shield mode.
 	if (ClassGetImmunityMode(client) == Immunity_Shield)
@@ -626,7 +626,7 @@ bool:ImmunityOnClientKnockBack(client)
 /**
  * Client was infected.
  */
-ImmunityOnClientInfected(client)
+void ImmunityOnClientInfected(int client)
 {
 	// In case client was infected through an admin command or mother zombie
 	// selection, abort other actions in progress.
@@ -638,7 +638,7 @@ ImmunityOnClientInfected(client)
 /**
  * Client was turned back into a human.
  */
-ImmunityOnClientHuman(client)
+void ImmunityOnClientHuman(int client)
 {
 	ImmunityAbortHandler(client);
 }
@@ -648,7 +648,7 @@ ImmunityOnClientHuman(client)
 /**
  * Client died.
  */
-ImmunityOnClientDeath(client)
+void ImmunityOnClientDeath(int client)
 {
 	ImmunityAbortHandler(client, false);
 }
@@ -658,7 +658,7 @@ ImmunityOnClientDeath(client)
 /**
  * Client connected to the server.
  */
-ImmunityClientInit(client)
+void ImmunityClientInit(int client)
 {
 	ImmunityAbortHandler(client);
 }
@@ -668,7 +668,7 @@ ImmunityClientInit(client)
 /**
  * Client spawned.
  */
-ImmunityClientSpawn(client)
+void ImmunityClientSpawn(int client)
 {
 	ImmunityAbortHandler(client, false);
 }
@@ -678,12 +678,12 @@ ImmunityClientSpawn(client)
 /**
  * Client disconnected.
  */
-ImmunityOnClientDisconnect(client)
+void ImmunityOnClientDisconnect(int client)
 {
 	ImmunityAbortHandler(client);
 	
 	// Loop through attacker cache and remove client (set to 0).
-	for (new victim = 0; victim < sizeof(PlayerImmunityAttacker); victim++)
+	for (int victim = 0; victim < sizeof(PlayerImmunityAttacker); victim++)
 	{
 		if (PlayerImmunityAttacker[victim] == client)
 		{
@@ -699,7 +699,7 @@ ImmunityOnClientDisconnect(client)
 /**
  * Client changed team.
  */
-ImmunityOnClientTeam(client)
+void ImmunityOnClientTeam(int client)
 {
 	ImmunityAbortHandler(client);
 }
@@ -709,7 +709,7 @@ ImmunityOnClientTeam(client)
 /**
  * Round ended.
  */
-ImmunityOnRoundEnd()
+void ImmunityOnRoundEnd()
 {
 	ImmunityAbortAll();
 }
@@ -719,7 +719,7 @@ ImmunityOnRoundEnd()
 /**
  * Map ended.
  */
-ImmunityOnMapEnd()
+void ImmunityOnMapEnd()
 {
 	ImmunityAbortAll();
 }
@@ -739,11 +739,11 @@ ImmunityOnMapEnd()
  *				  applying damage, false if above threshold or if threshold
  *				  is disabled (zero).
  */
-bool:ImmunityBelowInfectThreshold(client, Float:damage)
+bool ImmunityBelowInfectThreshold(int client, float damage)
 {
-	new threshold = ClassGetImmunityAmount(client);
-	new clientHP = GetClientHealth(client);
-	new dmg = RoundToNearest(damage);
+	int threshold = ClassGetImmunityAmount(client);
+	int clientHP = GetClientHealth(client);
+	int dmg = RoundToNearest(damage);
 	
 	// Check if the damage go below the HP threshold. Client can only go below
 	// threshold when threshold is enabled (above zero).
@@ -764,7 +764,7 @@ bool:ImmunityBelowInfectThreshold(client, Float:damage)
  *
  * @return		  Immunity mode or Immunity_Invalid on error.
  */
-ImmunityMode:ImmunityStringToMode(const String:mode[])
+ImmunityMode ImmunityStringToMode(const char[] mode)
 {
 	if (strlen(mode) == 0)
 	{
@@ -814,7 +814,7 @@ ImmunityMode:ImmunityStringToMode(const String:mode[])
  *
  * @return		  Number of cells written.
  */
-ImmunityModeToString(ImmunityMode:mode, String:buffer[], maxlen)
+int ImmunityModeToString(ImmunityMode mode, char[] buffer, int maxlen)
 {
 	if (mode == Immunity_Invalid)
 	{
@@ -866,7 +866,7 @@ ImmunityModeToString(ImmunityMode:mode, String:buffer[], maxlen)
  *
  * @return		  True if valid, false otherwise.
  */
-bool:ImmunityIsValidAmount(ImmunityMode:mode, amount)
+bool ImmunityIsValidAmount(ImmunityMode mode, int amount)
 {
 	switch (mode)
 	{
@@ -940,7 +940,7 @@ bool:ImmunityIsValidAmount(ImmunityMode:mode, amount)
  *
  * @return		  True if valid, false otherwise.
  */
-bool:ImmunityIsValidCooldown(ImmunityMode:mode, cooldown)
+bool ImmunityIsValidCooldown(ImmunityMode mode, int cooldown)
 {
 	switch (mode)
 	{
@@ -1017,7 +1017,7 @@ bool:ImmunityIsValidCooldown(ImmunityMode:mode, cooldown)
  *
  * @return				  True if shield can be deployed, false otherwise.
  */
-bool:ImmunityCanDeployShield(client, bool:printResponse = true)
+bool ImmunityCanDeployShield(int client, bool printResponse = true)
 {
 	// Check immunity mode.
 	if (ClassGetImmunityMode(client) != Immunity_Shield)
@@ -1030,8 +1030,8 @@ bool:ImmunityCanDeployShield(client, bool:printResponse = true)
 	}
 	
 	// Check if cooldown is still in progress.
-	new cooldown = ClassGetImmunityCooldown(client);
-	new timeLeft = PlayerImmunityLastUse[client] + cooldown - GetTime();
+	int cooldown = ClassGetImmunityCooldown(client);
+	int timeLeft = PlayerImmunityLastUse[client] + cooldown - GetTime();
 	if (timeLeft > 0)
 	{
 		if (printResponse)
