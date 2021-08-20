@@ -257,17 +257,20 @@ public void ModelsOnConfigReload(ConfigFile config)
  */
 void ModelsPrecache()
 {
-	char file[PLATFORM_MAX_PATH];
+	char sfile[PLATFORM_MAX_PATH];
 
 	bool hitboxchangerLoaded = (GetFeatureStatus(FeatureType_Native, "SetNumHitboxes") == FeatureStatus_Available); // check if we have hitboxchanger extension running
 	
 	// Loop through all models, build full path and cache them.
 	for (int model = 0; model < ModelCount; model++)
 	{
-		ModelsGetFullPath(model, file, sizeof(file));
-		int modelIndex = PrecacheModel(file);
-		if(hitboxchangerLoaded && (modelIndex != 0) && (ModelData[model][Model_Team] == ModelTeam_Humans))
+		ModelsGetFullPath(model, sfile, sizeof(sfile));
+		int modelIndex = PrecacheModel(sfile);
+		if(hitboxchangerLoaded && modelIndex != 0 && ModelData[model][Model_Team] == ModelTeam_Humans)
+		{
 			SetNumHitboxes(modelIndex, -1);
+			//PrintToServer("%s", sfile);
+		}
 	}
 }
 

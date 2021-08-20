@@ -96,10 +96,11 @@ void RespawnOnClientDeath(int client, int attacker, const char[] weapon)
 	}
 	
 	// If player was infected, then stop.
-	if (StrEqual(weapon, "zombie_claws_of_death", false))
+	if (g_Game == Game_CSGO)
 	{
-		return;
+		if(StrEqual(weapon, "zombie_walking_csgo", false)) return;
 	}
+	if (StrEqual(weapon, "zombie_claws_of_death", false)) return;
 	
 	// If respawn is disabled, stop here.
 	bool respawn = GetConVarBool(g_hCvarsList[CVAR_RESPAWN]);
