@@ -7,7 +7,7 @@ public Plugin:myinfo =
 	name = "ZR Class Fix",
 	author = "Franc1sco franug",
 	description = "Class Fix",
-	version = "3.3",
+	version = "3.4",
 	url = "http://steamcommunity.com/id/franug"
 };
 
@@ -87,16 +87,17 @@ public Action:OnConfigsExecutedPost(Handle:timer)
 	if (KvGotoFirstSubKey(kv))
 	{
 		ClearArray(array_classes);
-		decl String:name[64], String:enable[32], String:defaultclass[32];
+		decl String:name[64], String:enable[32], String:defaultclass[32], String:SMflags[32];
 		zrClasses Items;
 
 		do
 		{
 			KvGetString(kv, "enabled", enable, 32);
 			KvGetString(kv, "team_default", defaultclass, 32);
+			KvGetString(kv, "sm_flags", SMflags, 32);
 			
 			// check if is a enabled zombie class and no admin class and it's default class
-			if(StrEqual(enable, "yes") && StrEqual(defaultclass, "yes") && KvGetNum(kv, "team") == 0 && KvGetNum(kv, "flags") == 0)
+			if(StrEqual(enable, "yes") && StrEqual(defaultclass, "yes") && KvGetNum(kv, "team") == 0 && KvGetNum(kv, "flags") == 0 && !SMflags[0])
 			{
 				KvGetString(kv, "name", name, sizeof(name));
 				Items.Index = ZR_GetClassByName(name);
