@@ -3,10 +3,9 @@
  *
  *  Zombie:Reloaded
  *
- *  File:		  zombiereloaded.inc
+ *  File:		  class.zr.inc
  *  Type:		  Include
- *  Description:   Main API include file.
- *  Notes:		 Include this file to include the whole ZR API. 
+ *  Description:   Player class API.
  *
  *  Copyright (C) 2009-2013  Greyscale, Richard Helgeby
  *
@@ -26,14 +25,19 @@
  * ============================================================================
  */
 
-#if defined _zr_included
- #endinput
-#endif
-#define _zr_included
+/**
+ * Called right before ZR is about to teleport a player.
+ * Here you can modify any variable or stop the action entirely.
+ * 
+ * @param client			The client index.
+ *
+ * @return	  Plugin_Handled to block teleport.
+ */
+forward Action ZR_OnClientTeleport(int client);
 
-#include <zr/infect.zr>
-#include <zr/respawn.zr>
-#include <zr/class.zr>
-#include <zr/weapons.zr>
-#include <zr/sounds.zr>
-#include <zr/ztele.zr>
+/**
+ * Called after a player was teleported.
+ * 
+ * @param client			The client index.
+ */
+forward ZR_OnClientTeleported(int client);

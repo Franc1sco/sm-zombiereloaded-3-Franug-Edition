@@ -192,7 +192,7 @@ bool ZTeleClient(int client, bool force = false)
 	{
 		// Teleport client to spawn.
 		ZTeleTeleportClient(client);
-		
+
 		return true;
 	}
 	
@@ -232,8 +232,9 @@ bool ZTeleClient(int client, bool force = false)
  */
 void ZTeleTeleportClient(int client)
 {
-	// Teleport client.
+	APIOnClientTeleport(client);
 	TeleportEntity(client, g_vecZTeleSpawn[client], NULL_VECTOR, view_as<float>({0.0, 0.0, 0.0}));
+	APIOnClientTeleported(client);
 }
 
 /**
@@ -440,8 +441,9 @@ public Action ZTeleTimer(Handle timer, any client)
 	// Time has expired.
 	if (g_iZTeleTimeLeft[client] <= 0)
 	{
-		// Teleport client.
+		APIOnClientTeleport(client);
 		TeleportEntity(client, g_vecZTeleSpawn[client], NULL_VECTOR, NULL_VECTOR);
+		APIOnClientTeleported(client);
 		
 		// Increment teleport count.
 		g_iZTeleCount[client]++;

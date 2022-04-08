@@ -46,6 +46,7 @@
 #include "zr/api/class.api"
 #include "zr/api/weapons.api"
 #include "zr/api/sounds.api"
+#include "zr/api/ztele.api"
 
 /**
  * Initializes all main natives and forwards.
@@ -58,6 +59,7 @@ void APIInit()
 	APIClassInit();
 	APIWeapons();
 	APISoundsInit();
+	APITeleportInit();
 }
 
 /**
