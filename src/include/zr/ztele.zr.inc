@@ -27,13 +27,10 @@
 
 /**
  * Called right before ZR is about to teleport a player.
- * Here you can modify any variable or stop the action entirely.
  * 
  * @param client			The client index.
- *
- * @return	  Plugin_Handled to block teleport.
  */
-forward Action ZR_OnClientTeleport(int client);
+forward ZR_OnClientTeleport(int client);
 
 /**
  * Called after a player was teleported.
