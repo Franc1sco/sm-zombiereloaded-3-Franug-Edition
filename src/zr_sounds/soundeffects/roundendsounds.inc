@@ -26,25 +26,27 @@
  */
 
 /**
- * @section Defines for min/max round wim human sound file index.
+ * Path to sound files.
  */
-#define SOUND_ROUNDEND_MIN 1
-#define SOUND_ROUNDEND_MAX 4
+char g_sSOUND_ROUNDEND_HUMANS[PLATFORM_MAX_PATH];
+char g_sSOUND_ROUNDEND_ZOMBIE[PLATFORM_MAX_PATH];
 
 /**
  * @endsection
  */
 
-/**
- * Zombie sound types
- */
-enum RoundEndSounds
+void RoundEndSoundsStart()
 {
-	HumansWinCt, /** Human Wim */
-	ZombisWimT, /** Zombie's Win */
+	if (!g_hCvarsList.g_bCVAR_ROUNDEND_SOUNDS)
+	{
+		return;
+	}
+
+	RoundEndSoundsGetRandomSound(g_aHumansSoundsArray, g_sSOUND_ROUNDEND_HUMANS, sizeof(g_sSOUND_ROUNDEND_HUMANS));
+	RoundEndSoundsGetRandomSound(g_aZombisSoundsArray, g_sSOUND_ROUNDEND_ZOMBIE, sizeof(g_sSOUND_ROUNDEND_ZOMBIE));
 }
 
-void RoundEndSoundsStart(int winner)
+void RoundEndSoundsEnd(int winner)
 {
 	if (!g_hCvarsList.g_bCVAR_ROUNDEND_SOUNDS)
 	{
@@ -59,10 +61,9 @@ void RoundEndSoundsStart(int winner)
 		// Show "zombies win" RoundSoundsWim
 		case CS_TEAM_T:
 		{	
-			// Get random death sound.
-			char soundre[SOUND_MAX_PATH];
-			RoundEndSoundsGetRandomSound(soundre, ZombisWimT);
-
+			//Check if any sound file has been recorded.
+			if(strlen(g_sSOUND_ROUNDEND_ZOMBIE) == 0) return;
+			
 			// x = client index.
 			for (int x = 1; x <= MaxClients; x++)
 			{
@@ -78,16 +79,16 @@ void RoundEndSoundsStart(int winner)
 					continue;
 				}
 				// From Cliente Round end sound Zombis Wim.
-				RoundEndSoundsSoundFromClient(x, soundre, LevelVolume);
+				//RoundEndSoundsSoundFromClient(x, soundre, LevelVolume);
+				RoundEndSoundsSoundFromClient(x, g_sSOUND_ROUNDEND_ZOMBIE, LevelVolume);
 			}
 		}
 		// Show "humans win" RoundSoundsWim
 		case CS_TEAM_CT:
 		{
-			// Get random death sound.
-			char soundre[SOUND_MAX_PATH];
-			RoundEndSoundsGetRandomSound(soundre, HumansWinCt);
-
+			//Check if any sound file has been recorded.
+			if(strlen(g_sSOUND_ROUNDEND_HUMANS) == 0) return;
+			
 			// x = client index.
 			for (int x = 1; x <= MaxClients; x++)
 			{
@@ -103,7 +104,7 @@ void RoundEndSoundsStart(int winner)
 					continue;
 				}
 				// From Cliente Round end sound Humans Wim.
-				RoundEndSoundsSoundFromClient(x, soundre, LevelVolume);
+				RoundEndSoundsSoundFromClient(x, g_sSOUND_ROUNDEND_HUMANS, LevelVolume);
 			}
 		}
 		// Show no overlay.
@@ -114,37 +115,22 @@ void RoundEndSoundsStart(int winner)
 	}
 }
 
-bool RoundEndSoundsGetRandomSound(char[] soundre, RoundEndSounds soundtype)
+bool RoundEndSoundsGetRandomSound(ArrayList arraySounds, char[] soundre, int soundSize)
 {
-	int soundroundmin = SOUND_ROUNDEND_MIN;
-	int soundroundmax = SOUND_ROUNDEND_MAX;
-
-	// Pick a random integer between min and max sound file index.
-	int randresound = GetRandomInt(soundroundmin, soundroundmax);
+	// Choose a random integer from the sound file index.
+	int randonsound = GetRandomInt(0, (arraySounds.Length - 1));
 	
-	switch(soundtype)
+	//Get sound file from array
+	arraySounds.GetString(randonsound, soundre, soundSize);
+	
+	//Check if any sound file has been recorded.
+	if(strlen(soundre) != 0)
 	{
-		// Find HumansWin sound.
-		case HumansWinCt:
-		{
-			// Format random index into sound path.
-			Format(soundre, SOUND_MAX_PATH, "%shumans_win%d.mp3", g_hCvarsList.g_sCVAR_ROUNDEND_HUMANS_WIN, randresound);
-		}
-		// Find ZombisWim sound.
-		case ZombisWimT:
-		{
-			// Format random index into sound path.
-			Format(soundre, SOUND_MAX_PATH, "%szombie_win%d.mp3", g_hCvarsList.g_sCVAR_ROUNDEND_ZOMBIE_WIN, randresound);
-		}
-		// Invalid case given.
-		default:
-		{
-			// No handled case was given.
-			return false;
-		}
+		// Found sound.
+		return true;
 	}
-	// Found sound.
-	return true;
+	// No handled case was given.
+	return false;
 }
 
 void RoundEndSoundsSoundFromClient(int client, const char[] soundre, float level = 1.0)

@@ -62,6 +62,7 @@ void SEffectsOnRoundStart()
 	// Forward event to sub-modules.
 	VoiceOnRoundStart();
 	AmbientSoundsOnRoundStart();
+	RoundEndSoundsStart();
 }
 
 /**
@@ -73,7 +74,7 @@ void SEffectsOnRoundEnd(int winner)
 	VoiceOnRoundEnd();
 	AmbientSoundsOnRoundEnd();
 	ZombieSoundsOnRoundEnd();
-	RoundEndSoundsStart(winner);
+	RoundEndSoundsEnd(winner);
 }
 
 /**

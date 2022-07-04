@@ -31,42 +31,36 @@
 bool bZombie[MAXPLAYERS + 1];
 
 /**
- * Infects a client. Execute events, sets attributes and flags that indicate
- * that the client is a zombie.
- *
- * @param client			The client to infect.
- * @param attacker		  (Optional) The attacker who did the infect.
- * @param motherinfect	  (Optional) Indicates a mother zombie infect.
- * @param respawnoverride   (Optional) Set to true to override respawn cvar.
- * @param respawn		   (Optional) Value to override with.
+ * Called after a player has become a zombie.
+ * 
+ * @param client			The client that was infected.
+ * @param attacker		  The the infecter. (-1 if there is no infecter)
+ * @param motherInfect	  If the client is a mother zombie.
+ * @param respawnOverride   True if the respawn cvar was overridden.
+ * @param respawn		   The value that respawn was overridden with.
  */
-public Action ZR_OnClientInfect(int &client, int &attacker, bool &motherInfect, bool &respawnOverride, bool &respawn)
+public int ZR_OnClientInfected(int client, int attacker, bool motherInfect, bool respawnOverride, bool respawn)
 {
 	// Mark player as zombie.
 	bZombie[client] = true;
 	// Emit scream sound if enabled.
 	ZombieSoundsScream(client);
 	SEffectsOnClientInfected(client);
-
-	return Plugin_Continue;
 }
 
 /**
- * Turns a zombie back into a human. Execute events, sets attributes and flags that indicate
- * that the client is a human.
- *
- * @param client		The client to make human.
- * @param respawn	   Teleport client back to spawn if true.
- * @param protect	   Start spawn protection on new human.
+ * Called after a player has become a human. (Through an admin command.)
+ * 
+ * @param client			The client index.
+ * @param respawn		   Whether the client was respawned.
+ * @param protect		   Whether the client has spawn protection.
  */
-public Action ZR_OnClientHuman(int &client, bool &respawn, bool &protect)
+public int ZR_OnClientHumanPost(int client, bool respawn, bool protect)
 {
 	// Mark player as human.
 	bZombie[client] = false;
 	// Forward event to modules.
 	SEffectsOnClientHuman(client);
-
-	return Plugin_Continue;
 }
 
 

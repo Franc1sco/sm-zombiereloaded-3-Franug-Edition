@@ -751,7 +751,8 @@ void InfectHumanToZombie(int client, int attacker = -1, bool motherinfect = fals
 			
 			if (g_Game == Game_CSGO)
 			{
-				SetEventString(event, "weapon", "knife");
+				//SetEventString(event, "weapon", "knife");
+				SetEventString(event, "weapon", "zombie_walking_csgo");
 			}
 			else
 			{

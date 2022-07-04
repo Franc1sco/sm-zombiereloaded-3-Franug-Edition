@@ -382,6 +382,41 @@ stock int ClassGetModelPath(int index, char[] buffer, int maxlen, int cachetype 
 	return -1;
 }
 
+
+/**
+ * Gets the Arms model path string from the specified class.
+ *
+ * @param index	 Index of the class in a class cache or a client index,
+ *				  depending on the cache type specified.
+ * @param buffer	The destination string buffer.
+ * @param maxlen	The length of the destination string buffer.
+ * @param cachetype Optional. Specifies what class cache to read from. Options:
+ *				  ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
+ *				  ZR_CLASS_CACHE_MODIFIED - Changed/newest class data.
+ *				  ZR_CLASS_CACHE_PLAYER (default) - Player cache. If this one
+ *				  is used, index will be used as a client index.
+ * @return  Number of cells written. -1 on error.
+ */
+stock int ClassGetArmsPath(int index, char[] buffer, int maxlen, int cachetype = ZR_CLASS_CACHE_PLAYER)
+{
+	switch (cachetype)
+	{
+		case ZR_CLASS_CACHE_ORIGINAL:
+		{
+			return strcopy(buffer, maxlen, ClassData[index][Class_Arms_Path]);
+		}
+		case ZR_CLASS_CACHE_MODIFIED:
+		{
+			return strcopy(buffer, maxlen, ClassDataCache[index][Class_Arms_Path]);
+		}
+		case ZR_CLASS_CACHE_PLAYER:
+		{
+			return strcopy(buffer, maxlen, ClassPlayerCache[index][Class_Arms_Path]);
+		}
+	}
+	return -1;
+}
+
 /**
  * Gets the model skin index from the specified class.
  *

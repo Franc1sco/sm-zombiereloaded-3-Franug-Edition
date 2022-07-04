@@ -104,6 +104,9 @@ void DownloadsLoad()
 	ConfigSetConfigLoaded(File_Downloads, true);
 	ConfigSetConfigReloadFunc(File_Downloads, GetFunctionByName(GetMyHandle(), "DownloadsOnConfigReload"));
 	ConfigSetConfigHandle(File_Downloads, arrayDownloads);
+
+	// zombie_walking_csgo Svg
+	if(g_Game == Game_CSGO) AddFileToDownloadsTable("materials/panorama/images/icons/equipment/zombie_walking_csgo.svg");
 }
 
 /**

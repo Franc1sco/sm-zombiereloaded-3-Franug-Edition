@@ -241,6 +241,7 @@ void ModelsLoad()
 	// Set config data.
 	ConfigSetConfigLoaded(File_Models, true);
 	ConfigSetConfigReloadFunc(File_Models, GetFunctionByName(GetMyHandle(), "ModelsOnConfigReload"));
+	ArmsModelsPrecache();
 }
 
 /**
@@ -257,18 +258,69 @@ public void ModelsOnConfigReload(ConfigFile config)
  */
 void ModelsPrecache()
 {
-	char file[PLATFORM_MAX_PATH];
+	char sfile[PLATFORM_MAX_PATH];
 
 	bool hitboxchangerLoaded = (GetFeatureStatus(FeatureType_Native, "SetNumHitboxes") == FeatureStatus_Available); // check if we have hitboxchanger extension running
 	
 	// Loop through all models, build full path and cache them.
 	for (int model = 0; model < ModelCount; model++)
 	{
-		ModelsGetFullPath(model, file, sizeof(file));
-		int modelIndex = PrecacheModel(file);
-		if(hitboxchangerLoaded && (modelIndex != 0) && (ModelData[model][Model_Team] == ModelTeam_Humans))
+		ModelsGetFullPath(model, sfile, sizeof(sfile));
+		int modelIndex = PrecacheModel(sfile);
+		if(hitboxchangerLoaded && modelIndex != 0 && ModelData[model][Model_Team] == ModelTeam_Humans)
+		{
 			SetNumHitboxes(modelIndex, -1);
+			//PrintToServer("%s", sfile);
+		}
 	}
+}
+
+/**
+ * Precaches all Arms models.
+ */
+void ArmsModelsPrecache()
+{	
+	Handle kvArms = INVALID_HANDLE;
+	
+	// Get Arms config path.
+	char pathclasses[PLATFORM_MAX_PATH];
+	bool exists = ConfigGetCvarFilePath(CVAR_CONFIG_PATH_CLASSES, pathclasses);
+	
+	// If file doesn't exist, then log and stop.
+	if (!exists)
+	{
+		LogEvent(false, LogType_Fatal, LOG_CORE_EVENTS, LogModule_Playerclasses, "Config Validation", "Missing playerclasses config file \"%s\"", pathclasses);
+		
+		// Remove key/value cache.
+		CloseHandle(kvArms);
+		kvArms = INVALID_HANDLE;
+		
+		return;
+	}
+	kvArms = CreateKeyValues("classes");
+	
+	// Load Arms model data file.
+	if (!FileToKeyValues(kvArms, pathclasses))
+	{
+		SetFailState("Class data file \"%s\" not found", pathclasses);
+	}
+	
+	// Try to find the first model Arms.
+	if (KvGotoFirstSubKey(kvArms))
+	{
+		char modelarms[128];
+		// Loop through all models Arms ModelArms array.
+		do
+		{
+			KvGetString(kvArms, "arms_path", modelarms, sizeof(modelarms), " ");
+			
+			//Precaches all Arms models.
+			if(strlen(modelarms) > 3 && FileExists(modelarms) && !IsModelPrecached(modelarms)) PrecacheModel(modelarms);
+			
+		} while (KvGotoNextKey(kvArms));
+		KvRewind(kvArms);
+	}
+	CloseHandle(kvArms);
 }
 
 /**

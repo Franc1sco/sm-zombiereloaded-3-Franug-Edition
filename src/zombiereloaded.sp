@@ -55,7 +55,7 @@
 
 
 
-#define VERSION "3.6.4 Franug edition"
+#define VERSION "3.6.5 Franug edition"
 
 bool g_allweapons[MAXPLAYERS + 1];
 
