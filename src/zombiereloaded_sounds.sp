@@ -72,6 +72,7 @@ public void OnPluginStart()
 	TranslationInit();
 	CookiesInit();
 	CommandsInit();
+	DownloadsInit();
 }
 
 /**

@@ -52,6 +52,7 @@ enum CvarsList
 	Handle:CVAR_CONFIG_PATH_CLASSES,
 	Handle:CVAR_CONFIG_PATH_WEAPONS,
 	Handle:CVAR_CONFIG_PATH_HITGROUPS,
+	Handle:CVAR_CLASSES_ARMS,
 	Handle:CVAR_PERMISSIONS_USE_GROUPS,
 	Handle:CVAR_CLASSES_MENU_SPAWN,
 	Handle:CVAR_CLASSES_MENU_JOIN,
@@ -245,6 +246,7 @@ void CvarsCreate()
 	g_hCvarsList[CVAR_CONFIG_PATH_CLASSES]	   =	CreateConVar("zr_config_path_playerclasses",  "configs/zr/playerclasses.txt",		 "Path, relative to root sourcemod directory, to playerclasses config file.");
 	g_hCvarsList[CVAR_CONFIG_PATH_WEAPONS]	   =	CreateConVar("zr_config_path_weapons",		"configs/zr/weapons.txt",			   "Path, relative to root sourcemod directory, to weapons config file.");
 	g_hCvarsList[CVAR_CONFIG_PATH_HITGROUPS]	 =	CreateConVar("zr_config_path_hitgroups",	  "configs/zr/hitgroups.txt",			 "Path, relative to root sourcemod directory, to hitgroups config file.");
+	g_hCvarsList[CVAR_CLASSES_ARMS]				=	CreateConVar("zr_classes_arms",				"0",									"Enable Class Arms Apply.");
 	
 	
 	// ===========================

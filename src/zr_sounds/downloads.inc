@@ -25,6 +25,15 @@
  * ============================================================================
  */
 
+ArrayList g_aHumansSoundsArray;
+ArrayList g_aZombisSoundsArray;
+
+void DownloadsInit()
+{
+	g_aHumansSoundsArray = new ArrayList(512);
+	g_aZombisSoundsArray = new ArrayList(512);
+}
+
 /**
  * Prepare all sounds data.
  */
@@ -170,6 +179,9 @@ void RoundEndSoundsLoad()
 	{
 		return;
 	}
+	
+	g_aHumansSoundsArray.Clear();
+	g_aZombisSoundsArray.Clear();
 
 	// Get round end sound.
 	char HumansWinPath[PLATFORM_MAX_PATH];
@@ -200,6 +212,7 @@ void RoundEndSoundsLoad()
 				ReplaceString(s_PreCachePath, sizeof(s_PreCachePath), "sound/", "");
 
 				PrecacheSound(s_PreCachePath);
+				g_aHumansSoundsArray.PushString(s_PreCachePath);
 			}
 		}
 	}
@@ -226,6 +239,7 @@ void RoundEndSoundsLoad()
 				ReplaceString(s_PreCachePath, sizeof(s_PreCachePath), "sound/", "");
 
 				PrecacheSound(s_PreCachePath);
+				g_aZombisSoundsArray.PushString(s_PreCachePath);
 			}
 		}
 	}

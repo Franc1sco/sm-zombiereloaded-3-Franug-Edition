@@ -24,6 +24,10 @@
  *
  * ============================================================================
  */
+/**
+ * Prevents a double event bug in Round End
+ */
+bool g_bRoundEnd = false;
 
 /**
  * Init function for event module.
@@ -67,6 +71,7 @@ void EventsHook(bool unhook = false)
 
 public Action EventRoundStart(Handle event, const char[] name, bool dontBroadcast)
 {
+	g_bRoundEnd = false;
 	SEffectsOnRoundStart();
 }
 
@@ -80,13 +85,15 @@ public Action EventRoundStart(Handle event, const char[] name, bool dontBroadcas
  */
 public Action EventRoundEnd(Handle event, const char[] name, bool dontBroadcast)
 {
-	// Get all required event info.
-	int winner = GetEventInt(event, "winner");
-	
-	SEffectsOnRoundEnd(winner);
-	InfectOnRoundEnd();
-	
+	if (!g_bRoundEnd)
+	{
+		g_bRoundEnd = true;
+		// Get all required event info.
+		int winner = GetEventInt(event, "winner");
 
+		SEffectsOnRoundEnd(winner);
+		InfectOnRoundEnd();
+	}
 }
 
 /**

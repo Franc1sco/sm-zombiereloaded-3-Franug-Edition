@@ -64,6 +64,7 @@ bool ClassApplyAttributes(int client, bool improved = false)
 	ClassApplyHealth(client, classindex, improved);
 	ClassApplyHealthRegen(client, classindex);
 	ClassApplySpeed(client, classindex);
+	ClassApplyArms(client, classindex);
 	
 	return true;
 }
@@ -505,4 +506,58 @@ void Class_OnPlayerRunCmd(int client, float vel[3])
 		else if (vel[1] > 0.0)
 			vel[1] = 5000.0;
 	}
+}
+
+/**
+ * Changes the Arms model on a player.
+ *
+ * @param client		The client index.
+ * @param classindex	The class to read from.
+ * @param cachetype	 Optional. Specifies what class cache to read from.
+ *					  Options:
+ *					  ZR_CLASS_CACHE_ORIGINAL - Unchanced class data.
+ *					  ZR_CLASS_CACHE_MODIFIED - Changed/newest class data.
+ *					  ZR_CLASS_CACHE_PLAYER (default) - Player cache.
+ * @return  True on success, false otherwise.
+ */
+bool ClassApplyArms(int client, int classindex, int cachetype = ZR_CLASS_CACHE_PLAYER)
+{
+	/// If module is disabled, then stop.
+	bool classes_arms = GetConVarBool(g_hCvarsList[CVAR_CLASSES_ARMS]);
+	if (!classes_arms)
+	{
+		return true;
+	}
+
+	char arms_path[PLATFORM_MAX_PATH];
+
+	// Get the overlay path from the specified cache.
+	if (cachetype == ZR_CLASS_CACHE_PLAYER)
+	{
+		ClassGetArmsPath(client, arms_path, sizeof(arms_path), cachetype);
+	}
+	else
+	{
+		ClassGetArmsPath(classindex, arms_path, sizeof(arms_path), cachetype);
+	}
+
+	if (StrEqual(arms_path, "default", false))
+	{
+		// Do nothing.
+		return true;
+	}
+	else if (StrEqual(arms_path, "no_change", false))
+	{
+		// Do nothing.
+		return true;
+	}
+
+	int ent = GetEntPropEnt(client, Prop_Send, "m_hMyWearables");
+	if(ent != -1)
+	{
+		AcceptEntityInput(ent, "KillHierarchy");
+	}
+	SetEntPropString(client, Prop_Send, "m_szArmsModel", arms_path);
+	
+	return true;
 }
